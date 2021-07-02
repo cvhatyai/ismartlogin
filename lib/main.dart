@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:ismart_login/page/splashscreen/splashscreen_screen.dart';
+import 'package:r_scan/r_scan.dart';
+import 'package:new_version/new_version.dart';
 
-void main() {
+List<RScanCameraDescription> rScanCameras;
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  rScanCameras = await availableRScanCameras();
   runApp(MyApp());
   configLoading();
 }
@@ -23,7 +29,61 @@ void configLoading() {
     ..dismissOnTap = false;
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  const MyApp({Key key}) : super(key: key);
+
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+
+    // Instantiate NewVersion manager object (Using GCP Console app as example)
+    final newVersion = NewVersion(
+      iOSId: 'com.cityvariety.ismartlogin',
+      androidId: 'com.cityvariety.ismart_login',
+    );
+
+    // You can let the plugin handle fetching the status and showing a dialog,
+    // or you can fetch the status and display your own dialog, or no dialog.
+    const simpleBehavior = true;
+
+    if (simpleBehavior) {
+      basicStatusCheck(newVersion);
+    } else {
+      advancedStatusCheck(newVersion);
+    }
+  }
+
+  basicStatusCheck(NewVersion newVersion) async {
+    final status = await newVersion.getVersionStatus();
+    print("======= UPDATE APP =========start");
+    // debugPrint("Notes : " + status.releaseNotes.);
+    debugPrint("Link : " + status.appStoreLink);
+    debugPrint("LocalVersion : " + status.localVersion);
+    debugPrint("StoreVersion : " + status.storeVersion);
+    print("======= UPDATE APP =========end");
+    newVersion.showAlertIfNecessary(context: context);
+  }
+
+  advancedStatusCheck(NewVersion newVersion) async {
+    final status = await newVersion.getVersionStatus();
+    debugPrint(status.releaseNotes);
+    debugPrint(status.appStoreLink);
+    debugPrint(status.localVersion);
+    debugPrint(status.storeVersion);
+    debugPrint(status.canUpdate.toString());
+    newVersion.showUpdateDialog(
+      context: context,
+      versionStatus: status,
+      dialogTitle: 'Custom Title',
+      dialogText: 'Custom Text',
+    );
+  }
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {

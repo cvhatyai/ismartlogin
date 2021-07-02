@@ -155,6 +155,7 @@ class _OrgTimeDetailManageState extends State<OrgTimeDetailManage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    EasyLoading.dismiss();
     print(widget.type);
     if (widget.type == 'update') {
       onLoadGetTime();

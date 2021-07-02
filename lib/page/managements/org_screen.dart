@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:ismart_login/page/main.dart';
 import 'package:ismart_login/page/managements/future/org_manage_future.dart';
+import 'package:ismart_login/page/managements/model/itemOrgManage.dart';
 import 'package:ismart_login/page/managements/model/itemOrgResultManage.dart';
 import 'package:ismart_login/page/org/create_screen.dart';
 import 'package:ismart_login/style/font_style.dart';
@@ -25,6 +28,35 @@ class _OrgManageScreenState extends State<OrgManageScreen> {
       setState(() {
         if (onValue[0].STATUS) {
           _item = onValue[0].RESULT;
+        }
+      });
+    });
+    setState(() {});
+    return true;
+  }
+
+  ///-----member
+  List<ItemsOrgSuspendManage> _itemSuspend = [];
+  Future<bool> onLoadSuspendOrgManage(String org_id) async {
+    Map map = {
+      "uid": await SharedCashe.getItemsWay(name: 'id'),
+      "org_id": org_id,
+    };
+    print(map);
+    await OrgManageFuture().apiUpdateSuspendOrgManageList(map).then((onValue) {
+      setState(() {
+        if (onValue[0].STATUS) {
+          _itemSuspend = onValue;
+          EasyLoading.dismiss();
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => OrgManageScreen(),
+            ),
+          );
+          EasyLoading.showSuccess("ลบแล้ว");
+        } else {
+          EasyLoading.showError("ล้มเหลว");
         }
       });
     });
@@ -63,7 +95,14 @@ class _OrgManageScreenState extends State<OrgManageScreen> {
                             color: Colors.white,
                             size: 26,
                           ),
-                          onPressed: () => Navigator.of(context).pop(),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => MainPage(),
+                              ),
+                            );
+                          },
                         ),
                         actions: [
                           // action button
@@ -78,6 +117,8 @@ class _OrgManageScreenState extends State<OrgManageScreen> {
                                     type: 'insert',
                                     title: 'สร้างทีม/องค์กรใหม่',
                                     id: '0',
+                                    invite: "000000000",
+                                    action: true,
                                   ),
                                 ),
                               );
@@ -98,6 +139,12 @@ class _OrgManageScreenState extends State<OrgManageScreen> {
                             itemCount: _item.length,
                             itemBuilder: (BuildContext context, int index) {
                               return GestureDetector(
+                                onLongPress: () {
+                                  if (!_item[index].ACTIVE) {
+                                    alert_null(context, _item[index].SUBJECT,
+                                        _item[index].ORG_ID);
+                                  }
+                                },
                                 onTap: () {
                                   Navigator.push(
                                     context,
@@ -106,7 +153,9 @@ class _OrgManageScreenState extends State<OrgManageScreen> {
                                           OrganizationCreateScreen(
                                         type: 'update',
                                         title: _item[index].SUBJECT,
-                                        id: _item[index].ID,
+                                        id: _item[index].ORG_ID,
+                                        invite: _item[index].INVITE,
+                                        action: _item[index].ACTIVE,
                                       ),
                                     ),
                                   );
@@ -224,6 +273,96 @@ class _OrgManageScreenState extends State<OrgManageScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  alert_null(BuildContext context, String title, String org_id) async {
+    return showDialog(
+      barrierDismissible: true,
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20.0))),
+          contentPadding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+          content: Container(
+            width: WidhtDevice().widht(context),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  alignment: Alignment.center,
+                  height: 100,
+                  child: Text(
+                    'คุณต้องการระงับทีม/องค์กร "' + title + '" หรือไม่ ?',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        height: 1,
+                        fontFamily: FontStyles().FontFamily,
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Container(
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.red[100],
+                              borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(20.0),
+                              ),
+                            ),
+                            height: 50,
+                            alignment: Alignment.center,
+                            child: Text(
+                              'ปิด',
+                              style: TextStyle(
+                                  fontFamily: FontStyles().FontFamily,
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: InkWell(
+                          onTap: () {
+                            onLoadSuspendOrgManage(org_id);
+                            EasyLoading.show();
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.green[100],
+                              borderRadius: BorderRadius.only(
+                                bottomRight: Radius.circular(20.0),
+                              ),
+                            ),
+                            height: 50,
+                            alignment: Alignment.center,
+                            child: Text(
+                              'ตกลง',
+                              style: TextStyle(
+                                  fontFamily: FontStyles().FontFamily,
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

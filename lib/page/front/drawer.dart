@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:ismart_login/page/contact_dev/contactdev_screen.dart';
+import 'package:ismart_login/page/faq/faq_screen.dart';
 import 'package:ismart_login/page/front/future/relationship_future.dart';
 import 'package:ismart_login/page/front/model/itemMemberRelationship.dart';
 import 'package:ismart_login/page/front/model/itemMemberResultRelationship.dart';
@@ -25,6 +27,7 @@ import 'package:ismart_login/style/font_style.dart';
 import 'package:ismart_login/style/page_style.dart';
 import 'package:ismart_login/system/shared_preferences.dart';
 import 'package:location/location.dart';
+import 'package:package_info/package_info.dart';
 
 class MenuDrawer extends StatefulWidget {
   final String images;
@@ -113,6 +116,13 @@ class _MenuDrawerState extends State<MenuDrawer> {
   }
 
   //----------------------
+  String _version = '0.0.0';
+  _checkVer() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    setState(() {
+      _version = packageInfo.version;
+    });
+  }
 
   @override
   void initState() {
@@ -122,6 +132,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
     onLoadCountTime();
     onLoadCountDepartment();
     onLoadRelation();
+    _checkVer();
   }
 
   @override
@@ -308,28 +319,13 @@ class _MenuDrawerState extends State<MenuDrawer> {
                             style: _txt,
                           ),
                           onTap: () {
-                            if (_resultRelation.length > 1) {
-                              Navigator.pop(context);
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => OrgManageScreen(),
-                                ),
-                              );
-                            } else {
-                              Navigator.pop(context);
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      OrganizationCreateScreen(
-                                    type: "update_1",
-                                    title: widget.org,
-                                    id: widget.org_id,
-                                  ),
-                                ),
-                              );
-                            }
+                            Navigator.pop(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => OrgManageScreen(),
+                              ),
+                            );
                           },
                         ),
                         ListTile(
@@ -470,65 +466,62 @@ class _MenuDrawerState extends State<MenuDrawer> {
           ),
 
           Divider(), //here is a divider
-          // Padding(padding: EdgeInsets.all(5)),
-          // Text(
-          //   " อื่น ๆ",
-          //   style: TextStyle(
-          //       fontFamily: FontStyles().FontFamily,
-          //       fontSize: 18,
-          //       fontWeight: FontWeight.bold),
-          // ),
-          // Container(
-          //   child: Column(
-          //     mainAxisSize: MainAxisSize.min,
-          //     children: [
-          //       ListTile(
-          //         minLeadingWidth: 0.5,
-          //         leading: FaIcon(
-          //           FontAwesomeIcons.question,
-          //           size: 20,
-          //         ),
-          //         title: Text(
-          //           'คำถามที่พบบ่อย',
-          //           style: _txt,
-          //         ),
-          //         onTap: () {
-          //           // Navigator.pop(context);
-          //           // Navigator.push(
-          //           //   context,
-          //           //   MaterialPageRoute(
-          //           //     builder: (context) => OrgManageScreen(),
-          //           //   ),
-          //           // );
-          //         },
-          //       ),
-          //       ListTile(
-          //         minLeadingWidth: 0.5,
-          //         leading: FaIcon(
-          //           FontAwesomeIcons.code,
-          //           size: 20,
-          //         ),
-          //         title: Text(
-          //           'ติดต่อผู้พัฒนา',
-          //           style: _txt,
-          //         ),
-          //         onTap: () {
-          //           Navigator.pop(context);
-          //           // Navigator.push(
-          //           //   context,
-          //           //   MaterialPageRoute(
-          //           //     builder: (context) => OrgDepartmentDetailManage(
-          //           //       lat: 7.0071481,
-          //           //       lng: 100.4958685,
-          //           //     ),
-          //           //   ),
-          //           // );
-          //         },
-          //       ),
-          //     ],
-          //   ),
-          // ),
-          // Divider(), //here is a divider
+          Padding(padding: EdgeInsets.all(5)),
+          Text(
+            " อื่น ๆ",
+            style: TextStyle(
+                fontFamily: FontStyles().FontFamily,
+                fontSize: 18,
+                fontWeight: FontWeight.bold),
+          ),
+          Container(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  minLeadingWidth: 0.5,
+                  leading: FaIcon(
+                    FontAwesomeIcons.question,
+                    size: 20,
+                  ),
+                  title: Text(
+                    'คำถามที่พบบ่อย',
+                    style: _txt,
+                  ),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Faq(),
+                      ),
+                    );
+                  },
+                ),
+                ListTile(
+                  minLeadingWidth: 0.5,
+                  leading: FaIcon(
+                    FontAwesomeIcons.code,
+                    size: 20,
+                  ),
+                  title: Text(
+                    'ติดต่อผู้พัฒนา',
+                    style: _txt,
+                  ),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ContactDeveloper(),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+          Divider(), //here is a divider
           Padding(padding: EdgeInsets.all(5)),
           ListTile(
             minLeadingWidth: 0.5,
@@ -544,6 +537,38 @@ class _MenuDrawerState extends State<MenuDrawer> {
               Navigator.pop(context);
               alert_signout(context);
             },
+          ),
+          Divider(), //here is a divider
+          Align(
+            alignment: FractionalOffset.bottomCenter,
+            child: Column(
+              children: [
+                Text(
+                  'iSmartLogin  V.' + _version,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: FontStyles().FontFamily,
+                    fontSize: 12,
+                    color: Colors.grey[400],
+                    height: 1,
+                    // color: Colors.white,
+                  ),
+                ),
+                Text(
+                  "Copyright© Powered by CityVariety Corporation.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: FontStyles().FontFamily,
+                    fontSize: 12,
+                    color: Colors.grey[400], height: 1,
+                    // color: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.all(10),
           ),
         ],
       ),

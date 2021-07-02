@@ -7,9 +7,11 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:ismart_login/page/front/front_screen.dart';
 import 'package:ismart_login/page/main.dart';
+import 'package:ismart_login/page/org/organization_screen.dart';
 import 'package:ismart_login/page/sign/future/singin_future.dart';
 import 'package:ismart_login/page/sign/model/memberlist.dart';
 import 'package:ismart_login/page/sign/model/memberresult.dart';
+import 'package:ismart_login/page/sign/repassword/search_account_screen.dart';
 import 'package:ismart_login/page/sign/signup_screen.dart';
 import 'package:ismart_login/style/page_style.dart';
 import 'package:ismart_login/style/font_style.dart';
@@ -45,20 +47,29 @@ class _SignInScreenState extends State<SignInScreen> {
 
   //--API
   List<ItemsMemberResult> _result = [];
-  Future<bool> onLoadInsertMember(Map map) async {
+  Future<bool> onLoadGetMember(Map map) async {
     EasyLoading.show();
     await new SigninFuture().apiSelectMember(map).then((onValue) {
       print(onValue[0]['msg']);
       if (onValue[0]['msg'] == 'success') {
         EasyLoading.dismiss();
         SharedCashe.saveItemsMemberList(item: onValue[0]['result']);
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => MainPage(),
-          ),
-        );
-        _showToast();
+        if (onValue[0]['result'][0]['org_id'] == '0') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => OrganizationScreen(),
+            ),
+          );
+        } else {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MainPage(),
+            ),
+          );
+          _showToast();
+        }
       } else if (onValue[0]['msg'] == 'fail') {
         EasyLoading.dismiss();
         alert_non_signin(context, 'ไม่พบ Username');
@@ -129,7 +140,7 @@ class _SignInScreenState extends State<SignInScreen> {
           GestureDetector(
             onTap: () {
               if (_formKey.currentState.validate()) {
-                onLoadInsertMember(_postDataInput());
+                onLoadGetMember(_postDataInput());
                 SpinKitWave(
                   color: Colors.white,
                   size: 50.0,
@@ -232,20 +243,28 @@ class _SignInScreenState extends State<SignInScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                // GestureDetector(
-                                //   child: Text('ลืมรหัสผ่าน',
-                                //       style: TextStyle(
-                                //           fontFamily: FontStyles().FontFamily,
-                                //           fontWeight: FontWeight.bold,
-                                //           fontSize: 24)),
-                                // ),
-                                // Padding(
-                                //   padding: EdgeInsets.only(left: 10, right: 10),
-                                //   child: Text(
-                                //     '|',
-                                //     style: TextStyle(fontSize: 30),
-                                //   ),
-                                // ),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              SearchAccountScreen()),
+                                    );
+                                  },
+                                  child: Text('ลืมรหัสผ่าน',
+                                      style: TextStyle(
+                                          fontFamily: FontStyles().FontFamily,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 24)),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(left: 10, right: 10),
+                                  child: Text(
+                                    '|',
+                                    style: TextStyle(fontSize: 30),
+                                  ),
+                                ),
                                 GestureDetector(
                                   onTap: () {
                                     Navigator.push(

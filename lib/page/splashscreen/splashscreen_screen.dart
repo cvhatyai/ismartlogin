@@ -3,6 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ismart_login/page/main.dart';
+import 'package:ismart_login/page/org/organization_screen.dart';
+import 'package:ismart_login/page/protect/future/protect_future.dart';
+import 'package:ismart_login/page/protect/model/protectSwitch.dart';
 import 'package:ismart_login/page/sign/future/singin_future.dart';
 import 'package:ismart_login/page/sign/model/memberlist.dart';
 import 'package:ismart_login/page/sign/model/memberresult.dart';
@@ -23,6 +26,8 @@ class SplashscreenScreen extends StatefulWidget {
 class _SplashscreenScreenState extends State<SplashscreenScreen> {
   bool sent = false;
   bool protect = false;
+  bool new_user = false;
+  bool protect_switch = true;
 
   FToast fToast;
 
@@ -45,6 +50,15 @@ class _SplashscreenScreenState extends State<SplashscreenScreen> {
         if (onValue[0]['msg'] == 'success') {
           SharedCashe.saveItemsMemberList(item: onValue[0]['result']);
           _showToast();
+          if (onValue[0]['result'][0]['org_id'] == '0') {
+            setState(() {
+              new_user = true;
+            });
+          } else {
+            setState(() {
+              new_user = false;
+            });
+          }
           setState(() {
             sent = true;
           });
@@ -73,25 +87,47 @@ class _SplashscreenScreenState extends State<SplashscreenScreen> {
   }
 
   check_protect() async {
-    // bool _bool = false;
-    // _bool = await SharedCashe.getItemsBoolWay(key: 'setProtect');
-    // if (_bool == null) {
-    //   _bool = false;
-    // }
-    // print('vv ' + _bool.toString());
-    // setState(() {
-    //   protect = _bool;
-    // });
-    protect = true;
+    bool _bool = false;
+    _bool = await SharedCashe.getItemsBoolWay(key: 'setProtect');
+    if (_bool == null) {
+      _bool = false;
+    }
+    print('vv ' + _bool.toString());
+    setState(() {
+      protect = _bool;
+    });
+
     if (protect) {
       _controllerLoginAuto();
     }
     // print(protect);
   }
 
+//////////----
+  List<ItemsProtectSwitch> _result = [];
+  Future<bool> onLoadGetProtectSwith() async {
+    Map map = {};
+    await ProtectFuture().apiGetProtectSwitch(map).then((onValue) {
+      setState(() {
+        _result = onValue;
+        print(_result[0].STATUS.toString());
+        if (_result[0].STATUS) {
+          protect_switch = true;
+          check_protect();
+        } else {
+          protect_switch = false;
+          _controllerLoginAuto();
+        }
+      });
+    });
+    setState(() {});
+    return true;
+  }
+
+//////////----
   @override
   void initState() {
-    check_protect();
+    onLoadGetProtectSwith();
 
     LocationService.checkService();
     super.initState();
@@ -101,21 +137,68 @@ class _SplashscreenScreenState extends State<SplashscreenScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SplashScreen(
-      seconds: 7,
-      navigateAfterSeconds: protect
-          ? sent
-              ? MainPage()
-              : SignInScreen()
-          : ProtectApp(),
-      title: new Text(
-        'iSmartLogin',
-        style: new TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
-      ),
-      image: new Image.network(
-          'https://flutter.io/images/catalog-widget-placeholder.png'),
-      backgroundColor: Colors.white,
-      loaderColor: Colors.red,
+    return Scaffold(
+      body: Container(
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          child: Stack(
+            children: [
+              SplashScreen(
+                seconds: 3,
+                navigateAfterSeconds: protect
+                    ? sent
+                        ? new_user
+                            ? OrganizationScreen()
+                            : MainPage()
+                        : SignInScreen()
+                    : protect_switch
+                        ? ProtectApp()
+                        : sent
+                            ? new_user
+                                ? OrganizationScreen()
+                                : MainPage()
+                            : SignInScreen(),
+                title: new Text(
+                  'iSmartLogin',
+                  style: new TextStyle(
+                      // fontWeight: FontWeight.bold,
+                      fontFamily: FontStyles().FontFamily,
+                      fontSize: 24.0),
+                ),
+                image: Image.asset('assets/images/other/logo_app.png'),
+                photoSize: 80.0,
+                gradientBackground: LinearGradient(
+                    colors: [
+                      Color(0xFFFFF),
+                      Color(0xFF00B1FF).withOpacity(0.5),
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    stops: [0.7, 1.0],
+                    tileMode: TileMode.mirror),
+                loaderColor: Colors.grey[400],
+              ),
+              Positioned(
+                bottom: 0,
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  padding: EdgeInsets.only(bottom: 20),
+                  child: Align(
+                      alignment: FractionalOffset.bottomCenter,
+                      child: Text(
+                        "Copyright© Powered by CityVariety Corporation.",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontFamily: FontStyles().FontFamily,
+                          fontSize: 16,
+                          // color: Colors.grey[400],
+                          color: Colors.white,
+                        ),
+                      )),
+                ),
+              ),
+            ],
+          )),
     );
   }
 

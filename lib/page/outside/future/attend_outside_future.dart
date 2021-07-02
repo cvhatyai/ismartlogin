@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http/http.dart' as http;
 import 'package:ismart_login/page/front/model/attendEnd.dart';
 import 'package:ismart_login/page/front/model/attendStart.dart';
@@ -96,8 +97,17 @@ class AttandOutsideFuture {
       "cmd": cmd,
       "attact_type": attact_type,
     });
-    Response response =
-        await Dio().post(Server().postAttandUploadImages, data: formData);
+    Response response = await Dio().post(Server().postAttandUploadImages,
+        data: formData, onSendProgress: (int bytes, int total) {
+      print('progress: $total ($bytes/$total) => ' +
+          (bytes / total).toString() +
+          '%');
+      EasyLoading.showProgress((bytes / total), status: "กำลังอัพโหลด");
+      if (bytes / total == 1 || bytes >= total) {
+        EasyLoading.dismiss();
+        EasyLoading.showSuccess('เรียบร้อย');
+      }
+    });
     print(json.encode(response.data));
   }
 

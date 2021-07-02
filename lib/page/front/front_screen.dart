@@ -282,13 +282,14 @@ class _FrontScreenState extends State<FrontScreen> {
       drawer: MenuDrawer(
           images: _itemMember.length > 0 ? _itemMember[0].AVATAR : '',
           fullname: _itemMember.length > 0
-              ? _itemMember[0].NICKNAME == ''
+              ? _itemMember[0].NICKNAME == '' || _itemMember[0].NICKNAME == null
                   ? _subFullname(_itemMember[0].FULLNAME)
                   : _itemMember[0].NICKNAME
               : '',
           org: _itemMember.length > 0 ? _itemMember[0].ORG_NAME : '',
           org_sub: _itemMember.length > 0
-              ? _itemMember[0].ORG_SUB_NAME == ''
+              ? _itemMember[0].ORG_SUB_NAME == '' ||
+                      _itemMember[0].ORG_SUB_NAME == null
                   ? ''
                   : _itemMember[0].ORG_SUB_NAME
               : '',
@@ -433,9 +434,11 @@ class _FrontScreenState extends State<FrontScreen> {
                                                       Axis.horizontal,
                                                   child: Text(
                                                     _itemMember.length > 0
-                                                        ? _itemMember[0]
-                                                                    .NICKNAME ==
-                                                                ''
+                                                        ? _itemMember[0].NICKNAME ==
+                                                                    '' ||
+                                                                _itemMember[0]
+                                                                        .NICKNAME ==
+                                                                    null
                                                             ? _subFullname(
                                                                 _itemMember[0]
                                                                     .FULLNAME)
@@ -477,9 +480,11 @@ class _FrontScreenState extends State<FrontScreen> {
                                                       Axis.horizontal,
                                                   child: Text(
                                                     _itemMember.length > 0
-                                                        ? _itemMember[0]
-                                                                    .ORG_SUB_NAME ==
-                                                                ''
+                                                        ? _itemMember[0].ORG_SUB_NAME ==
+                                                                    '' ||
+                                                                _itemMember[0]
+                                                                        .ORG_SUB_NAME ==
+                                                                    null
                                                             ? ''
                                                             : _itemMember[0]
                                                                 .ORG_SUB_NAME

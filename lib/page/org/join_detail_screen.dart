@@ -1,10 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:ismart_login/page/managements/model/itemMemberResultManage.dart';
+import 'package:ismart_login/page/org/future/getJoinOrg_future.dart';
+import 'package:ismart_login/page/org/join_member_screen.dart';
+import 'package:ismart_login/page/org/model/getorglist.dart';
+import 'package:ismart_login/page/org/model/newmemberorglist.dart';
+import 'package:ismart_login/page/splashscreen/splashscreen_screen.dart';
 import 'package:ismart_login/style/font_style.dart';
 import 'package:ismart_login/style/page_style.dart';
+import 'package:ismart_login/system/shared_preferences.dart';
 import 'package:ismart_login/system/widht_device.dart';
 
 class OrganizationJoinDetailScreen extends StatefulWidget {
+  final ItemsGetOrgList itemsGetOrgList;
+  OrganizationJoinDetailScreen({Key key, @required this.itemsGetOrgList})
+      : super(key: key);
   @override
   _OrganizationJoinDetailScreenState createState() =>
       _OrganizationJoinDetailScreenState();
@@ -13,13 +24,64 @@ class OrganizationJoinDetailScreen extends StatefulWidget {
 class _OrganizationJoinDetailScreenState
     extends State<OrganizationJoinDetailScreen> {
   FToast fToast;
+  ItemsGetOrgList _itemsGetOrgList;
 //-----
   @override
   void initState() {
+    EasyLoading.dismiss();
     // TODO: implement initState
     super.initState();
     fToast = FToast();
     fToast.init(context);
+    _itemsGetOrgList = widget.itemsGetOrgList;
+    onLoadMemberManage();
+  }
+
+  ///-----member
+  List<ItemsMemberResultManage> _itemMember = [];
+  Future<bool> onLoadMemberManage() async {
+    Map map = {
+      "org_id": _itemsGetOrgList.ID,
+      "status": '1',
+    };
+    await GetOrgFuture().apiGetMemberOrgList(map).then((onValue) {
+      setState(() {
+        if (onValue[0].STATUS) {
+          _itemMember = onValue[0].RESULT;
+        }
+      });
+    });
+    EasyLoading.dismiss();
+    setState(() {});
+    return true;
+  }
+
+  ////  add to Org
+  List<ItemsResultUpdateNewMember> _item = [];
+  Future<bool> onLoadNewMemberOrg() async {
+    Map map = {
+      "uid": await SharedCashe.getItemsWay(name: 'id'),
+      "org_id": _itemsGetOrgList.ID,
+    };
+    print(map);
+    await GetOrgFuture().apiUpdateNewMemberOrgList(map).then((onValue) {
+      setState(() {
+        _item = onValue;
+      });
+      if (_item[0].RESULT == "success") {
+        EasyLoading.showSuccess("เข้าร่วมแล้ว");
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SplashscreenScreen(),
+          ),
+        );
+      } else {
+        EasyLoading.showError("ล้มเหลว");
+      }
+    });
+    setState(() {});
+    return true;
   }
 
   @override
@@ -48,7 +110,7 @@ class _OrganizationJoinDetailScreenState
                       onPressed: () => Navigator.of(context).pop(),
                     ),
                     title: Text(
-                      '',
+                      _itemsGetOrgList.SUBJECT,
                       style: TextStyle(
                           fontFamily: FontStyles().FontFamily,
                           fontSize: 40,
@@ -114,18 +176,25 @@ class _OrganizationJoinDetailScreenState
                                   flex: 2,
                                   child: Container(
                                     padding: EdgeInsets.only(
-                                        top: 5, bottom: 5, right: 20, left: 20),
+                                        top: 5, bottom: 5, right: 15, left: 15),
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(10),
                                       color: Colors.grey[300],
                                     ),
                                     alignment: Alignment.center,
                                     child: Text(
-                                      '128 556 555',
+                                      _itemsGetOrgList.INVITE_CODE
+                                              .substring(0, 3) +
+                                          " " +
+                                          _itemsGetOrgList.INVITE_CODE
+                                              .substring(3, 6) +
+                                          " " +
+                                          _itemsGetOrgList.INVITE_CODE
+                                              .substring(6, 9),
                                       style: TextStyle(
                                           fontFamily: FontStyles().FontFamily,
-                                          fontSize: 28,
-                                          fontWeight: FontWeight.bold),
+                                          fontSize: 26,
+                                          fontWeight: FontWeight.normal),
                                     ),
                                   ),
                                 ),
@@ -139,33 +208,37 @@ class _OrganizationJoinDetailScreenState
                                     // });
                                   },
                                   child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: Colors.blue[100],
-                                    ),
-                                    padding: EdgeInsets.only(
-                                        left: 8, right: 8, top: 5, bottom: 5),
-                                    child: Text(
-                                      'คัดลอก',
-                                      style: TextStyle(
-                                        fontFamily: FontStyles().FontFamily,
-                                        fontSize: 26,
-                                      ),
-                                    ),
-                                  ),
-                                )
+                                      padding: EdgeInsets.only(
+                                          left: 8, right: 8, top: 5, bottom: 5),
+                                      child: Icon(Icons.copy_sharp)),
+                                ),
                               ],
                             ),
                           ),
                           Divider(),
                           Container(
                             child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        OrganizationJoinMemberScreen(
+                                      items: _itemMember,
+                                    ),
+                                  ),
+                                );
+                              },
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    'สมาชิกทั้งหมด (50)',
+                                    'สมาชิกทั้งหมด (' +
+                                        (_itemMember.length > 0
+                                            ? _itemMember.length.toString()
+                                            : '0') +
+                                        ')',
                                     style: TextStyle(
                                       fontFamily: FontStyles().FontFamily,
                                       fontSize: 28,
@@ -186,13 +259,7 @@ class _OrganizationJoinDetailScreenState
                             alignment: Alignment.center,
                             child: GestureDetector(
                               onTap: () {
-                                // Navigator.push(
-                                //   context,
-                                //   MaterialPageRoute(
-                                //     builder: (context) =>
-                                //         OrganizationJoinDetailScreen(),
-                                //   ),
-                                // );
+                                onLoadNewMemberOrg();
                               },
                               child: Container(
                                 padding: EdgeInsets.only(

@@ -3,12 +3,15 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:ismart_login/page/sign/future/member_future.dart';
+import 'package:ismart_login/page/sign/model/checkmemberlist.dart';
 import 'package:ismart_login/page/sign/model/memberlist.dart';
 import 'package:ismart_login/page/sign/model/otplist.dart';
 import 'package:ismart_login/page/sign/otp_screen.dart';
+import 'package:ismart_login/page/sign/signin_screen.dart';
 import 'package:ismart_login/style/page_style.dart';
 import 'package:ismart_login/style/font_style.dart';
 import 'package:ismart_login/system/widht_device.dart';
@@ -42,9 +45,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
       "PHONE": _inputPhone.text,
       "PASSWORD": _inputPassword.text,
       "REPASSWORD": _inputRePassword.text,
+      "AVATAR": _imageFile == null ? "" : _imageFile.path,
     };
     onLoadInsertMember(_map);
     return _map;
+  }
+
+  _checkMember() {
+    EasyLoading.show();
+    Map _map = {
+      "username": _inputPhone.text,
+    };
+    onLoadCheckMember(_map);
   }
 
   //--API
@@ -54,6 +66,30 @@ class _SignUpScreenState extends State<SignUpScreen> {
       _result = onValue;
       print(_result[0].MSG);
       print(onValue.length);
+    });
+    setState(() {});
+    return true;
+  }
+
+  List<ItemsCheckMemberResult> _resultCheck = [];
+  Future<bool> onLoadCheckMember(Map map) async {
+    await new MemberFuture().apiGetCheckMember(map).then((onValue) {
+      _resultCheck = onValue;
+      print(_resultCheck[0].STATUS);
+      if (_resultCheck[0].STATUS == "true") {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => OtpScreen(
+              map: _postDataInput(),
+            ),
+          ),
+        );
+        EasyLoading.dismiss();
+      } else {
+        EasyLoading.dismiss();
+        alert_null(context, "" + map['username'] + " ถูกใช้งานแล้ว");
+      }
     });
     setState(() {});
     return true;
@@ -88,7 +124,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            Navigator.pop(context);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => SignInScreen(),
+                              ),
+                            );
                           },
                           child: FaIcon(
                             FontAwesomeIcons.times,
@@ -152,6 +193,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
         children: [
           GestureDetector(
             onTap: () {
+              FocusScopeNode currentFocus = FocusScope.of(context);
+              if (!currentFocus.hasPrimaryFocus) {
+                currentFocus.unfocus();
+              }
               _handleClickFiles();
             },
             child: Container(
@@ -425,43 +470,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
             padding: EdgeInsets.all(20),
           ),
           Row(
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Expanded(
-                child: GestureDetector(
-                  onTap: () {
-                    print('ยกเลิก');
-                  },
-                  child: Container(
-                    alignment: Alignment.center,
-                    margin: EdgeInsets.only(left: 10, right: 10),
-                    padding: EdgeInsets.only(left: 25, right: 25),
-                    decoration: BoxDecoration(
-                      color: Color(0xFFC8C8C8),
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    child: Text(
-                      'ยกเลิก',
-                      style: TextStyle(
-                          fontFamily: FontStyles().FontFamily,
-                          color: Colors.black,
-                          fontSize: 26),
-                    ),
-                  ),
-                ),
-              ),
-              Expanded(
+              Container(
                 child: GestureDetector(
                   onTap: () {
                     if (_formKey.currentState.validate()) {
                       print('ถัดไป');
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => OtpScreen(
-                            map: _postDataInput(),
-                          ),
-                        ),
-                      );
+                      _checkMember();
                     }
                   },
                   child: Container(
@@ -473,7 +489,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       borderRadius: BorderRadius.circular(30),
                     ),
                     child: Text(
-                      'ถัดไป',
+                      'ลงทะเบียน',
                       style: TextStyle(
                           fontFamily: FontStyles().FontFamily,
                           color: Colors.white,
@@ -566,5 +582,72 @@ class _SignUpScreenState extends State<SignUpScreen> {
         print(_pickImageError.toString());
       });
     }
+  }
+
+  ///-------
+  alert_null(BuildContext context, String text) async {
+    return showDialog(
+      barrierDismissible: true,
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20.0))),
+          contentPadding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+          content: Container(
+            width: WidhtDevice().widht(context),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  alignment: Alignment.center,
+                  height: 100,
+                  child: Text(
+                    text,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        height: 1,
+                        fontFamily: FontStyles().FontFamily,
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Container(
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.red[100],
+                              borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(20.0),
+                                bottomRight: Radius.circular(20.0),
+                              ),
+                            ),
+                            height: 50,
+                            alignment: Alignment.center,
+                            child: Text(
+                              'ปิด',
+                              style: TextStyle(
+                                  fontFamily: FontStyles().FontFamily,
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 }

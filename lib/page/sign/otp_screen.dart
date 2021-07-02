@@ -73,19 +73,32 @@ class _OtpScreenState extends State<OtpScreen>
       _result = onValue;
       print(onValue.length);
       print(_result[0].RESULT);
-      if (_resultOtp[0].RESULT == "success") {
+      if (_result[0].RESULT == "success") {
+        EasyLoading.dismiss();
+        if (_items['AVATAR'] != "") {
+          onUploadAvatarProfile(_result[0].UPLOADKEY, _items['AVATAR']);
+        }
+        EasyLoading.showSuccess('ลงทะเบียนสำเร็จ');
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => OrganizationScreen(),
           ),
         );
-        EasyLoading.dismiss();
       } else {
         EasyLoading.showError('ลงทะเบียนไม่สำเร็จ');
       }
     });
     setState(() {});
+    return true;
+  }
+
+  Future<dynamic> onUploadAvatarProfile(
+      String uploadKey, String pathFile) async {
+    await MemberFuture().uploadAvatarProfile(
+      file: pathFile,
+      uploadKey: uploadKey,
+    );
     return true;
   }
 
@@ -98,7 +111,7 @@ class _OtpScreenState extends State<OtpScreen>
       print(_resultOtp[0].RESULT);
       if (_resultOtp[0].RESULT == "success") {
         EasyLoading.show();
-        onLoadInsertMember(map);
+        onLoadInsertMember(_items);
       } else {
         EasyLoading.showError('OTP ไม่ถูกต้อง');
       }
@@ -112,6 +125,7 @@ class _OtpScreenState extends State<OtpScreen>
   void initState() {
     controller = CountdownTimerController(endTime: endTime, onEnd: onEnd);
     _items = widget.map;
+    print("FILE IMAGES => " + _items['AVATAR']);
     super.initState();
   }
 

@@ -118,7 +118,6 @@ class _OutsideScreenState extends State<OutsideScreen> {
         if (_imageFile_login != null) {
           onUploadFiles('i_start');
         }
-        EasyLoading.showSuccess('บันทึกแล้ว');
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -164,7 +163,14 @@ class _OutsideScreenState extends State<OutsideScreen> {
                       color: Colors.white,
                       size: 26,
                     ),
-                    onPressed: () => Navigator.pop(context, true),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MainPage(),
+                        ),
+                      );
+                    },
                   ),
                   title: Text('ทำงานนอกสถานที่', style: StylesText.titleAppBar),
                   backgroundColor: Colors.white.withOpacity(0),
@@ -325,7 +331,6 @@ class _OutsideScreenState extends State<OutsideScreen> {
                                         onTap: () {
                                           if (_formKey.currentState
                                               .validate()) {
-                                            EasyLoading.show();
                                             print('ถัดไป');
                                             onLoadAttandOutside();
                                           }

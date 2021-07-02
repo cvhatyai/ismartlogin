@@ -1,8 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:ismart_login/page/org/future/getJoinOrg_future.dart';
 import 'package:ismart_login/page/org/join_detail_screen.dart';
+import 'package:ismart_login/page/org/model/getorglist.dart';
 import 'package:ismart_login/style/font_style.dart';
 import 'package:ismart_login/style/page_style.dart';
 import 'package:ismart_login/system/scan_qr.dart';
@@ -16,22 +19,55 @@ class OrganizationJoinScreen extends StatefulWidget {
 }
 
 class _OrganizationJoinScreenState extends State<OrganizationJoinScreen> {
+  final _formKey = GlobalKey<FormState>();
   TextEditingController _inputCode = TextEditingController();
   Location location = new Location();
+  //----
+  String _receiveKey = "";
+  bool _btn = false;
   //---
   _navigateAndDisplaySelection(BuildContext context) async {
     // Navigator.push returns a Future that completes after calling
     // Navigator.pop on the Selection Screen.
-    final result = await Navigator.push(
+    _receiveKey = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => ScanQrcode()),
+      MaterialPageRoute(builder: (context) => RScanCameraDialog()),
     );
 
     setState(() {
-      _inputCode.text = result;
+      _inputCode.text = _receiveKey;
+      if (_inputCode.text.length == 9) {
+        EasyLoading.show();
+        onLoadSelectOrganization(_inputCode.text);
+      }
     });
   }
   //---
+
+  // --- Post Data Member
+  List<ItemsGetOrgList> _resultOrg = [];
+  Future<bool> onLoadSelectOrganization(String codeKey) async {
+    Map map = {"INVITE_CODE": codeKey};
+    await GetOrgFuture().apiGetOrganization(map).then((onValue) {
+      print("=========> " + onValue[0].MSG);
+      if (onValue[0].MSG == 'success') {
+        _resultOrg = onValue[0].RESULT;
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => OrganizationJoinDetailScreen(
+              itemsGetOrgList: _resultOrg[0],
+            ),
+          ),
+        );
+      } else {
+        EasyLoading.dismiss();
+        alert_null(context, "ไม่พบทีม/องค์กร\nรหัสเชิญ " + codeKey);
+      }
+    });
+    setState(() {});
+    return true;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,13 +114,16 @@ class _OrganizationJoinScreenState extends State<OrganizationJoinScreen> {
                       child: Column(
                         children: [
                           Form(
+                            key: _formKey,
                             child: TextFormField(
                               controller: _inputCode,
+                              maxLength: 9,
                               keyboardType: TextInputType.number,
                               style: TextStyle(
                                   fontFamily: FontStyles().FontFamily,
                                   fontSize: 24),
                               decoration: InputDecoration(
+                                counterText: "",
                                 hintText: 'รหัสทีม 9 หลัก',
                                 hintStyle: TextStyle(
                                     fontFamily: FontStyles().FontFamily,
@@ -111,6 +150,17 @@ class _OrganizationJoinScreenState extends State<OrganizationJoinScreen> {
                                         ),
                                       ),
                               ),
+                              onChanged: (val) {
+                                if (val.length != 9) {
+                                  setState(() {
+                                    _btn = false;
+                                  });
+                                } else {
+                                  setState(() {
+                                    _btn = true;
+                                  });
+                                }
+                              },
                             ),
                           ),
                           Row(
@@ -136,34 +186,42 @@ class _OrganizationJoinScreenState extends State<OrganizationJoinScreen> {
                             children: [
                               GestureDetector(
                                 onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          OrganizationJoinDetailScreen(),
-                                    ),
-                                  );
+                                  if (_inputCode.text.length == 9) {
+                                    EasyLoading.show();
+                                    onLoadSelectOrganization(_inputCode.text);
+                                    // _inputCode.text = "";
+                                  }
                                 },
                                 child: Container(
                                   padding: EdgeInsets.only(
                                       left: 10, right: 10, top: 8, bottom: 8),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(10.0),
-                                      topRight: Radius.circular(10.0),
-                                      bottomLeft: Radius.circular(10.0),
-                                      bottomRight: Radius.circular(10.0),
-                                    ),
-                                    gradient: LinearGradient(
-                                        colors: [
-                                          Color(0xFF0093E9),
-                                          Color(0xFF36C2CF),
-                                        ],
-                                        begin: Alignment.centerLeft,
-                                        end: Alignment.centerRight,
-                                        stops: [0.0, 1.0],
-                                        tileMode: TileMode.clamp),
-                                  ),
+                                  decoration: _btn
+                                      ? BoxDecoration(
+                                          borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(10.0),
+                                            topRight: Radius.circular(10.0),
+                                            bottomLeft: Radius.circular(10.0),
+                                            bottomRight: Radius.circular(10.0),
+                                          ),
+                                          gradient: LinearGradient(
+                                              colors: [
+                                                Color(0xFF0093E9),
+                                                Color(0xFF36C2CF),
+                                              ],
+                                              begin: Alignment.centerLeft,
+                                              end: Alignment.centerRight,
+                                              stops: [0.0, 1.0],
+                                              tileMode: TileMode.clamp),
+                                        )
+                                      : BoxDecoration(
+                                          borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(10.0),
+                                            topRight: Radius.circular(10.0),
+                                            bottomLeft: Radius.circular(10.0),
+                                            bottomRight: Radius.circular(10.0),
+                                          ),
+                                          color: Colors.grey,
+                                        ),
                                   child: Text(
                                     'เข้าร่วมทีม',
                                     style: TextStyle(
@@ -341,6 +399,72 @@ class _OrganizationJoinScreenState extends State<OrganizationJoinScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  alert_null(BuildContext context, String text) async {
+    return showDialog(
+      barrierDismissible: true,
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20.0))),
+          contentPadding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+          content: Container(
+            width: WidhtDevice().widht(context),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  alignment: Alignment.center,
+                  height: 100,
+                  child: Text(
+                    text,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        height: 1,
+                        fontFamily: FontStyles().FontFamily,
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Container(
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.red[100],
+                              borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(20.0),
+                                bottomRight: Radius.circular(20.0),
+                              ),
+                            ),
+                            height: 50,
+                            alignment: Alignment.center,
+                            child: Text(
+                              'ปิด',
+                              style: TextStyle(
+                                  fontFamily: FontStyles().FontFamily,
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

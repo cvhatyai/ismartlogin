@@ -208,7 +208,7 @@ class _ProtectAppState extends State<ProtectApp> {
                                             ),
                                             GestureDetector(
                                               onTap: () {
-                                                launch("tel:0864908961");
+                                                launch("tel:+66864908961");
                                               },
                                               child: Text(
                                                 '086-4908961 (คุณมิน)',

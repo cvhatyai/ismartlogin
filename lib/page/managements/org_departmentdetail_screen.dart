@@ -140,6 +140,7 @@ class _OrgDepartmentDetailManageState extends State<OrgDepartmentDetailManage> {
   void initState() {
     // TODO: implement initState
     _inputDegree.text = '200';
+    EasyLoading.dismiss();
     super.initState();
     setMarker(lat: widget.lat, log: widget.lng);
     if (widget.type == 'update') {

@@ -1,239 +1,178 @@
 import 'package:flutter/material.dart';
-// import 'package:flutter_qrcode_scanner/flutter_qrcode_scanner.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-// import 'package:flutter_qr_reader/flutter_qr_reader.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:ismart_login/page/sign/signin_screen.dart';
+import 'package:ismart_login/style/font_style.dart';
 import 'package:ismart_login/style/page_style.dart';
+import 'package:ismart_login/system/widht_device.dart';
+import 'package:r_scan/r_scan.dart';
 
-const flashOn = 'FLASH ON';
-const flashOff = 'FLASH OFF';
-const frontCamera = 'FRONT CAMERA';
-const backCamera = 'BACK CAMERA';
+import '../main.dart';
 
-class ScanQrcode extends StatefulWidget {
+class RScanCameraDialog extends StatefulWidget {
   @override
-  _ScanQrcodeState createState() => _ScanQrcodeState();
+  _RScanCameraDialogState createState() => _RScanCameraDialogState();
 }
 
-class _ScanQrcodeState extends State<ScanQrcode> {
-  var qrText = '';
-  var flashState = flashOn;
-  var cameraState = frontCamera;
-  // QRViewController controller;
-  //---
-  //Setup
-  PickedFile _imageFile;
-  dynamic _pickImageError;
-  //----
-  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
+class _RScanCameraDialogState extends State<RScanCameraDialog> {
+  RScanCameraController _controller;
+  bool isFirst = true;
+
+  @override
+  void initState() {
+    // print(len);
+    super.initState();
+    if (rScanCameras != null && rScanCameras.length > 0) {
+      _controller = RScanCameraController(
+        rScanCameras[0],
+        RScanCameraResolutionPreset.max,
+      )
+        ..addListener(() {
+          final result = _controller.result;
+          if (result != null) {
+            if (isFirst) {
+              Navigator.of(context).pop(result.message);
+              print("reader ===========> " + result.message);
+              isFirst = false;
+            }
+          }
+        })
+        ..initialize().then((_) {
+          if (!mounted) {
+            return;
+          }
+          setState(() {});
+        });
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (rScanCameras == null || rScanCameras.length == 0) {
+      return Scaffold(
+        body: Container(
+          alignment: Alignment.center,
+          child: Text('not have available camera'),
+        ),
+      );
+    }
+    if (!_controller.value.isInitialized) {
+      return Container();
+    }
     return Scaffold(
+      backgroundColor: Colors.black,
       body: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
+        padding: EdgeInsets.only(left: 20, right: 20),
         decoration: StylePage().background,
         child: SafeArea(
-          child: Column(
-            children: <Widget>[
-              Expanded(
-                  child: Stack(
+          child: SingleChildScrollView(
+            child: Container(
+              child: Column(
                 children: [
-                  // QRView(
-                  //   key: qrKey,
-                  //   onQRViewCreated: _onQRViewCreated,
-                  //   overlay: QrScannerOverlayShape(
-                  //     borderColor: Colors.blue,
-                  //     borderRadius: 20,
-                  //     borderLength: 40,
-                  //     borderWidth: 20,
-                  //     cutOutSize: 300,
-                  //   ),
-                  // ),
-                  Positioned(
-                    top: 10,
-                    left: 10,
+                  Container(
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        ClipOval(
-                          child: Material(
-                            color:
-                                Colors.black.withOpacity(0.5), // button color
-                            child: GestureDetector(
-                              child: SizedBox(
-                                  width: 56,
-                                  height: 56,
-                                  child: Icon(
-                                    Icons.close,
-                                    color: Colors.white,
-                                  )),
-                              onTap: () {
-                                Navigator.pop(context);
-                              },
-                            ),
+                        Text(
+                          'สแกนคิวอาร์โค๊ด',
+                          style: TextStyle(
+                              fontFamily: FontStyles().FontFamily,
+                              fontSize: 40,
+                              color: Colors.white,
+                              fontWeight: FontWeight.normal),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: FaIcon(
+                            FontAwesomeIcons.times,
+                            color: Colors.white,
+                            size: 26,
                           ),
                         ),
                       ],
                     ),
                   ),
-                  // Positioned(
-                  //   bottom: 10,
-                  //   left: 10,
-                  //   child: Row(
-                  //     children: [
-                  //       ClipOval(
-                  //         child: Material(
-                  //           color:
-                  //               Colors.black.withOpacity(0.5), // button color
-                  //           child: GestureDetector(
-                  //             child: SizedBox(
-                  //                 width: 56,
-                  //                 height: 56,
-                  //                 child: Icon(
-                  //                   Icons.image,
-                  //                   color: Colors.white,
-                  //                 )),
-                  //             onTap: () {
-                  //               _imgFromGallery();
-                  //             },
-                  //           ),
-                  //         ),
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
-                  Positioned(
-                    bottom: 10,
-                    right: 80,
-                    child: Row(
+                  Container(
+                    padding:
+                        EdgeInsets.only(left: 5, right: 5, top: 10, bottom: 5),
+                    width: WidhtDevice().widht(context),
+                    decoration: StylePage().boxWhite,
+                    child: Column(
                       children: [
-                        ClipOval(
-                          child: Material(
-                            color:
-                                Colors.black.withOpacity(0.5), // button color
-                            child: GestureDetector(
-                              child: SizedBox(
-                                  width: 56,
-                                  height: 56,
-                                  child: Icon(
-                                    flashState == 'FLASH ON'
-                                        ? Icons.flash_on
-                                        : Icons.flash_off,
-                                    color: Colors.white,
-                                  )),
-                              onTap: () {
-                                // if (controller != null) {
-                                //   controller.toggleFlash();
-                                //   if (_isFlashOn(flashState)) {
-                                //     setState(() {
-                                //       flashState = flashOff;
-                                //     });
-                                //   } else {
-                                //     setState(() {
-                                //       flashState = flashOn;
-                                //     });
-                                //   }
-                                // }
-                              },
+                        Stack(
+                          children: <Widget>[
+                            AspectRatio(
+                              aspectRatio: _controller.value.aspectRatio,
+                              child: RScanCamera(_controller),
                             ),
-                          ),
+                            // Positioned(
+                            //   bottom: 0,
+                            //   child: Align(
+                            //     alignment: Alignment.bottomCenter,
+                            //     child: FutureBuilder(
+                            //       future: getFlashMode(),
+                            //       builder: _buildFlashBtn,
+                            //     ),
+                            //   ),
+                            // ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
-                  Positioned(
-                    bottom: 10,
-                    right: 10,
-                    child: Row(
-                      children: [
-                        ClipOval(
-                          child: Material(
-                            color:
-                                Colors.black.withOpacity(0.5), // button color
-                            child: GestureDetector(
-                              child: SizedBox(
-                                  width: 56,
-                                  height: 56,
-                                  child: Icon(
-                                    cameraState == 'FRONT CAMERA'
-                                        ? Icons.camera_front
-                                        : Icons.camera_rear,
-                                    color: Colors.white,
-                                  )),
-                              onTap: () {
-                                // if (controller != null) {
-                                //   controller.flipCamera();
-                                //   if (_isBackCamera(cameraState)) {
-                                //     setState(() {
-                                //       cameraState = frontCamera;
-                                //     });
-                                //   } else {
-                                //     setState(() {
-                                //       cameraState = backCamera;
-                                //     });
-                                //   }
-                                // }
-                              },
-                            ),
+                        Align(
+                          alignment: Alignment.bottomCenter,
+                          child: FutureBuilder(
+                            future: getFlashMode(),
+                            builder: _buildFlashBtn,
                           ),
                         ),
                       ],
                     ),
                   ),
                 ],
-              )),
-            ],
+              ),
+            ),
           ),
         ),
       ),
     );
   }
 
-  bool _isFlashOn(String current) {
-    return flashOn == current;
+  Future<bool> getFlashMode() async {
+    bool isOpen = false;
+    try {
+      isOpen = await _controller.getFlashMode();
+    } catch (_) {}
+    return isOpen;
   }
 
-  bool _isBackCamera(String current) {
-    return backCamera == current;
-  }
+  Widget _buildFlashBtn(BuildContext context, AsyncSnapshot<bool> snapshot) {
+    return snapshot.hasData
+        ? Padding(
+            padding: EdgeInsets.only(
+                bottom: 24 + MediaQuery.of(context).padding.bottom),
+            child: IconButton(
+                icon: Icon(snapshot.data ? Icons.flash_on : Icons.flash_off),
+                color: Colors.black,
+                iconSize: 46,
+                onPressed: () {
+                  if (snapshot.data) {
+                    _controller.setFlashMode(false);
+                  } else {
+                    _controller.setFlashMode(true);
+                  }
 
-  // void _onQRViewCreated(QRViewController controller) {
-  //   this.controller = controller;
-  //   controller.scannedDataStream.listen((scanData) {
-  //     Navigator.pop(context, scanData.toString());
-  //     // setState(() {
-  //     //   qrText = scanData;
-  //     //   if (qrText != '') {
-  //     //     Future.delayed(Duration.zero, () {
-  //     //       Navigator.pop(context, qrText.toString());
-  //     //     });
-  //     //   }
-  //     // });
-  //   });
-  // }
-
-  // void _imgFromGallery() async {
-  //   try {
-  //     final pickedFile = await ImagePicker().getImage(
-  //       source: ImageSource.gallery,
-  //       imageQuality: 50,
-  //     );
-  //     setState(() async {
-  //       _imageFile = pickedFile;
-  //       final rest = await FlutterQrReader.imgScan(_imageFile.path);
-  //       Navigator.pop(context, rest.toString());
-  //     });
-  //   } catch (e) {
-  //     setState(() {
-  //       _pickImageError = e;
-  //       print(_pickImageError.toString());
-  //     });
-  //   }
-  // }
-
-  @override
-  void dispose() {
-    // controller.dispose();
-    super.dispose();
+                  setState(() {});
+                }),
+          )
+        : Container();
   }
 }

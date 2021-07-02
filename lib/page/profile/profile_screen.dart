@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:ismart_login/page/main.dart';
 import 'package:ismart_login/page/managements/future/department_manage_future.dart';
 import 'package:ismart_login/page/managements/future/member_manage_future.dart';
 import 'package:ismart_login/page/managements/future/time_manage_future.dart';
@@ -182,6 +183,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     backgroundColor: Colors.white.withOpacity(0),
                     elevation: 0,
+                    leading: IconButton(
+                      icon: Icon(
+                        Icons.arrow_back_ios,
+                        color: Colors.white,
+                        size: 26,
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MainPage(),
+                          ),
+                        );
+                      },
+                    ),
                   ),
                   SingleChildScrollView(
                     child: Container(
@@ -254,16 +270,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                         child: Container(
                                                           child: Center(
                                                             child: avatar != ''
-                                                                ? Image.network(
-                                                                    Server.url +
-                                                                        avatar,
-                                                                    fit: BoxFit
-                                                                        .cover,
-                                                                    width:
-                                                                        300.0,
-                                                                    height:
-                                                                        300.0,
-                                                                  )
+                                                                ? _imageFile ==
+                                                                        null
+                                                                    ? Image
+                                                                        .network(
+                                                                        Server.url +
+                                                                            avatar,
+                                                                        fit: BoxFit
+                                                                            .cover,
+                                                                        width:
+                                                                            300.0,
+                                                                        height:
+                                                                            300.0,
+                                                                      )
+                                                                    : Image
+                                                                        .file(
+                                                                        File(_imageFile
+                                                                            .path),
+                                                                        fit: BoxFit
+                                                                            .cover,
+                                                                        width:
+                                                                            300.0,
+                                                                        height:
+                                                                            300.0,
+                                                                      )
                                                                 : _imageFile ==
                                                                         null
                                                                     ? Icon(
@@ -737,26 +767,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 Padding(padding: EdgeInsets.all(10)),
                                 Divider(),
                                 Padding(padding: EdgeInsets.all(10)),
-                                // GestureDetector(
-                                //   onTap: () {
-                                //     Navigator.push(
-                                //       context,
-                                //       MaterialPageRoute(
-                                //         builder: (context) => PasswordChange(),
-                                //       ),
-                                //     );
-                                //   },
-                                //   child: Text(
-                                //     'เปลี่ยนรหัสผ่าน',
-                                //     style: TextStyle(
-                                //       fontFamily: FontStyles().FontFamily,
-                                //       fontSize: 24,
-                                //       color: Colors.blue,
-                                //       fontWeight: FontWeight.bold,
-                                //       decoration: TextDecoration.underline,
-                                //     ),
-                                //   ),
-                                // ),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => PasswordChange(),
+                                      ),
+                                    );
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.vpn_key,
+                                        color: Colors.blue,
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.all(3),
+                                      ),
+                                      Text(
+                                        'เปลี่ยนรหัสผ่าน',
+                                        style: TextStyle(
+                                          fontFamily: FontStyles().FontFamily,
+                                          fontSize: 24,
+                                          color: Colors.blue,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                                 Padding(padding: EdgeInsets.all(10)),
                               ],
                             ),

@@ -7,6 +7,7 @@ import 'package:ismart_login/page/front/model/attendHistory.dart';
 import 'package:ismart_login/page/front/model/attendStart.dart';
 import 'package:ismart_login/page/front/model/attendToDay.dart';
 import 'package:ismart_login/page/protect/model/protectList.dart';
+import 'package:ismart_login/page/protect/model/protectSwitch.dart';
 
 import 'package:ismart_login/server/server.dart';
 
@@ -32,6 +33,24 @@ class ProtectFuture {
     if (response.statusCode == 200) {
       List responseJson = json.decode(response.body);
       return responseJson.map((m) => new ItemsProtect.fromJson(m)).toList();
+    } else {
+      print('Something went wrong. \nResponse Code : ${response.statusCode}');
+    }
+  }
+
+  Future<List<ItemsProtectSwitch>> apiGetProtectSwitch(Map jsonMap) async {
+    //encode Map to JSON
+    var body = json.encode(jsonMap);
+    final response = await http.post(
+      Uri.parse(Server().getProtectSwitch),
+      headers: header,
+      body: body,
+    );
+    if (response.statusCode == 200) {
+      List responseJson = json.decode(response.body);
+      return responseJson
+          .map((m) => new ItemsProtectSwitch.fromJson(m))
+          .toList();
     } else {
       print('Something went wrong. \nResponse Code : ${response.statusCode}');
     }

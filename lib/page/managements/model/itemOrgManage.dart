@@ -17,6 +17,23 @@ class ItemsOrgPostManage {
   }
 }
 
+class ItemsOrgSuspendManage {
+  final String MSG;
+  final bool STATUS;
+
+  ItemsOrgSuspendManage({
+    this.MSG,
+    this.STATUS,
+  });
+
+  factory ItemsOrgSuspendManage.fromJson(Map<String, dynamic> json) {
+    return ItemsOrgSuspendManage(
+      MSG: json['msg'],
+      STATUS: json['status'],
+    );
+  }
+}
+
 class ItemsOrgGetManage {
   final String MSG;
   final bool STATUS;

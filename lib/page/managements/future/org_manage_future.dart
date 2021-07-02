@@ -51,4 +51,23 @@ class OrgManageFuture {
       print('Something went wrong. \nResponse Code : ${response.statusCode}');
     }
   }
+
+  Future<List<ItemsOrgSuspendManage>> apiUpdateSuspendOrgManageList(
+      Map jsonMap) async {
+    //encode Map to JSON
+    var body = json.encode(jsonMap);
+    final response = await http.post(
+      Uri.parse(Server().updateOrgSuspend),
+      headers: header,
+      body: body,
+    );
+    if (response.statusCode == 200) {
+      List responseJson = json.decode(response.body);
+      return responseJson
+          .map((m) => new ItemsOrgSuspendManage.fromJson(m))
+          .toList();
+    } else {
+      print('Something went wrong. \nResponse Code : ${response.statusCode}');
+    }
+  }
 }

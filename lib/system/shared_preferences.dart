@@ -13,7 +13,7 @@ class SharedCashe {
     List<dynamic> _key = _map.keys.toList();
     List<dynamic> _val = _map.values.toList();
     for (int i = 0; i < _map.keys.length; i++) {
-      prefs.setString(_key[i], _val[i]);
+      prefs.setString(_key[i], _val[i] == null ? "" : _val[i]);
     }
     prefs.setString('item', json.encode(item));
   }
@@ -41,6 +41,7 @@ class SharedCashe {
   static savaItemsString({String key, String valString}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString(key, valString);
+    print(prefs.getString(key));
   }
 
   static savaItemsBool({String key, bool valBool}) async {
