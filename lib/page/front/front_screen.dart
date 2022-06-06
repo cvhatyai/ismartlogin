@@ -51,6 +51,7 @@ class _FrontScreenState extends State<FrontScreen> {
   Timer _timer;
   Timer _date;
   Timer _re;
+  String _time_id;
   //---
   List<ItemsMemberList> _items = [];
   String _dateString;
@@ -131,8 +132,16 @@ class _FrontScreenState extends State<FrontScreen> {
   // --- Post Data Member
   List<ItemsAttandToDay> _resultAttand = [];
   Future<bool> onLoadAttend() async {
-    Map map = {"uid": _items.length > 0 ? _items[0].ID : ''};
+    Map map = {
+      "uid": _items.length > 0 ? _items[0].ID : '',
+      "time_id": await SharedCashe.getItemsWay(name: 'time_id') != ""
+          ? await SharedCashe.getItemsWay(name: 'time_id')
+          : _items[0].TIME_ID
+    };
+    print("apiGetAttandCheck $_itemMember");
+    print("apiGetAttandCheck : $map");
     await AttandFuture().apiGetAttandCheck(map).then((onValue) {
+      print("apiGetAttandCheck ${onValue[0].STATUS}");
       if (onValue[0].STATUS != 'success') {
         setState(() {
           _login = true;
@@ -148,6 +157,8 @@ class _FrontScreenState extends State<FrontScreen> {
           }
         });
       }
+      print("apiGetAttandCheck _login : $_login");
+      print("apiGetAttandCheck _logout : $_logout");
     });
     setState(() {});
     return true;
@@ -163,6 +174,9 @@ class _FrontScreenState extends State<FrontScreen> {
       setState(() {
         if (onValue[0].STATUS) {
           _itemMember = onValue[0].RESULT;
+          _time_id = _itemMember[0].TIME_ID;
+          print("onLoadMemberManage ${_itemMember[0].ORG_SUB_ID}");
+          print("onLoadMemberManage ${_itemMember[0].TIME_ID}");
           if (_itemMember[0].ORG_SUB_ID != '' && _itemMember[0].TIME_ID != '') {
             onLoadGetDepartment(_itemMember[0].ORG_SUB_ID);
             onLoadGetTime(_itemMember[0].TIME_ID);
@@ -170,6 +184,7 @@ class _FrontScreenState extends State<FrontScreen> {
           } else {
             affiliate = false;
           }
+          print("onLoadMemberManage $affiliate");
         }
       });
     });
@@ -187,7 +202,7 @@ class _FrontScreenState extends State<FrontScreen> {
       "org_id": await SharedCashe.getItemsWay(name: 'org_id'),
       "id": time_id,
     };
-    print(map);
+    print("apiGetTimeManageList :$map");
     await TimeManageFuture().apiGetTimeManageList(map).then((onValue) {
       if (onValue[0].STATUS == true) {
         _resultItem = onValue[0].RESULT;
@@ -209,6 +224,7 @@ class _FrontScreenState extends State<FrontScreen> {
           });
         }
       }
+      print("apiGetTimeManageList :$dayWorking");
     });
     return true;
   }
@@ -941,6 +957,7 @@ class _FrontScreenState extends State<FrontScreen> {
                 time: timeIn,
                 myLat: _myLat,
                 myLng: _myLng,
+                timeId: _time_id,
                 radius: double.parse(_resultItemDepartment[0].RADIUS),
               );
             });
@@ -975,6 +992,7 @@ class _FrontScreenState extends State<FrontScreen> {
                 time: timeOut,
                 myLat: _myLat,
                 myLng: _myLng,
+                timeId: _time_id,
                 radius: double.parse(_resultItemDepartment[0].RADIUS),
               );
             });

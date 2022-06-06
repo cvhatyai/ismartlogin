@@ -19,6 +19,7 @@ final currentTime = DateTime.now();
 
 class InsiteDialog extends StatefulWidget {
   final String uid;
+  final String timeId;
   final String pathImage;
   final String lat;
   final String long;
@@ -36,6 +37,7 @@ class InsiteDialog extends StatefulWidget {
     this.myLat,
     this.myLng,
     this.radius,
+    this.timeId,
   }) : super(key: key);
   @override
   _InsiteDialogState createState() => _InsiteDialogState();
@@ -202,6 +204,7 @@ class _InsiteDialogState extends State<InsiteDialog> {
                                 : (currentIndex + 1),
                             "start_note": _inputNote.text,
                             "start_location_status": distanc() ? '0' : '1',
+                            "log": 'timeid_${widget.timeId}',
                           };
                           print("LOGIN : " + _map.toString());
                           onLoadAttandStart(_map);

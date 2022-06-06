@@ -88,7 +88,7 @@ class _HistoryDayWidgetState extends State<HistoryDayWidget> {
                                                         .RESULT[index]
                                                         .STATUS)
                                                     : _resultItemDetail[0]
-                                                        .TOPIC),
+                                                        .TOPIC) + _result[0].RESULT[index].TIME_ID_NAME.toString(),
                                             style: TextStyle(
                                                 fontFamily:
                                                     FontStyles().FontFamily,
@@ -100,16 +100,7 @@ class _HistoryDayWidgetState extends State<HistoryDayWidget> {
                                       ),
                                       Padding(padding: EdgeInsets.all(5)),
                                       Text(
-                                        _statusActive(
-                                            _result[0].RESULT[index].STATUS,
-                                            _result[0]
-                                                        .RESULT[index]
-                                                        .TIME_STATUS ==
-                                                    ''
-                                                ? '0'
-                                                : _result[0]
-                                                    .RESULT[index]
-                                                    .TIME_STATUS),
+                                        _statusActive(_result[0].RESULT[index].STATUS,_result[0].RESULT[index].TIME_STATUS == '' ? '0': _result[0].RESULT[index].TIME_STATUS),
                                         style: TextStyle(
                                             fontFamily: FontStyles().FontFamily,
                                             fontSize: 20,

@@ -1,4 +1,4 @@
-final String _baseUrl = 'http://ismartlogin.cityvariety.com/';
+final String _baseUrl = 'https://ismartlogin.cityvariety.com/';
 
 class Server {
   static String url = _baseUrl;

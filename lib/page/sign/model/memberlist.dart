@@ -7,6 +7,7 @@ class ItemsMemberList {
   final String ORG_ID;
   final String ORG_NAME;
   final String PHONE;
+  final String TIME_ID;
 
   ItemsMemberList({
     this.ID,
@@ -17,6 +18,7 @@ class ItemsMemberList {
     this.ORG_ID,
     this.ORG_NAME,
     this.PHONE,
+    this.TIME_ID,
   });
 
   factory ItemsMemberList.fromJson(Map<String, dynamic> json) {
@@ -29,6 +31,7 @@ class ItemsMemberList {
       ORG_ID: json['org_id'],
       ORG_NAME: json['org_name'],
       PHONE: json['phone'],
+      TIME_ID: json['time_id'],
     );
   }
 }

@@ -58,6 +58,10 @@ class ProfileFuture {
         await SharedCashe.savaItemsString(
             key: 'avatar', valString: list[0]['path']);
       }
+      if(time != ""){
+        await SharedCashe.savaItemsString(
+            key: 'time_id', valString: time);
+      }
       EasyLoading.dismiss();
       EasyLoading.showSuccess('บันทึกเรียบร้อย');
     } else {

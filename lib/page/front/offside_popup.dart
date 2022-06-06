@@ -20,6 +20,7 @@ final currentTime = DateTime.now();
 
 class OffsideDialog extends StatefulWidget {
   final String uid;
+  final String timeId;
   final String pathImage;
   final String lat;
   final String long;
@@ -36,7 +37,7 @@ class OffsideDialog extends StatefulWidget {
     this.time,
     this.myLat,
     this.myLng,
-    this.radius,
+    this.radius, this.timeId,
   }) : super(key: key);
   @override
   _OffsideDialogState createState() => _OffsideDialogState();
@@ -198,6 +199,7 @@ class _OffsideDialogState extends State<OffsideDialog> {
                             "end_status":
                                 checkTimr(widget.time) ? '0' : currentIndex + 1,
                             "end_note": _inputNote.text,
+                            "log": 'timeid_${widget.timeId}',
                           };
                           print(_map);
                           onLoadAttandEnd(_map);
