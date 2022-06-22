@@ -27,12 +27,13 @@ class _SplashscreenScreenState extends State<SplashscreenScreen> {
   bool sent = false;
   bool protect = false;
   bool new_user = false;
-  bool protect_switch = true;
+  bool protect_switch = false;
 
   FToast fToast;
 
   _controllerLoginAuto() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    print("this : _controllerLoginAuto");
     if (prefs.containsKey('item')) {
       List<ItemsMemberList> _items = [];
       String item = prefs.getString('item');
@@ -44,6 +45,8 @@ class _SplashscreenScreenState extends State<SplashscreenScreen> {
         "PASSWORD": _items[0].PASSWORD,
         "STATUS": "auto",
       };
+
+      print("_controllerLoginAuto : ${_map}");
       //-----
       await new SigninFuture().apiSelectMember(_map).then((onValue) {
         print(onValue[0]['msg']);
@@ -84,6 +87,7 @@ class _SplashscreenScreenState extends State<SplashscreenScreen> {
         sent = false;
       });
     }
+    print("sent : ${sent}");
   }
 
   check_protect() async {
@@ -110,7 +114,7 @@ class _SplashscreenScreenState extends State<SplashscreenScreen> {
     await ProtectFuture().apiGetProtectSwitch(map).then((onValue) {
       setState(() {
         _result = onValue;
-        print(_result[0].STATUS.toString());
+        print("status : ${_result[0].STATUS.toString()}");
         if (_result[0].STATUS) {
           protect_switch = true;
           check_protect();
@@ -127,8 +131,8 @@ class _SplashscreenScreenState extends State<SplashscreenScreen> {
 //////////----
   @override
   void initState() {
-    onLoadGetProtectSwith();
-
+    // onLoadGetProtectSwith();
+    _controllerLoginAuto();
     LocationService.checkService();
     super.initState();
     fToast = FToast();

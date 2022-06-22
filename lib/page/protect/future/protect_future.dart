@@ -25,6 +25,7 @@ class ProtectFuture {
   Future<List<ItemsProtect>> apiGetProtect(Map jsonMap) async {
     //encode Map to JSON
     var body = json.encode(jsonMap);
+       print(body);
     final response = await http.post(
       Uri.parse(Server().getKeyInvite),
       headers: header,

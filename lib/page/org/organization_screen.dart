@@ -188,6 +188,7 @@ class _OrganizationScreenState extends State<OrganizationScreen> {
                                     type: 'insert',
                                     title: 'สร้างทีม/องค์กรใหม่',
                                     id: '0',
+                                    invite: "000000000",
                                     action: true,
                                   ),
                                 ),

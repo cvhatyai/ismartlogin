@@ -240,6 +240,7 @@ class _OrganizationCreateScreenState extends State<OrganizationCreateScreen> {
                                 builder: (context) => OrganizationCreateScreen(
                                   type: 'insert',
                                   title: 'สร้างทีม/องค์กรใหม่',
+                                  invite: "000000000",
                                   id: '0',
                                   action: true,
                                 ),
@@ -328,166 +329,170 @@ class _OrganizationCreateScreenState extends State<OrganizationCreateScreen> {
                 ),
               ),
               Padding(padding: EdgeInsets.all(10)),
-              Visibility(
-                visible: widget.type == "insert" ? false : true,
-                child: Container(
-                  padding: EdgeInsets.only(left: 20, right: 20, bottom: 20),
+              Expanded(
+                child: Visibility(
+                  visible: widget.type == "insert" ? false : true,
                   child: Container(
-                    padding: EdgeInsets.only(
-                        left: 10, right: 10, top: 20, bottom: 20),
-                    width: WidhtDevice().widht(context),
-                    decoration: StylePage().boxWhite,
-                    child: Column(
-                      children: [
-                        Container(
-                          padding: EdgeInsets.only(left: 5, right: 5),
-                          margin: EdgeInsets.only(bottom: 20),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                flex: 1,
-                                child: Container(
-                                  child: Text(
-                                    'รหัสทีม',
-                                    style: TextStyle(
-                                      fontFamily: FontStyles().FontFamily,
-                                      fontSize: 26,
+                    padding: EdgeInsets.only(left: 20, right: 20, bottom: 20),
+                    child: Container(
+                      padding: EdgeInsets.only(
+                          left: 10, right: 10, top: 20, bottom: 20),
+                      width: WidhtDevice().widht(context),
+                      decoration: StylePage().boxWhite,
+                      child: Column(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.only(left: 5, right: 5),
+                            margin: EdgeInsets.only(bottom: 20),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  flex: 1,
+                                  child: Container(
+                                    child: Text(
+                                      'รหัสทีม',
+                                      style: TextStyle(
+                                        fontFamily: FontStyles().FontFamily,
+                                        fontSize: 26,
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              Expanded(
-                                flex: 2,
-                                child: Container(
-                                  padding: EdgeInsets.only(
-                                      top: 5, bottom: 5, right: 15, left: 15),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: Colors.grey[300],
-                                  ),
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    widget.invite.toString().substring(0, 3) +
-                                        " " +
-                                        widget.invite
-                                            .toString()
-                                            .substring(3, 6) +
-                                        " " +
-                                        widget.invite
-                                            .toString()
-                                            .substring(6, 9),
-                                    style: TextStyle(
-                                        fontFamily: FontStyles().FontFamily,
-                                        fontSize: 26,
-                                        fontWeight: FontWeight.normal),
+                                Expanded(
+                                  flex: 2,
+                                  child: Container(
+                                    padding: EdgeInsets.only(
+                                        top: 5, bottom: 5, right: 15, left: 15),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: Colors.grey[300],
+                                    ),
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      widget.invite.toString().substring(0, 3) +
+                                          " " +
+                                          widget.invite
+                                              .toString()
+                                              .substring(3, 6) +
+                                          " " +
+                                          widget.invite
+                                              .toString()
+                                              .substring(6, 9),
+                                      style: TextStyle(
+                                          fontFamily: FontStyles().FontFamily,
+                                          fontSize: 26,
+                                          fontWeight: FontWeight.normal),
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Padding(padding: EdgeInsets.all(5)),
-                              GestureDetector(
-                                onTap: () {
-                                  // ClipboardManager.copyToClipBoard(
-                                  //         "your text to copy")
-                                  //     .then((result) {
-                                  //   _showToast();
-                                  // });
-                                },
-                                child: Container(
-                                    padding: EdgeInsets.only(
-                                        left: 8, right: 8, top: 5, bottom: 5),
-                                    child: Icon(Icons.copy_sharp)),
-                              ),
-                            ],
+                                Padding(padding: EdgeInsets.all(5)),
+                                GestureDetector(
+                                  onTap: () {
+                                    // ClipboardManager.copyToClipBoard(
+                                    //         "your text to copy")
+                                    //     .then((result) {
+                                    //   _showToast();
+                                    // });
+                                  },
+                                  child: Container(
+                                      padding: EdgeInsets.only(
+                                          left: 8, right: 8, top: 5, bottom: 5),
+                                      child: Icon(Icons.copy_sharp)),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        Container(
-                          padding: EdgeInsets.only(left: 25, right: 25),
-                          child: Center(
-                            child: RepaintBoundary(
-                              key: globalKey,
-                              child: QrImage(
-                                backgroundColor: Colors.white,
-                                data: "${widget.invite}",
-                                version: QrVersions.auto,
-                                embeddedImage:
-                                    AssetImage('assets/images/other/logo_app.png'),
-                                embeddedImageStyle: QrEmbeddedImageStyle(
-                                  size: Size(80, 80),
+                          Expanded(
+                            child: Container(
+                              padding: EdgeInsets.only(left: 25, right: 25),
+                              child: Center(
+                                child: RepaintBoundary(
+                                  key: globalKey,
+                                  child: QrImage(
+                                    backgroundColor: Colors.white,
+                                    data: "${widget.invite}",
+                                    version: QrVersions.auto,
+                                    embeddedImage: AssetImage(
+                                        'assets/images/other/logo_app.png'),
+                                    embeddedImageStyle: QrEmbeddedImageStyle(
+                                      size: Size(80, 80),
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                        Container(
-                          padding: EdgeInsets.only(left: 30, right: 30),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Expanded(
-                                child: GestureDetector(
-                                  onTap: _captureAndSharePng,
-                                  child: Container(
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                      color: Color(0xFF079CFD),
-                                      borderRadius: BorderRadius.circular(5),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Icon(
-                                          Icons.save,
-                                          color: Colors.white,
-                                        ),
-                                        Text(
-                                          "บันทึก",
-                                          style: TextStyle(
-                                              fontFamily:
-                                                  FontStyles().FontFamily,
-                                              color: Colors.white,
-                                              fontSize: 24),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Padding(padding: EdgeInsets.all(5)),
-                              Expanded(
-                                child: GestureDetector(
-                                  onTap: _captureAndShareOtherPng,
-                                  child: Container(
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                      color: Color(0xFF079CFD),
-                                      borderRadius: BorderRadius.circular(5),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Icon(
-                                          Icons.share,
-                                          color: Colors.white,
-                                        ),
-                                        Text(
-                                          "แบ่งปัน",
-                                          style: TextStyle(
-                                              fontFamily:
-                                                  FontStyles().FontFamily,
-                                              color: Colors.white,
-                                              fontSize: 24),
-                                        ),
-                                      ],
+                          Container(
+                            padding: EdgeInsets.only(left: 30, right: 30),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Expanded(
+                                  child: GestureDetector(
+                                    onTap: _captureAndSharePng,
+                                    child: Container(
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                        color: Color(0xFF079CFD),
+                                        borderRadius: BorderRadius.circular(5),
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            Icons.save,
+                                            color: Colors.white,
+                                          ),
+                                          Text(
+                                            "บันทึก",
+                                            style: TextStyle(
+                                                fontFamily:
+                                                    FontStyles().FontFamily,
+                                                color: Colors.white,
+                                                fontSize: 24),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ],
+                                Padding(padding: EdgeInsets.all(5)),
+                                Expanded(
+                                  child: GestureDetector(
+                                    onTap: _captureAndShareOtherPng,
+                                    child: Container(
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                        color: Color(0xFF079CFD),
+                                        borderRadius: BorderRadius.circular(5),
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            Icons.share,
+                                            color: Colors.white,
+                                          ),
+                                          Text(
+                                            "แบ่งปัน",
+                                            style: TextStyle(
+                                                fontFamily:
+                                                    FontStyles().FontFamily,
+                                                color: Colors.white,
+                                                fontSize: 24),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),

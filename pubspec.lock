@@ -489,7 +489,7 @@ packages:
       name: new_version
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.0"
+    version: "0.3.1"
   octo_image:
     dependency: transitive
     description:

@@ -59,9 +59,10 @@ class _MyAppState extends State<MyApp> {
   }
 
   basicStatusCheck(NewVersion newVersion) async {
+    // print("basicStatusCheck");
     final status = await newVersion.getVersionStatus();
     print("======= UPDATE APP =========start");
-    // debugPrint("Notes : " + status.releaseNotes.);
+    debugPrint("Notes : " + status.releaseNotes);
     debugPrint("Link : " + status.appStoreLink);
     debugPrint("LocalVersion : " + status.localVersion);
     debugPrint("StoreVersion : " + status.storeVersion);
