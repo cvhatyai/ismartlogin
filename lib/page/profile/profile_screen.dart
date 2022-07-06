@@ -82,15 +82,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return true;
   }
 
+
   ///-----
   ///
   ///-----member
+  ///
   List<ItemsMemberResultManage> _item = [];
   Future<bool> onLoadMemberManage() async {
     Map map = {
       "org_id": await SharedCashe.getItemsWay(name: 'org_id'),
       "uid": await SharedCashe.getItemsWay(name: 'id'),
     };
+    print("map ${map}" );
     String timeId = await SharedCashe.getItemsWay(name: 'time_id');
     await MemberManageFuture().apiGetMemberManageList(map).then((onValue) {
       setState(() {

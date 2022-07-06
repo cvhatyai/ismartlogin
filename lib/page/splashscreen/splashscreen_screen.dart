@@ -10,6 +10,7 @@ import 'package:ismart_login/page/sign/future/singin_future.dart';
 import 'package:ismart_login/page/sign/model/memberlist.dart';
 import 'package:ismart_login/page/sign/model/memberresult.dart';
 import 'package:ismart_login/page/sign/signin_screen.dart';
+import 'package:ismart_login/page/sign/signin_screen2.dart';
 import 'package:ismart_login/style/font_style.dart';
 import 'package:ismart_login/system/gps.dart';
 import 'package:ismart_login/page/protect/protected.dart';
@@ -154,14 +155,16 @@ class _SplashscreenScreenState extends State<SplashscreenScreen> {
                         ? new_user
                             ? OrganizationScreen()
                             : MainPage()
-                        : SignInScreen()
+                        // : SignInScreen()
+                        : SignInScreen2()
                     : protect_switch
                         ? ProtectApp()
                         : sent
                             ? new_user
                                 ? OrganizationScreen()
                                 : MainPage()
-                            : SignInScreen(),
+                            // : SignInScreen(),
+                            : SignInScreen2(),
                 title: new Text(
                   'iSmartLogin',
                   style: new TextStyle(

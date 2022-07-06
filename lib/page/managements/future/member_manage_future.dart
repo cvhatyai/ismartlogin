@@ -20,6 +20,7 @@ class MemberManageFuture {
   Future<List<ItemsMemberManage>> apiGetMemberManageList(Map jsonMap) async {
     //encode Map to JSON
     var body = json.encode(jsonMap);
+    print("body ${body}");
     final response = await http.post(
       Uri.parse(Server().getMemberManage),
       headers: header,

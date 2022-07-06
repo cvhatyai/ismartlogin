@@ -21,6 +21,7 @@ import 'package:ismart_login/page/managements/org_time_screen.dart';
 import 'package:ismart_login/page/managements/org_timedatail_screen.dart';
 import 'package:ismart_login/page/org/create_screen.dart';
 import 'package:ismart_login/page/profile/profile_screen.dart';
+import 'package:ismart_login/page/profile/vacation_screen.dart';
 import 'package:ismart_login/page/sign/signout_popup.dart';
 import 'package:ismart_login/server/server.dart';
 import 'package:ismart_login/style/font_style.dart';
@@ -286,6 +287,26 @@ class _MenuDrawerState extends State<MenuDrawer> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => ProfileScreen(),
+                ),
+              );
+            },
+          ),
+          ListTile(
+            minLeadingWidth: 0.5,
+            leading: FaIcon(
+              FontAwesomeIcons.userAlt,
+              size: 20,
+            ),
+            title: Text(
+              'ลา',
+              style: _txt,
+            ),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => VacationScreen(),
                 ),
               );
             },
