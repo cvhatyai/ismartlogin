@@ -32,6 +32,8 @@ import 'package:ismart_login/system/widht_device.dart';
 import 'package:location/location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'outtime_popup.dart';
+
 class FrontScreen extends StatefulWidget {
   @override
   _FrontScreenState createState() => _FrontScreenState();
@@ -636,197 +638,170 @@ class _FrontScreenState extends State<FrontScreen> {
                         ),
                         Padding(padding: EdgeInsets.all(10)),
                         affiliate
-                            ? dayWorking
-                                ? Container(
-                                    padding: EdgeInsets.all(10),
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              if (_login) {
-                                                _imgFromCamera_in(context);
-                                              }
-                                            },
-                                            child: Container(
-                                              padding:
-                                                  EdgeInsets.only(bottom: 5),
-                                              decoration: BoxDecoration(
-                                                border: Border(
-                                                  bottom: BorderSide(
-                                                    color: Colors.grey[400],
-                                                    width: 1,
-                                                  ),
-                                                  right: BorderSide(
-                                                    color: Colors.grey[400],
-                                                    width: 1,
-                                                  ),
-                                                ),
+                            ? Container(
+                                padding: EdgeInsets.all(10),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          if (_login) {
+                                            // popupOT_in(context);
+                                            if (dayWorking) {
+                                              _imgFromCamera_in(context,false);
+                                            } else {
+                                              popupOT_in(context);
+                                            }
+                                          }
+                                        },
+                                        child: Container(
+                                          padding: EdgeInsets.only(bottom: 5),
+                                          decoration: BoxDecoration(
+                                            border: Border(
+                                              bottom: BorderSide(
+                                                color: Colors.grey[400],
+                                                width: 1,
                                               ),
-                                              child: Column(
-                                                children: [
-                                                  Container(
-                                                    padding: EdgeInsets.all(10),
-                                                    width: 120,
-                                                    height: 120,
+                                              right: BorderSide(
+                                                color: Colors.grey[400],
+                                                width: 1,
+                                              ),
+                                            ),
+                                          ),
+                                          child: Column(
+                                            children: [
+                                              Container(
+                                                padding: EdgeInsets.all(10),
+                                                width: 120,
+                                                height: 120,
+                                                decoration: BoxDecoration(
+                                                    color: !_login
+                                                        ? Colors.grey[100]
+                                                        : Color(0xFFD6F5FF),
+                                                    shape: BoxShape.circle),
+                                                child: Container(
+                                                  padding: EdgeInsets.all(10),
+                                                  decoration: BoxDecoration(
+                                                      color: !_login
+                                                          ? Colors.grey[300]
+                                                          : Color(0xFFA7E9FF),
+                                                      shape: BoxShape.circle),
+                                                  child: Container(
                                                     decoration: BoxDecoration(
                                                         color: !_login
-                                                            ? Colors.grey[100]
-                                                            : Color(0xFFD6F5FF),
+                                                            ? Colors.grey[400]
+                                                            : Color(0xFF36C8FF),
                                                         shape: BoxShape.circle),
-                                                    child: Container(
-                                                      padding:
-                                                          EdgeInsets.all(10),
-                                                      decoration: BoxDecoration(
-                                                          color: !_login
-                                                              ? Colors.grey[300]
-                                                              : Color(
-                                                                  0xFFA7E9FF),
-                                                          shape:
-                                                              BoxShape.circle),
-                                                      child: Container(
-                                                        decoration: BoxDecoration(
-                                                            color: !_login
-                                                                ? Colors
-                                                                    .grey[400]
-                                                                : Color(
-                                                                    0xFF36C8FF),
-                                                            shape: BoxShape
-                                                                .circle),
-                                                        child: Icon(
-                                                          Icons.camera_alt,
-                                                          size: 50,
-                                                          color: Colors.white,
-                                                        ),
-                                                      ),
+                                                    child: Icon(
+                                                      Icons.camera_alt,
+                                                      size: 50,
+                                                      color: Colors.white,
                                                     ),
-                                                  ),
-                                                  Text(
-                                                    'เข้างาน',
-                                                    style: styleLabelCamera,
-                                                  ),
-                                                  Text(
-                                                    'ถ่ายรูปคุณคู่กับสถานที่',
-                                                    style: styleDetailCamera,
-                                                  ),
-                                                  Text(
-                                                    'เวลาเข้างาน ' +
-                                                        Clock().convertTime(
-                                                            time: dayWorking
-                                                                ? timeIn
-                                                                : '--:--') +
-                                                        ' น.',
-                                                    style: styleDetailCamera,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        Expanded(
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              if (_logout) {
-                                                _imgFromCamera_out(context);
-                                                // Navigator.push(
-                                                //   context,
-                                                //   MaterialPageRoute(
-                                                //     builder: (context) => CameraCustom(),
-                                                //   ),
-                                                // );
-                                              }
-                                            },
-                                            child: Container(
-                                              padding:
-                                                  EdgeInsets.only(bottom: 5),
-                                              decoration: BoxDecoration(
-                                                border: Border(
-                                                  bottom: BorderSide(
-                                                    color: Colors.grey[400],
-                                                    width: 1,
                                                   ),
                                                 ),
                                               ),
-                                              child: Column(
-                                                children: [
-                                                  Container(
-                                                    padding: EdgeInsets.all(10),
-                                                    width: 120,
-                                                    height: 120,
-                                                    decoration: BoxDecoration(
-                                                        color: !_logout
-                                                            ? Colors.grey[100]
-                                                            : Color(0xFFFFEDCE),
-                                                        shape: BoxShape.circle),
-                                                    child: Container(
-                                                      padding:
-                                                          EdgeInsets.all(10),
-                                                      decoration: BoxDecoration(
-                                                          color: !_logout
-                                                              ? Colors.grey[300]
-                                                              : Color(
-                                                                  0xFFFAD7A0),
-                                                          shape:
-                                                              BoxShape.circle),
-                                                      child: Container(
-                                                        decoration: BoxDecoration(
-                                                            color: !_logout
-                                                                ? Colors
-                                                                    .grey[400]
-                                                                : Color(
-                                                                    0xFFFFAF36),
-                                                            shape: BoxShape
-                                                                .circle),
-                                                        child: Icon(
-                                                          Icons.camera_alt,
-                                                          size: 50,
-                                                          color: Colors.white,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    'ออกงาน',
-                                                    style: styleLabelCamera,
-                                                  ),
-                                                  Text(
-                                                    'ถ่ายรูปคุณคู่กับสถานที่',
-                                                    style: styleDetailCamera,
-                                                  ),
-                                                  Text(
-                                                    'เวลาออกงาน ' +
-                                                        Clock().convertTime(
-                                                            time: dayWorking
-                                                                ? timeOut
-                                                                : '--:--') +
-                                                        ' น.',
-                                                    style: styleDetailCamera,
-                                                  ),
-                                                ],
+                                              Text(
+                                                'เข้างาน',
+                                                style: styleLabelCamera,
+                                              ),
+                                              Text(
+                                                'ถ่ายรูปคุณคู่กับสถานที่',
+                                                style: styleDetailCamera,
+                                              ),
+                                              Text(
+                                                'เวลาเข้างาน ' +
+                                                    Clock().convertTime(
+                                                        time: dayWorking
+                                                            ? timeIn
+                                                            : '--:--') +
+                                                    ' น.',
+                                                style: styleDetailCamera,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          if (_logout) {
+                                            _imgFromCamera_out(context);
+                                            // Navigator.push(
+                                            //   context,
+                                            //   MaterialPageRoute(
+                                            //     builder: (context) => CameraCustom(),
+                                            //   ),
+                                            // );
+                                          }
+                                        },
+                                        child: Container(
+                                          padding: EdgeInsets.only(bottom: 5),
+                                          decoration: BoxDecoration(
+                                            border: Border(
+                                              bottom: BorderSide(
+                                                color: Colors.grey[400],
+                                                width: 1,
                                               ),
                                             ),
                                           ),
+                                          child: Column(
+                                            children: [
+                                              Container(
+                                                padding: EdgeInsets.all(10),
+                                                width: 120,
+                                                height: 120,
+                                                decoration: BoxDecoration(
+                                                    color: !_logout
+                                                        ? Colors.grey[100]
+                                                        : Color(0xFFFFEDCE),
+                                                    shape: BoxShape.circle),
+                                                child: Container(
+                                                  padding: EdgeInsets.all(10),
+                                                  decoration: BoxDecoration(
+                                                      color: !_logout
+                                                          ? Colors.grey[300]
+                                                          : Color(0xFFFAD7A0),
+                                                      shape: BoxShape.circle),
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                        color: !_logout
+                                                            ? Colors.grey[400]
+                                                            : Color(0xFFFFAF36),
+                                                        shape: BoxShape.circle),
+                                                    child: Icon(
+                                                      Icons.camera_alt,
+                                                      size: 50,
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              Text(
+                                                'ออกงาน',
+                                                style: styleLabelCamera,
+                                              ),
+                                              Text(
+                                                'ถ่ายรูปคุณคู่กับสถานที่',
+                                                style: styleDetailCamera,
+                                              ),
+                                              Text(
+                                                'เวลาออกงาน ' +
+                                                    Clock().convertTime(
+                                                        time: dayWorking
+                                                            ? timeOut
+                                                            : '--:--') +
+                                                    ' น.',
+                                                style: styleDetailCamera,
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                      ],
-                                    ),
-                                  )
-                                : Container(
-                                    height: 100,
-                                    child: Center(
-                                      child: Column(
-                                        children: [
-                                          Text(
-                                            '-- วันหยุด --',
-                                            style: TextStyle(
-                                                fontFamily:
-                                                    FontStyles().FontFamily,
-                                                fontSize: 26,
-                                                color: Colors.grey),
-                                          )
-                                        ],
                                       ),
                                     ),
-                                  )
+                                  ],
+                                ),
+                              )
                             : Container(
                                 height: 150,
                                 child: Center(
@@ -924,7 +899,7 @@ class _FrontScreenState extends State<FrontScreen> {
     );
   }
 
-  _imgFromCamera_in(BuildContext context) async {
+  _imgFromCamera_in(BuildContext context,bool holiday) async {
     try {
       final pickedFile = await ImagePicker().getImage(
         source: ImageSource.camera,
@@ -944,7 +919,7 @@ class _FrontScreenState extends State<FrontScreen> {
         "myLat": _myLat,
         "myLng": _myLng,
       };
-      print(_map);
+      print("map"+_map.toString());
       if (_imageFile != null) {
         showDialog(
             context: context,
@@ -959,6 +934,7 @@ class _FrontScreenState extends State<FrontScreen> {
                 myLng: _myLng,
                 timeId: _time_id,
                 radius: double.parse(_resultItemDepartment[0].RADIUS),
+                holiday: holiday,
               );
             });
       }
@@ -968,6 +944,17 @@ class _FrontScreenState extends State<FrontScreen> {
         print(_pickImageError.toString());
       });
     }
+  }
+
+  popupOT_in(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (_) {
+          return OTDialog(onConfirmTap: () {
+            Navigator.pop(context);
+            _imgFromCamera_in(context,true);
+          },);
+        });
   }
 
   _imgFromCamera_out(BuildContext context) async {
