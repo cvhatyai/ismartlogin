@@ -8,11 +8,13 @@ class OTDialog extends StatefulWidget {
 
   @override
   State<OTDialog> createState() => _OTDialogState();
-  final GestureTapCallback onConfirmTap;
-
+  final Function(String) onConfirmTap;
+  
 }
 
 class _OTDialogState extends State<OTDialog> {
+  TextEditingController _inputNote = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -73,65 +75,67 @@ class _OTDialogState extends State<OTDialog> {
                   ),
                 ),
               ),
+
               // checkTimr(widget.time) ? Container() : _radioButton(),
-              // checkTimr(widget.time) ? Container() : _causeNote(),
+              Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(10),
+                      child: Row(
+                        children: [
+                          Text(
+                            'หมายเหตุ',
+                            style: TextStyle(
+                                fontFamily: FontStyles().FontFamily,
+                                fontSize: 22),
+                          ),
+                          Expanded(
+                            child: TextFormField(
+                              controller: _inputNote,
+                              keyboardType: TextInputType.text,
+                              style: TextStyle(
+                                  fontFamily: FontStyles().FontFamily,
+                                  fontSize: 22),
+                              decoration: InputDecoration(
+                                prefixIcon: Padding(
+                                  padding: EdgeInsets.all(
+                                      0), // add padding to adjust icon
+                                  child: Icon(
+                                    Icons.edit,
+                                    size: 22,
+                                  ),
+                                ),
+                              ),
+                              validator: (value) {
+                                print("value $value");
+                                if (value == null || value.isEmpty) {
+                                  return 'กรุณาป้อนข้อมูล';
+                                }
+                                return null;
+                              },
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               Container(
                 child: Row(
                   children: [
                     Expanded(
                       child: InkWell(
                         onTap: () {
-                          // Map _map = {
-                          //   "uid": widget.uid,
-                          //   "time": Clock().onTime(),
-                          //   "image": widget.pathImage,
-                          //   "latitude": widget.myLat.toString(),
-                          //   "longitude": widget.myLng.toString(),
-                          //   "start_status": checkTimr(widget.time)
-                          //       ? '0'
-                          //       : (currentIndex + 1),
-                          //   "start_note": _inputNote.text,
-                          //   "start_location_status": distanc() ? '0' : '1',
-                          //   "log": 'timeid_${widget.timeId}',
-                          // };
-                          // print("LOGIN : " + _map.toString());
-                          // onLoadAttandStart(_map);
-
-                          // ///---
-                          // setState(() {});
-                          // if (!distanc()) {
-                          //   Navigator.pop(context);
-                          //   showDialog(
-                          //       barrierDismissible: false,
-                          //       context: context,
-                          //       builder: (_) {
-                          //         return OutsideDialog(
-                          //             status: 1,
-                          //             uid: widget.uid,
-                          //             mainLat: widget.lat.toString(),
-                          //             mainLng: widget.long.toString(),
-                          //             lat: widget.myLat.toString(),
-                          //             long: widget.myLng.toString(),
-                          //             time: widget.time);
-                          //       });
-                          // } else {
-                          //   Navigator.pop(context);
-                          //   EasyLoading.show();
-                          //   Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //         builder: (context) => MainPage()),
-                          //   );
-                          //   EasyLoading.dismiss();
-                          // }
+                          Navigator.pop(context);
                         },
                         child: Container(
-
                           decoration: BoxDecoration(
                             color: Colors.red[100],
                             borderRadius: BorderRadius.only(
                               bottomLeft: Radius.circular(20.0),
-                              
                             ),
                           ),
                           height: 50,
@@ -149,13 +153,16 @@ class _OTDialogState extends State<OTDialog> {
                     Expanded(
                       child: InkWell(
                         onTap: () {
-                          widget.onConfirmTap?.call();
+                          if (_formKey.currentState.validate()) {
+widget.onConfirmTap?.call(_inputNote.text);
+                          }
+                
+                          
                         },
                         child: Container(
                           decoration: BoxDecoration(
                             color: Colors.green[100],
                             borderRadius: BorderRadius.only(
-                              
                               bottomRight: Radius.circular(20.0),
                             ),
                           ),
@@ -177,6 +184,44 @@ class _OTDialogState extends State<OTDialog> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  _causeNote() {
+    return Container(
+      padding: EdgeInsets.all(10),
+      child: Row(
+        children: [
+          Text(
+            'สาเหตุ',
+            style: TextStyle(fontFamily: FontStyles().FontFamily, fontSize: 22),
+          ),
+          Expanded(
+            child: TextFormField(
+              controller: _inputNote,
+              keyboardType: TextInputType.text,
+              style:
+                  TextStyle(fontFamily: FontStyles().FontFamily, fontSize: 22),
+              decoration: InputDecoration(
+                prefixIcon: Padding(
+                  padding: EdgeInsets.all(0), // add padding to adjust icon
+                  child: Icon(
+                    Icons.edit,
+                    size: 22,
+                  ),
+                ),
+              ),
+              validator: (value) {
+                print("valueOT $value");
+                if (value == null || value.isEmpty) {
+                  return 'กรุณาป้อนข้อมูล';
+                }
+                return null;
+              },
+            ),
+          )
+        ],
       ),
     );
   }

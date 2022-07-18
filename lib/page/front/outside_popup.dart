@@ -52,9 +52,10 @@ class _OutsideDialogState extends State<OutsideDialog> {
   double totalDistance = 0;
 
   ///----
-  List _checkboxListTile = ['โปรแกรมระบุตำแหน่งผิดพลาด', 'ทำงานนอกสถานที่'];
-  List<bool> _checkbox = [false, false];
+  List _checkboxListTile = ['โปรแกรมระบุตำแหน่งผิดพลาด', 'ทำงานนอกสถานที่','อื่นๆ'];
+  List<bool> _checkbox = [false, false,false];
   List<String> _select = [];
+
   //------
   int currentIndex = 0;
   TextEditingController _inputNote = TextEditingController();
@@ -200,113 +201,129 @@ class _OutsideDialogState extends State<OutsideDialog> {
                   circles: _circle(),
                 ),
               ),
+              Container(
+                child: Text(
+                  'กรุณาระบุเหตุผล',
+                  style: TextStyle(
+                      fontFamily: FontStyles().FontFamily,
+                      fontSize: 25,
+                      color: Color(0xFF089AE5)),
+                ),
+              ),
               _radioButton(),
               Form(
-                key: _formKey,
-                child: Column(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.all(10),
-                      child: Row(
-                        children: [
-                          Text(
-                            'หมายเหตุ',
-                            style: TextStyle(
-                                fontFamily: FontStyles().FontFamily,
-                                fontSize: 22),
-                          ),
-                          Expanded(
-                            child: TextFormField(
-                              controller: _inputNote,
-                              keyboardType: TextInputType.text,
+                  key: _formKey,
+                  child: 
+                  _checkbox[1] == true || _checkbox[2] == true
+                  ?
+                  Column(
+                    
+                    children: [
+                      Container(
+                        padding: EdgeInsets.fromLTRB(27.0, 0.0, 0.0, 10.0),
+                        child: Row(
+                          children: [
+                            Text(
+                              'ระบุ',
                               style: TextStyle(
                                   fontFamily: FontStyles().FontFamily,
                                   fontSize: 22),
-                              decoration: InputDecoration(
-                                prefixIcon: Padding(
-                                  padding: EdgeInsets.all(
-                                      0), // add padding to adjust icon
-                                  child: Icon(
-                                    Icons.edit,
-                                    size: 22,
+                            ),
+                            Expanded(
+                              child: TextFormField(
+                                controller: _inputNote,
+                                keyboardType: TextInputType.text,
+                                style: TextStyle(
+                                    fontFamily: FontStyles().FontFamily,
+                                    fontSize: 22),
+                                decoration: InputDecoration(
+                                  prefixIcon: Padding(
+                                    padding: EdgeInsets.all(
+                                        0), // add padding to adjust icon
+                                    child: Icon(
+                                      Icons.edit,
+                                      size: 22,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'กรุณาป้อนข้อมูล';
-                                }
-                                return null;
-                              },
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                    Container(
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: InkWell(
-                              onTap: () {
-                                if (_formKey.currentState.validate()) {
-                                  if (widget.status == 1) {
-                                    Map _map = {
-                                      "status": "1", //เข้างาน
-                                      "uid": widget.uid,
-                                      "start_location_note":
-                                          json.encode(_select),
-                                      "start_location_sub_status":
-                                          _inputNote.text,
-                                    };
-                                    print(_map);
-                                    onLoadUpdateLocationAttandStart(_map);
-                                  } else {
-                                    Map _map = {
-                                      "status": "2", //ออกงาน
-                                      "uid": widget.uid,
-                                      "end_location_note": json.encode(_select),
-                                      "end_location_sub_status":
-                                          _inputNote.text,
-                                    };
-                                    print(_map);
-                                    onLoadUpdateLocationAttandStart(_map);
+                                validator: (value) {
+                                  print("value $value");
+                                  if (value == null || value.isEmpty) {
+                                    return 'กรุณาป้อนข้อมูล';
                                   }
+                                  return null;
+                                },
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                      Container(
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: InkWell(
+                                onTap: () {
+                                  if (_formKey.currentState.validate()) {
+                                    if (widget.status == 1) {
+                                      Map _map = {
+                                        "status": "1", //เข้างาน
+                                        "uid": widget.uid,
+                                        "start_location_note":
+                                            json.encode(_select),
+                                        "start_location_sub_status":
+                                            _inputNote.text,
+                                      };
+                                      print(_map);
+                                      onLoadUpdateLocationAttandStart(_map);
+                                    } else {
+                                      Map _map = {
+                                        "status": "2", //ออกงาน
+                                        "uid": widget.uid,
+                                        "end_location_note":
+                                            json.encode(_select),
+                                        "end_location_sub_status":
+                                            _inputNote.text,
+                                      };
+                                      print(_map);
+                                      onLoadUpdateLocationAttandStart(_map);
+                                    }
 
-                                  Navigator.pop(context);
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => MainPage()),
-                                  );
-                                }
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.green[100],
-                                  borderRadius: BorderRadius.only(
-                                    bottomLeft: Radius.circular(20.0),
-                                    bottomRight: Radius.circular(20.0),
+                                    Navigator.pop(context);
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => MainPage()),
+                                    );
+                                  }
+                                },
+                                child: Container(
+            
+                                  decoration: BoxDecoration(
+                                    color: Colors.green[100],
+                                    borderRadius: BorderRadius.only(
+                                      bottomLeft: Radius.circular(20.0),
+                                      bottomRight: Radius.circular(20.0),
+                                    ),
                                   ),
-                                ),
-                                height: 50,
-                                alignment: Alignment.center,
-                                child: Text(
-                                  'ตกลง',
-                                  style: TextStyle(
-                                      fontFamily: FontStyles().FontFamily,
-                                      fontSize: 22,
-                                      fontWeight: FontWeight.bold),
+                                  height: 50,
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    'ตกลง',
+                                    style: TextStyle(
+                                        fontFamily: FontStyles().FontFamily,
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.bold),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
+                    ],
+                  )
+                  :Column()),
             ],
           ),
         ),
@@ -345,11 +362,13 @@ class _OutsideDialogState extends State<OutsideDialog> {
         ));
   }
 
+  form() {}
+
   _radioButton() {
     return Container(
       child: ListView.builder(
         physics: NeverScrollableScrollPhysics(),
-        padding: EdgeInsets.only(top: 0.0),
+        padding: EdgeInsets.only(bottom: 15.0),
         shrinkWrap: true,
         itemCount: _checkboxListTile.length,
         itemBuilder: (BuildContext context, int index) {
@@ -368,13 +387,15 @@ class _OutsideDialogState extends State<OutsideDialog> {
                 setState(
                   () {
                     _checkbox[index] = value;
+                    print("checkbox");
                     print(_checkbox[index]);
                     if (value) {
                       _select.add(index.toString());
                     } else {
                       _select.remove(index.toString());
                     }
-                    print(_select);
+                    print("_select $_select");
+                  
                   },
                 );
               },

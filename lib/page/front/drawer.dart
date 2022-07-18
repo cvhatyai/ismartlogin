@@ -291,26 +291,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
               );
             },
           ),
-          ListTile(
-            minLeadingWidth: 0.5,
-            leading: FaIcon(
-              FontAwesomeIcons.userAlt,
-              size: 20,
-            ),
-            title: Text(
-              'ลา',
-              style: _txt,
-            ),
-            onTap: () {
-              Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => VacationScreen(),
-                ),
-              );
-            },
-          ),
+          
           Visibility(
             visible: widget.type_member == 'member' ? false : true,
             child: Container(

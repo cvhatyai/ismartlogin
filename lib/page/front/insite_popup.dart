@@ -28,6 +28,7 @@ class InsiteDialog extends StatefulWidget {
   final double myLng;
   final double radius;
   final bool holiday;
+  final String ot_note;
   InsiteDialog({
     Key key,
     @required this.uid,
@@ -40,9 +41,12 @@ class InsiteDialog extends StatefulWidget {
     this.radius,
     this.timeId,
     this.holiday,
+    this.ot_note,
+
   }) : super(key: key);
   @override
   _InsiteDialogState createState() => _InsiteDialogState();
+  
 }
 
 class _InsiteDialogState extends State<InsiteDialog> {
@@ -208,7 +212,7 @@ class _InsiteDialogState extends State<InsiteDialog> {
                       ? Container()
                       : _radioButton(),
               checkHoliday(widget.holiday)
-                  ? _causeNote()
+                  ? Container()
                   : checkTimr(widget.time)
                       ? Container()
                       : _causeNote(),
@@ -229,7 +233,7 @@ class _InsiteDialogState extends State<InsiteDialog> {
                                 : checkTimr(widget.time)
                                     ? '0'
                                     : (currentIndex + 1),
-                            "start_note": _inputNote.text,
+                            "start_note": checkHoliday(widget.holiday) ? widget.ot_note : _inputNote.text,
                             "start_location_status": distanc() ? '0' : '1',
                             "log": 'timeid_${widget.timeId}',
                           };
@@ -295,7 +299,8 @@ class _InsiteDialogState extends State<InsiteDialog> {
   }
 
   _causeNote() {
-    return Container(
+    return 
+    Container(
       padding: EdgeInsets.all(10),
       child: Row(
         children: [

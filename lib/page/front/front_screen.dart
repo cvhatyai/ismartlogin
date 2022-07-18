@@ -54,6 +54,7 @@ class _FrontScreenState extends State<FrontScreen> {
   Timer _date;
   Timer _re;
   String _time_id;
+  String OT_note;
   //---
   List<ItemsMemberList> _items = [];
   String _dateString;
@@ -648,7 +649,7 @@ class _FrontScreenState extends State<FrontScreen> {
                                           if (_login) {
                                             // popupOT_in(context);
                                             if (dayWorking) {
-                                              _imgFromCamera_in(context,false);
+                                              _imgFromCamera_in(context, false);
                                             } else {
                                               popupOT_in(context);
                                             }
@@ -726,7 +727,12 @@ class _FrontScreenState extends State<FrontScreen> {
                                       child: GestureDetector(
                                         onTap: () {
                                           if (_logout) {
-                                            _imgFromCamera_out(context);
+                                            if (dayWorking) {
+                                              _imgFromCamera_out(
+                                                  context, false);
+                                            } else {
+                                              _imgFromCamera_out(context, true);
+                                            }
                                             // Navigator.push(
                                             //   context,
                                             //   MaterialPageRoute(
@@ -899,7 +905,38 @@ class _FrontScreenState extends State<FrontScreen> {
     );
   }
 
-  _imgFromCamera_in(BuildContext context,bool holiday) async {
+  _causeNote() {
+    return Container(
+      padding: EdgeInsets.all(10),
+      child: Row(
+        children: [
+          Text(
+            'สาเหตุ',
+            style: TextStyle(fontFamily: FontStyles().FontFamily, fontSize: 22),
+          ),
+          Expanded(
+            child: TextFormField(
+              controller: _inputNote,
+              keyboardType: TextInputType.text,
+              style:
+                  TextStyle(fontFamily: FontStyles().FontFamily, fontSize: 22),
+              decoration: InputDecoration(
+                prefixIcon: Padding(
+                  padding: EdgeInsets.all(0), // add padding to adjust icon
+                  child: Icon(
+                    Icons.edit,
+                    size: 22,
+                  ),
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  _imgFromCamera_in(BuildContext context, bool holiday) async {
     try {
       final pickedFile = await ImagePicker().getImage(
         source: ImageSource.camera,
@@ -919,7 +956,7 @@ class _FrontScreenState extends State<FrontScreen> {
         "myLat": _myLat,
         "myLng": _myLng,
       };
-      print("map"+_map.toString());
+      print("map" + _map.toString());
       if (_imageFile != null) {
         showDialog(
             context: context,
@@ -935,6 +972,7 @@ class _FrontScreenState extends State<FrontScreen> {
                 timeId: _time_id,
                 radius: double.parse(_resultItemDepartment[0].RADIUS),
                 holiday: holiday,
+                ot_note: OT_note,
               );
             });
       }
@@ -950,14 +988,18 @@ class _FrontScreenState extends State<FrontScreen> {
     showDialog(
         context: context,
         builder: (_) {
-          return OTDialog(onConfirmTap: () {
-            Navigator.pop(context);
-            _imgFromCamera_in(context,true);
-          },);
+          return OTDialog(
+            onConfirmTap: (String otNote) {
+              Navigator.pop(context);
+              print("otnote $otNote");
+              OT_note = otNote;
+              _imgFromCamera_in(context, true);
+            },
+          );
         });
   }
 
-  _imgFromCamera_out(BuildContext context) async {
+  _imgFromCamera_out(BuildContext context, bool holiday) async {
     try {
       final pickedFile = await ImagePicker().getImage(
         source: ImageSource.camera,
@@ -981,6 +1023,7 @@ class _FrontScreenState extends State<FrontScreen> {
                 myLng: _myLng,
                 timeId: _time_id,
                 radius: double.parse(_resultItemDepartment[0].RADIUS),
+                holiday: holiday,
               );
             });
       }
