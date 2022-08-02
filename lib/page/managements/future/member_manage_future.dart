@@ -56,4 +56,24 @@ class MemberManageFuture {
       print('Something went wrong. \nResponse Code : ${response.statusCode}');
     }
   }
+
+  Future<List<ItemsMemberStatusManage>> insertInfoLeave(
+      Map jsonMap) async {
+    //encode Map to JSON
+    var body = json.encode(jsonMap);
+    final response = await http.post(
+      Uri.parse(Server().insertInfoLeave),
+      headers: header,
+      body: body,
+    );
+    if (response.statusCode == 200) {
+      List responseJson = json.decode(response.body);
+      print(responseJson);
+      return responseJson
+          .map((m) => new ItemsMemberStatusManage.fromJson(m))
+          .toList();
+    } else {
+      print('Something went wrong. \nResponse Code : ${response.statusCode}');
+    }
+  }
 }

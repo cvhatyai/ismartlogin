@@ -97,23 +97,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
     String timeId = await SharedCashe.getItemsWay(name: 'time_id');
     await MemberManageFuture().apiGetMemberManageList(map).then((onValue) {
       setState(() {
-        if (onValue[0].STATUS) {
-          _item = onValue[0].RESULT;
-          print("status : " + _item[0].STATUS.toString());
-          if (_item.length > 0) {
-            if (_item[0].ORG_SUB_ID.toString() != '') {
-              setState(() {
-                dropdownValueDepartment = _item[0].ORG_SUB_ID;
-              });
-            }
-            if (_item[0].TIME_ID.toString() != '') {
-              setState(() {
-                dropdownValueTime = _item[0].TIME_ID != "" ? _item[0].TIME_ID : timeId;
-              });
-            }
-          }
-          _getData();
-        }
+        // if (onValue[0].STATUS) {
+        //   _item = onValue[0].RESULT;
+        //   print("status : " + _item[0].STATUS.toString());
+        //   if (_item.length > 0) {
+        //     if (_item[0].ORG_SUB_ID.toString() != '') {
+        //       setState(() {
+        //         dropdownValueDepartment = _item[0].ORG_SUB_ID;
+        //       });
+        //     }
+        //     if (_item[0].TIME_ID.toString() != '') {
+        //       setState(() {
+        //         dropdownValueTime = _item[0].TIME_ID != "" ? _item[0].TIME_ID : timeId;
+        //       });
+        //     }
+        //   }
+        //   _getData();
+        // }
       });
     });
     EasyLoading.dismiss();
