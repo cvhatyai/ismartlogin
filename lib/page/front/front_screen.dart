@@ -170,6 +170,7 @@ class _FrontScreenState extends State<FrontScreen> {
       "org_id": await SharedCashe.getItemsWay(name: 'org_id'),
       "uid": await SharedCashe.getItemsWay(name: 'id'),
     };
+    print("apiGetMemberManageList : ${map}");
     await MemberManageFuture().apiGetMemberManageList(map).then((onValue) {
       setState(() {
         if (onValue[0].STATUS) {
@@ -464,7 +465,7 @@ class _FrontScreenState extends State<FrontScreen> {
                                                     style: TextStyle(
                                                         fontFamily: FontStyles()
                                                             .FontFamily,
-                                                        fontSize: 28,
+                                                        fontSize: 30,
                                                         height: 1,
                                                         fontWeight:
                                                             FontWeight.bold),
@@ -483,7 +484,7 @@ class _FrontScreenState extends State<FrontScreen> {
                                                     style: TextStyle(
                                                         fontFamily: FontStyles()
                                                             .FontFamily,
-                                                        fontSize: 22,
+                                                        fontSize: 25,
                                                         height: 1,
                                                         fontWeight:
                                                             FontWeight.normal),
@@ -508,7 +509,7 @@ class _FrontScreenState extends State<FrontScreen> {
                                                     style: TextStyle(
                                                         fontFamily: FontStyles()
                                                             .FontFamily,
-                                                        fontSize: 10,
+                                                        fontSize: 18,
                                                         height: 1,
                                                         color: Colors.grey,
                                                         fontWeight:
@@ -602,9 +603,16 @@ class _FrontScreenState extends State<FrontScreen> {
                             ),
                           ),
                         ),
-                        FrontCountWidget(),
+                        if (_itemMember != null)
+                          if (_itemMember.length > 0)
+                            if (_itemMember[0].MEMBER_TYPE == 'admin')
+                              FrontCountWidget(),
+                        if (_itemMember.length > 0 &&
+                            _itemMember[0].HISTORY == "1" &&
+                            _itemMember[0].MEMBER_TYPE == 'member')
+                          FrontCountWidget(),
                         Container(
-                          padding: EdgeInsets.only(top: 10),
+                          padding: EdgeInsets.only(top: 15),
                           alignment: Alignment.center,
                           width: MediaQuery.of(context).size.width,
                           child: Column(

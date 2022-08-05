@@ -48,12 +48,15 @@ class Server {
   String getMemberManage = _baseUrl + 'member/getAllMember';
   String updateMemberStatusManage = _baseUrl + 'member/updateMemberStatus';
   String getMemberRelationship = _baseUrl + 'member/getMemberRelationship';
+  String userDelete = _baseUrl + 'member/userDelete';
   // -- * เวลาทำงาน --------
   String getTimeManage = _baseUrl + 'manage/getTime';
   String postTimeManage = _baseUrl + 'manage/postTime';
   // -- * สาขา --------
   String getDepartmentManage = _baseUrl + 'manage/getDepartment';
   String postDepartmentManage = _baseUrl + 'manage/postDepartment';
+  String updateSeqOrg = _baseUrl + 'manage/updateSeqOrg';
+  String updateHistoryStatus = _baseUrl + 'manage/updateHistoryStatus';
   // -- * องค์กร -------
   String postOrg = _baseUrl + 'manage/postOrg';
   String getOrgAdmin = _baseUrl + 'manage/getOrg';

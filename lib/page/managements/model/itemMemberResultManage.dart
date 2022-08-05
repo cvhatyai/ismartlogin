@@ -12,6 +12,7 @@ class ItemsMemberResultManage {
   final String STATUS;
   final String STAT;
   final String MEMBER_TYPE;
+  final String HISTORY;
 
   ItemsMemberResultManage({
     this.ID,
@@ -27,6 +28,7 @@ class ItemsMemberResultManage {
     this.STATUS,
     this.STAT,
     this.MEMBER_TYPE,
+    this.HISTORY,
   });
 
   factory ItemsMemberResultManage.fromJson(Map<String, dynamic> json) {
@@ -44,6 +46,7 @@ class ItemsMemberResultManage {
       MEMBER_TYPE: json['member_type'],
       STATUS: json['status'],
       STAT: json['stat'],
+      HISTORY: json['history'],
     );
   }
 }

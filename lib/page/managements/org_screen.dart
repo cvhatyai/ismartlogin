@@ -70,6 +70,7 @@ class _OrgManageScreenState extends State<OrgManageScreen> {
     super.initState();
     onLoadOrgManage();
   }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -119,6 +120,7 @@ class _OrgManageScreenState extends State<OrgManageScreen> {
                                     id: '0',
                                     invite: "000000000",
                                     action: true,
+                                    history: '1'
                                   ),
                                 ),
                               );
@@ -156,6 +158,7 @@ class _OrgManageScreenState extends State<OrgManageScreen> {
                                         id: _item[index].ORG_ID,
                                         invite: _item[index].INVITE,
                                         action: _item[index].ACTIVE,
+                                        history: _item[index].HISTORY,
                                       ),
                                     ),
                                   );

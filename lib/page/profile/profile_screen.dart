@@ -21,6 +21,8 @@ import 'package:ismart_login/style/page_style.dart';
 import 'package:ismart_login/system/shared_preferences.dart';
 import 'package:ismart_login/system/widht_device.dart';
 
+import 'UserDeleteView.dart';
+
 class ProfileScreen extends StatefulWidget {
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
@@ -105,7 +107,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             }
             if (_item[0].TIME_ID.toString() != '') {
               setState(() {
-                dropdownValueTime = _item[0].TIME_ID != "" ? _item[0].TIME_ID : timeId;
+                dropdownValueTime =
+                    _item[0].TIME_ID != "" ? _item[0].TIME_ID : timeId;
               });
             }
           }
@@ -687,6 +690,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           )
                                         ],
                                       ),
+                                      Padding(padding: EdgeInsets.all(1)),
+                                      // Row(
+                                      //   children: [
+                                      //     Container(
+                                      //       child: const Image(
+                                      //         image: AssetImage(
+                                      //             "assets/images/other/user-delete.png"),
+                                      //         width: 16,
+                                      //         color: Colors.black,
+                                      //       ),
+                                      //     ),
+                                      //     Expanded(
+                                      //       flex: 2,
+                                      //       child: Container(
+                                      //         child: Text(
+                                      //           'ลบบัญชี',
+                                      //           style: TextStyle(
+                                      //               fontFamily:
+                                      //                   FontStyles().FontFamily,
+                                      //               fontSize: 22),
+                                      //         ),
+                                      //       ),
+                                      //     ),
+                                      //   ],
+                                      // ),
                                       Padding(padding: EdgeInsets.all(10)),
                                       Visibility(
                                         visible: _edit,
@@ -793,6 +821,46 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           fontFamily: FontStyles().FontFamily,
                                           fontSize: 24,
                                           color: Colors.blue,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Padding(padding: EdgeInsets.all(5)),
+                                GestureDetector(
+                                  onTap: () async {
+                                    final confirm = await showDialog<bool>(
+                                      context: context,
+                                      barrierDismissible: false,
+                                      builder: (_) => UserDeleteDialog(),
+                                    );
+                                    if (confirm == null || !confirm) {
+                                      return;
+                                    }
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => UserDeleteView(),
+                                      ),
+                                    );
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.person_outlined,
+                                        color: Colors.red,
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.all(3),
+                                      ),
+                                      Text(
+                                        'ลบบัญชี',
+                                        style: TextStyle(
+                                          fontFamily: FontStyles().FontFamily,
+                                          fontSize: 24,
+                                          color: Colors.red,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),

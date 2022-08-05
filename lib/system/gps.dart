@@ -31,7 +31,7 @@ class LocationService {
       _latitude = currentLocation.latitude.toDouble();
       _longitude = currentLocation.longitude.toDouble();
       a = "" + _latitude.toString() + "," + _longitude.toString();
-      print(a);
+      // print(a);
       return a;
     });
   }

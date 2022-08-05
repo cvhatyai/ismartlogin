@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class WidhtDevice {
   widht(BuildContext context) {
     double widht = MediaQuery.of(context).size.width;
-    print(widht);
+    // print(widht);
     if (widht >= 1600) {
       widht = widht / 4;
     } else if (widht >= 1360) {

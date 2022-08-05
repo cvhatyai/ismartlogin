@@ -2,12 +2,14 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
+import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_switch/flutter_switch.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
@@ -20,6 +22,7 @@ import 'package:ismart_login/page/managements/org_screen.dart';
 import 'package:ismart_login/page/org/future/getJoinOrg_future.dart';
 import 'package:ismart_login/page/org/model/itemSwitchOrg.dart';
 import 'package:ismart_login/page/splashscreen/splashscreen_screen.dart';
+import 'package:ismart_login/server/server.dart';
 import 'package:ismart_login/style/font_style.dart';
 import 'package:ismart_login/style/page_style.dart';
 import 'package:ismart_login/system/shared_preferences.dart';
@@ -37,6 +40,7 @@ class OrganizationCreateScreen extends StatefulWidget {
   final String title;
   final String id;
   final String invite;
+  final String history;
   final bool action;
   OrganizationCreateScreen(
       {Key key,
@@ -44,7 +48,8 @@ class OrganizationCreateScreen extends StatefulWidget {
       this.title,
       this.id,
       this.invite,
-      this.action})
+      this.action,
+      this.history})
       : super(key: key);
   _OrganizationCreateScreenState createState() =>
       _OrganizationCreateScreenState();
@@ -55,6 +60,7 @@ class _OrganizationCreateScreenState extends State<OrganizationCreateScreen> {
   GlobalKey globalKey = new GlobalKey();
   String _presetOrgId = "";
   FToast fToast;
+  bool _switchHistory = true;
   TimeOfDay _timeOfDay = TimeOfDay.now();
   //
   TextEditingController _inputSubject = TextEditingController();
@@ -66,10 +72,18 @@ class _OrganizationCreateScreenState extends State<OrganizationCreateScreen> {
     super.initState();
     _requestPermission();
     print(widget.id);
+    print(widget.history);
     fToast = FToast();
     fToast.init(context);
     if (widget.type == 'update') {
       _inputSubject.text = widget.title;
+    }
+    if (widget.history != null) {
+      if (widget.history == "0") {
+        _switchHistory = false;
+      } else {
+        _switchHistory = true;
+      }
     }
   }
 
@@ -84,6 +98,23 @@ class _OrganizationCreateScreenState extends State<OrganizationCreateScreen> {
     };
     print(_map);
     onLoadPostUpdateOrg(_map);
+  }
+
+  _updateHistoryStatus(String status, String id) async {
+    Map _map = {};
+    _map.addAll({
+      "id": id,
+      "history_status": status,
+    });
+    print("_map : $_map");
+    var body = json.encode(_map);
+    final response = await http.Client().post(
+      Uri.parse(Server().updateHistoryStatus),
+      headers: {"Content-Type": "application/json"},
+      body: body,
+    );
+    var data = json.decode(response.body);
+    print('insertSeq : $data');
   }
 
   //---
@@ -255,80 +286,84 @@ class _OrganizationCreateScreenState extends State<OrganizationCreateScreen> {
               ),
               Container(
                 padding: EdgeInsets.only(left: 20, right: 20),
-                child: Container(
-                  padding:
-                      EdgeInsets.only(left: 10, right: 10, top: 20, bottom: 20),
-                  width: WidhtDevice().widht(context),
-                  decoration: StylePage().boxWhite,
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      children: [
-                        TextFormField(
-                          controller: _inputSubject,
-                          focusNode: _focusSubject,
-                          keyboardType: TextInputType.text,
-                          style: TextStyle(
-                              fontFamily: FontStyles().FontFamily,
-                              fontSize: 24),
-                          decoration: InputDecoration(
-                            hintText: 'ชื่อทีม/องค์กร',
-                            hintStyle: TextStyle(
+                child: SingleChildScrollView(
+                  child: Container(
+                    padding: EdgeInsets.only(
+                        left: 10, right: 10, top: 20, bottom: 20),
+                    width: WidhtDevice().widht(context),
+                    decoration: StylePage().boxWhite,
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        children: [
+                          TextFormField(
+                            controller: _inputSubject,
+                            focusNode: _focusSubject,
+                            keyboardType: TextInputType.text,
+                            style: TextStyle(
                                 fontFamily: FontStyles().FontFamily,
                                 fontSize: 24),
-                            prefixIcon: Padding(
-                              padding: EdgeInsets.all(
-                                  0), // add padding to adjust icon
-                              child: Icon(
-                                Icons.work,
-                                size: 26,
+                            decoration: InputDecoration(
+                              hintText: 'ชื่อทีม/องค์กร',
+                              hintStyle: TextStyle(
+                                  fontFamily: FontStyles().FontFamily,
+                                  fontSize: 24),
+                              prefixIcon: Padding(
+                                padding: EdgeInsets.all(
+                                    0), // add padding to adjust icon
+                                child: Icon(
+                                  Icons.work,
+                                  size: 26,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        Padding(padding: EdgeInsets.all(10)),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                if (_inputSubject.text == '') {
-                                  alert(context, 'กรุณาป้อนข้อมูลให้ครบถ้วน');
-                                } else {
-                                  if (_formKey.currentState.validate()) {
-                                    print('สร้าง');
-                                    if (widget.type == "insert") {
-                                      alert_new_org(context,
-                                          'คุณต้องการสร้างทีม/องค์กร\n"${_inputSubject.text}"\nใช่หรือไม่ ?');
-                                    } else {
-                                      _releaseData();
+                          Padding(padding: EdgeInsets.all(10)),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  if (_inputSubject.text == '') {
+                                    alert(context, 'กรุณาป้อนข้อมูลให้ครบถ้วน');
+                                  } else {
+                                    if (_formKey.currentState.validate()) {
+                                      print('สร้าง');
+                                      if (widget.type == "insert") {
+                                        alert_new_org(context,
+                                            'คุณต้องการสร้างทีม/องค์กร\n"${_inputSubject.text}"\nใช่หรือไม่ ?');
+                                      } else {
+                                        _releaseData();
+                                      }
                                     }
                                   }
-                                }
-                              },
-                              child: Container(
-                                padding: EdgeInsets.only(left: 25, right: 25),
-                                decoration: BoxDecoration(
-                                  color: Color(0xFF079CFD),
-                                  borderRadius: BorderRadius.circular(30),
-                                ),
-                                child: Text(
-                                  widget.type == "insert" ? "สร้าง" : "บันทึก",
-                                  style: TextStyle(
-                                      fontFamily: FontStyles().FontFamily,
-                                      color: Colors.white,
-                                      fontSize: 26),
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.only(left: 25, right: 25),
+                                  decoration: BoxDecoration(
+                                    color: Color(0xFF079CFD),
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                  child: Text(
+                                    widget.type == "insert"
+                                        ? "สร้าง"
+                                        : "บันทึก",
+                                    style: TextStyle(
+                                        fontFamily: FontStyles().FontFamily,
+                                        color: Colors.white,
+                                        fontSize: 26),
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
-              Padding(padding: EdgeInsets.all(10)),
+              Padding(padding: EdgeInsets.all(4)),
               Expanded(
                 child: Visibility(
                   visible: widget.type == "insert" ? false : true,
@@ -341,6 +376,55 @@ class _OrganizationCreateScreenState extends State<OrganizationCreateScreen> {
                       decoration: StylePage().boxWhite,
                       child: Column(
                         children: [
+                          Container(
+                            height: 40,
+                            child: Container(
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                      child: Container(
+                                    child: Text(
+                                      'ประวัติการเข้า/ออกงานของสมาชิก',
+                                      style: TextStyle(
+                                          fontFamily: FontStyles().FontFamily,
+                                          fontSize: 22),
+                                    ),
+                                  )),
+                                  FlutterSwitch(
+                                    value: _switchHistory ? true : false,
+                                    width: 94.0,
+                                    height: 30.0,
+                                    valueFontSize: 12.0,
+                                    toggleSize: 30.0,
+                                    borderRadius: 20.0,
+                                    padding: 5.0,
+                                    showOnOff: true,
+                                    activeText: 'แสดง',
+                                    activeColor: Colors.green,
+                                    inactiveText: 'ไม่แสดง',
+                                    inactiveColor: Colors.grey,
+                                    onToggle: (state) {
+                                      setState(() {
+                                        _switchHistory = state;
+                                        if (_switchHistory) {
+                                          var status = "1";
+                                          _updateHistoryStatus(
+                                              status.toString(),
+                                              widget.id.toString());
+                                        } else {
+                                          var status = "0";
+                                          _updateHistoryStatus(
+                                              status.toString(),
+                                              widget.id.toString());
+                                        }
+                                      });
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Divider(),
                           Container(
                             padding: EdgeInsets.only(left: 5, right: 5),
                             margin: EdgeInsets.only(bottom: 20),
