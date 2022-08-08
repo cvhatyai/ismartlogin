@@ -32,6 +32,8 @@ import 'package:ismart_login/system/widht_device.dart';
 import 'package:location/location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'outtime_popup.dart';
+
 class FrontScreen extends StatefulWidget {
   @override
   _FrontScreenState createState() => _FrontScreenState();
@@ -52,6 +54,7 @@ class _FrontScreenState extends State<FrontScreen> {
   Timer _date;
   Timer _re;
   String _time_id;
+  String OT_note;
   //---
   List<ItemsMemberList> _items = [];
   String _dateString;
@@ -170,7 +173,6 @@ class _FrontScreenState extends State<FrontScreen> {
       "org_id": await SharedCashe.getItemsWay(name: 'org_id'),
       "uid": await SharedCashe.getItemsWay(name: 'id'),
     };
-    print("apiGetMemberManageList : ${map}");
     await MemberManageFuture().apiGetMemberManageList(map).then((onValue) {
       setState(() {
         if (onValue[0].STATUS) {
@@ -320,299 +322,337 @@ class _FrontScreenState extends State<FrontScreen> {
         child: SafeArea(
           child: SingleChildScrollView(
             child: Container(
-              padding: EdgeInsets.only(left: 20, right: 20, top: 20),
+              //bgImage
+              padding: EdgeInsets.only(top: 20),
               child: Column(
                 children: [
+                  Container(
+                    decoration: new BoxDecoration(
+                    
+                      image: const DecorationImage(
+                          image: AssetImage("assets/images/other/bg2.png"),
+                          fit: BoxFit.cover),
+                    ),
+                    child: Padding(
+                      padding:
+                          const EdgeInsets.only(left: 20, right: 20, top: 20 ,bottom: 20),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(15.0),
+                            topRight: Radius.circular(15.0),
+                            bottomLeft: Radius.circular(15.0),
+                            bottomRight: Radius.circular(15.0),
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 5,
+                              blurRadius: 7,
+                              offset:
+                                  Offset(3, 0), // changes position of shadow
+                            ),
+                          ],
+                        ),
+                        height: 90,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                padding: EdgeInsets.only(left: 20, right: 20),
+                                child: Row(
+                                  children: [
+                                    GestureDetector(
+                                      child: _itemMember.length > 0
+                                          ? _itemMember[0].AVATAR != ''
+                                              ? Container(
+                                                  margin:
+                                                      EdgeInsets.only(top: 10),
+                                                  alignment: Alignment.center,
+                                                  width: 30,
+                                                  height: 30,
+                                                  decoration: new BoxDecoration(
+                                                    color: Color(0xFFF2F2F2),
+                                                    image: DecorationImage(
+                                                      image: NetworkImage(
+                                                          Server.url +
+                                                              _itemMember[0]
+                                                                  .AVATAR),
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                    shape: BoxShape.circle,
+                                                    border: Border.all(
+                                                        color: Colors.white,
+                                                        width: 2),
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color: Colors.grey
+                                                            .withOpacity(0.3),
+                                                        spreadRadius: 2,
+                                                        blurRadius: 5,
+                                                        offset: Offset(0,
+                                                            0), // changes position of shadow
+                                                      ),
+                                                    ],
+                                                  ),
+                                                )
+                                              : Container(
+                                                  margin:
+                                                      EdgeInsets.only(top: 0),
+                                                  alignment: Alignment.center,
+                                                  width: 60,
+                                                  height: 60,
+                                                  decoration: new BoxDecoration(
+                                                    color: Color(0xFFF2F2F2),
+                                                    shape: BoxShape.circle,
+                                                    border: Border.all(
+                                                        color: Colors.white,
+                                                        width: 2),
+                                                    boxShadow: [
+                                                      BoxShadow(
+                                                        color: Colors.grey
+                                                            .withOpacity(0.3),
+                                                        spreadRadius: 2,
+                                                        blurRadius: 5,
+                                                        offset: Offset(0,
+                                                            0), // changes position of shadow
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  child: Icon(
+                                                    Icons.person,
+                                                    color: Colors.white,
+                                                    size: 50,
+                                                  ),
+                                                )
+                                          : Container(
+                                              margin: EdgeInsets.only(top: 15),
+                                              alignment: Alignment.center,
+                                              width: 60,
+                                              height: 60,
+                                              decoration: new BoxDecoration(
+                                                color: Color(0xFFF2F2F2),
+                                                shape: BoxShape.circle,
+                                                border: Border.all(
+                                                    color: Colors.white,
+                                                    width: 2),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.grey
+                                                        .withOpacity(0.3),
+                                                    spreadRadius: 2,
+                                                    blurRadius: 5,
+                                                    offset: Offset(0,
+                                                        0), // changes position of shadow
+                                                  ),
+                                                ],
+                                              ),
+                                              child: Icon(
+                                                Icons.person,
+                                                color: Colors.white,
+                                                size: 50,
+                                              ),
+                                            ),
+                                    ),
+                                    Expanded(
+                                      child: Container(
+                                        padding:
+                                            EdgeInsets.only(left: 10, top: 20),
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Container(
+                                              child: SingleChildScrollView(
+                                                scrollDirection:
+                                                    Axis.horizontal,
+                                                child: Text(
+                                                  _itemMember.length > 0
+                                                      ? _subFullname(
+                                                          _itemMember[0]
+                                                              .FULLNAME)
+                                                      : '',
+                                                  style: TextStyle(
+                                                      fontFamily: FontStyles()
+                                                          .FontFamily,
+                                                      fontSize: 28,
+                                                      height: 1,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ),
+                                            ),
+                                            Container(
+                                              child: SingleChildScrollView(
+                                                scrollDirection:
+                                                    Axis.horizontal,
+                                                child: Text(
+                                                  _itemMember.length > 0
+                                                      ? _itemMember[0].ORG_NAME
+                                                      : '',
+                                                  style: TextStyle(
+                                                      fontFamily: FontStyles()
+                                                          .FontFamily,
+                                                      fontSize: 22,
+                                                      height: 1,
+                                                      fontWeight:
+                                                          FontWeight.normal),
+                                                ),
+                                              ),
+                                            ),
+                                            Container(
+                                              child: SingleChildScrollView(
+                                                scrollDirection:
+                                                    Axis.horizontal,
+                                                child: Text(
+                                                  _itemMember.length > 0
+                                                      ? _itemMember[0].ORG_SUB_NAME ==
+                                                                  '' ||
+                                                              _itemMember[0]
+                                                                      .ORG_SUB_NAME ==
+                                                                  null
+                                                          ? ''
+                                                          : _itemMember[0]
+                                                              .ORG_SUB_NAME
+                                                      : '',
+                                                  style: TextStyle(
+                                                      fontFamily: FontStyles()
+                                                          .FontFamily,
+                                                      fontSize: 10,
+                                                      height: 1,
+                                                      color: Colors.grey,
+                                                      fontWeight:
+                                                          FontWeight.normal),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                // _scaffoldKey.currentState.openDrawer();
+                                // Scaffold.of(context).openDrawer();
+                                // alert_signout(context);
+                              },
+                              child: Container(
+                                padding: EdgeInsets.only(right: 10, top: 7),
+                                child: Icon(
+                                  Icons.notifications,
+                                  size: 35,
+                                ),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                _scaffoldKey.currentState.openDrawer();
+                                // Scaffold.of(context).openDrawer();
+                                // alert_signout(context);
+                              },
+                              child: Container(
+                                padding: EdgeInsets.only(right: 20, top: 7),
+                                child: Icon(
+                                  Icons.menu,
+                                  size: 35 ,
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                   Container(
                     padding:
                         EdgeInsets.only(left: 5, right: 5, top: 5, bottom: 20),
                     width: WidhtDevice().widht(context),
-                    decoration: StylePage().boxWhite,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(15.0),
+                        bottomRight: Radius.circular(15.0),
+                      ),
+                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
                           padding: EdgeInsets.all(15),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  child: Row(
-                                    children: [
-                                      GestureDetector(
-                                        child: _itemMember.length > 0
-                                            ? _itemMember[0].AVATAR != ''
-                                                ? Container(
-                                                    margin: EdgeInsets.only(
-                                                        top: 15),
-                                                    alignment: Alignment.center,
-                                                    width: 60,
-                                                    height: 60,
-                                                    decoration:
-                                                        new BoxDecoration(
-                                                      color: Color(0xFFF2F2F2),
-                                                      image: DecorationImage(
-                                                        image: NetworkImage(
-                                                            Server.url +
-                                                                _itemMember[0]
-                                                                    .AVATAR),
-                                                        fit: BoxFit.cover,
-                                                      ),
-                                                      shape: BoxShape.circle,
-                                                      border: Border.all(
-                                                          color: Colors.white,
-                                                          width: 2),
-                                                      boxShadow: [
-                                                        BoxShadow(
-                                                          color: Colors.grey
-                                                              .withOpacity(0.3),
-                                                          spreadRadius: 2,
-                                                          blurRadius: 5,
-                                                          offset: Offset(0,
-                                                              0), // changes position of shadow
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  )
-                                                : Container(
-                                                    margin: EdgeInsets.only(
-                                                        top: 15),
-                                                    alignment: Alignment.center,
-                                                    width: 60,
-                                                    height: 60,
-                                                    decoration:
-                                                        new BoxDecoration(
-                                                      color: Color(0xFFF2F2F2),
-                                                      shape: BoxShape.circle,
-                                                      border: Border.all(
-                                                          color: Colors.white,
-                                                          width: 2),
-                                                      boxShadow: [
-                                                        BoxShadow(
-                                                          color: Colors.grey
-                                                              .withOpacity(0.3),
-                                                          spreadRadius: 2,
-                                                          blurRadius: 5,
-                                                          offset: Offset(0,
-                                                              0), // changes position of shadow
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    child: Icon(
-                                                      Icons.person,
-                                                      color: Colors.white,
-                                                      size: 50,
-                                                    ),
-                                                  )
-                                            : Container(
-                                                margin:
-                                                    EdgeInsets.only(top: 15),
-                                                alignment: Alignment.center,
-                                                width: 60,
-                                                height: 60,
-                                                decoration: new BoxDecoration(
-                                                  color: Color(0xFFF2F2F2),
-                                                  shape: BoxShape.circle,
-                                                  border: Border.all(
-                                                      color: Colors.white,
-                                                      width: 2),
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: Colors.grey
-                                                          .withOpacity(0.3),
-                                                      spreadRadius: 2,
-                                                      blurRadius: 5,
-                                                      offset: Offset(0,
-                                                          0), // changes position of shadow
-                                                    ),
-                                                  ],
-                                                ),
-                                                child: Icon(
-                                                  Icons.person,
-                                                  color: Colors.white,
-                                                  size: 50,
-                                                ),
-                                              ),
-                                      ),
-                                      Expanded(
-                                        child: Container(
-                                          padding:
-                                              EdgeInsets.only(left: 10, top: 5),
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceEvenly,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Container(
-                                                child: SingleChildScrollView(
-                                                  scrollDirection:
-                                                      Axis.horizontal,
-                                                  child: Text(
-                                                    _itemMember.length > 0
-                                                        ? _itemMember[0].NICKNAME ==
-                                                                    '' ||
-                                                                _itemMember[0]
-                                                                        .NICKNAME ==
-                                                                    null
-                                                            ? _subFullname(
-                                                                _itemMember[0]
-                                                                    .FULLNAME)
-                                                            : _itemMember[0]
-                                                                .NICKNAME
-                                                        : '',
-                                                    style: TextStyle(
-                                                        fontFamily: FontStyles()
-                                                            .FontFamily,
-                                                        fontSize: 30,
-                                                        height: 1,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  ),
-                                                ),
-                                              ),
-                                              Container(
-                                                child: SingleChildScrollView(
-                                                  scrollDirection:
-                                                      Axis.horizontal,
-                                                  child: Text(
-                                                    _itemMember.length > 0
-                                                        ? _itemMember[0]
-                                                            .ORG_NAME
-                                                        : '',
-                                                    style: TextStyle(
-                                                        fontFamily: FontStyles()
-                                                            .FontFamily,
-                                                        fontSize: 25,
-                                                        height: 1,
-                                                        fontWeight:
-                                                            FontWeight.normal),
-                                                  ),
-                                                ),
-                                              ),
-                                              Container(
-                                                child: SingleChildScrollView(
-                                                  scrollDirection:
-                                                      Axis.horizontal,
-                                                  child: Text(
-                                                    _itemMember.length > 0
-                                                        ? _itemMember[0].ORG_SUB_NAME ==
-                                                                    '' ||
-                                                                _itemMember[0]
-                                                                        .ORG_SUB_NAME ==
-                                                                    null
-                                                            ? ''
-                                                            : _itemMember[0]
-                                                                .ORG_SUB_NAME
-                                                        : '',
-                                                    style: TextStyle(
-                                                        fontFamily: FontStyles()
-                                                            .FontFamily,
-                                                        fontSize: 18,
-                                                        height: 1,
-                                                        color: Colors.grey,
-                                                        fontWeight:
-                                                            FontWeight.normal),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  _scaffoldKey.currentState.openDrawer();
-                                  // Scaffold.of(context).openDrawer();
-                                  // alert_signout(context);
-                                },
-                                child: Container(
-                                  child: Icon(
-                                    Icons.menu,
-                                    size: 26,
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
                         ),
+                        // Container(
+                        //   child: SingleChildScrollView(
+                        //     scrollDirection: Axis.horizontal,
+                        //     child: Row(
+                        //       mainAxisAlignment: MainAxisAlignment.center,
+                        //       children: [
+                        //         Container(
+                        //           padding: EdgeInsets.only(left: 25, right: 25),
+                        //           decoration: BoxDecoration(
+                        //             borderRadius: BorderRadius.circular(30),
+                        //             gradient: LinearGradient(
+                        //                 colors: [
+                        //                   Color(0xFF398EFD),
+                        //                   Color(0xFFFFA2C2),
+                        //                 ],
+                        //                 begin: Alignment.centerLeft,
+                        //                 end: Alignment.centerRight,
+                        //                 stops: [0.0, 1.0],
+                        //                 tileMode: TileMode.repeated),
+                        //           ),
+                        //           child: Row(
+                        //             children: [
+                        //               Text(
+                        //                 _dateString,
+                        //                 style: styleTime,
+                        //               ),
+                        //               SizedBox(
+                        //                 width: 7,
+                        //               ),
+                        //               Container(
+                        //                 child: Row(
+                        //                   children: [
+                        //                     Text(
+                        //                       _timeString + ' น. ',
+                        //                       style: styleTime,
+                        //                     ),
+                        //                     GestureDetector(
+                        //                       onTap: () {
+                        //                         Navigator.push(
+                        //                           context,
+                        //                           MaterialPageRoute(
+                        //                             builder: (context) =>
+                        //                                 MainPage(),
+                        //                           ),
+                        //                         );
+                        //                       },
+                        //                       child: FaIcon(
+                        //                         FontAwesomeIcons.sync,
+                        //                         color: Colors.white,
+                        //                         size: 14,
+                        //                       ),
+                        //                     ),
+                        //                   ],
+                        //                 ),
+                        //               ),
+                        //             ],
+                        //           ),
+                        //         ),
+                        //       ],
+                        //     ),
+                        //   ),
+                        // ),
+                        // FrontCountWidget(),
                         Container(
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Container(
-                                  padding: EdgeInsets.only(left: 25, right: 25),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(30),
-                                    gradient: LinearGradient(
-                                        colors: [
-                                          Color(0xFF398EFD),
-                                          Color(0xFFFFA2C2),
-                                        ],
-                                        begin: Alignment.centerLeft,
-                                        end: Alignment.centerRight,
-                                        stops: [0.0, 1.0],
-                                        tileMode: TileMode.repeated),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        _dateString,
-                                        style: styleTime,
-                                      ),
-                                      SizedBox(
-                                        width: 7,
-                                      ),
-                                      Container(
-                                        child: Row(
-                                          children: [
-                                            Text(
-                                              _timeString + ' น. ',
-                                              style: styleTime,
-                                            ),
-                                            GestureDetector(
-                                              onTap: () {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        MainPage(),
-                                                  ),
-                                                );
-                                              },
-                                              child: FaIcon(
-                                                FontAwesomeIcons.sync,
-                                                color: Colors.white,
-                                                size: 14,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        if (_itemMember != null)
-                          if (_itemMember.length > 0)
-                            if (_itemMember[0].MEMBER_TYPE == 'admin')
-                              FrontCountWidget(),
-                        if (_itemMember.length > 0 &&
-                            _itemMember[0].HISTORY == "1" &&
-                            _itemMember[0].MEMBER_TYPE == 'member')
-                          FrontCountWidget(),
-                        Container(
-                          padding: EdgeInsets.only(top: 15),
+                          padding: EdgeInsets.only(top: 3),
                           alignment: Alignment.center,
                           width: MediaQuery.of(context).size.width,
                           child: Column(
@@ -624,7 +664,7 @@ class _FrontScreenState extends State<FrontScreen> {
                                   _timeString.toString(),
                                   style: TextStyle(
                                       fontFamily: FontStyles().FontFamily,
-                                      fontSize: 70,
+                                      fontSize: 100,
                                       height: 0.5),
                                 ),
                               ),
@@ -642,199 +682,187 @@ class _FrontScreenState extends State<FrontScreen> {
                             ],
                           ),
                         ),
-                        Padding(padding: EdgeInsets.all(10)),
+                        
                         affiliate
-                            ? dayWorking
-                                ? Container(
-                                    padding: EdgeInsets.all(10),
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              if (_login) {
-                                                _imgFromCamera_in(context);
-                                              }
-                                            },
-                                            child: Container(
-                                              padding:
-                                                  EdgeInsets.only(bottom: 5),
-                                              decoration: BoxDecoration(
-                                                border: Border(
-                                                  bottom: BorderSide(
-                                                    color: Colors.grey[400],
-                                                    width: 1,
-                                                  ),
-                                                  right: BorderSide(
-                                                    color: Colors.grey[400],
-                                                    width: 1,
-                                                  ),
-                                                ),
+                            ? Container(
+                              
+                                padding: EdgeInsets.all(10),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          if (_login) {
+                                            // popupOT_in(context);
+                                            if (dayWorking) {
+                                              _imgFromCamera_in(context, false);
+                                            } else {
+                                              popupOT_in(context);
+                                            }
+                                          }
+                                        },
+                                        child: Container(
+                                          padding: EdgeInsets.only(bottom: 5),
+                                          decoration: BoxDecoration(
+                                            border: Border(
+                                              bottom: BorderSide(
+                                                color: Colors.grey[400],
+                                                width: 1,
                                               ),
-                                              child: Column(
-                                                children: [
-                                                  Container(
+                                              right: BorderSide(
+                                                color: Colors.grey[400],
+                                                width: 1,
+                                              ),
+                                            ),
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Column(
+                                              
+                                              children: [
+                                                Container(
+                                                  padding: EdgeInsets.all(10),
+                                                  width: 120,
+                                                  height: 150,
+                                                  decoration: BoxDecoration(
+                                                      color: !_login
+                                                          ? Colors.grey[100]
+                                                          : Color(0xFFD6F5FF),
+                                                      shape: BoxShape.circle),
+                                                  child: Container(
                                                     padding: EdgeInsets.all(10),
-                                                    width: 120,
-                                                    height: 120,
                                                     decoration: BoxDecoration(
                                                         color: !_login
-                                                            ? Colors.grey[100]
-                                                            : Color(0xFFD6F5FF),
+                                                            ? Colors.grey[300]
+                                                            : Color(0xFFA7E9FF),
                                                         shape: BoxShape.circle),
                                                     child: Container(
-                                                      padding:
-                                                          EdgeInsets.all(10),
                                                       decoration: BoxDecoration(
                                                           color: !_login
-                                                              ? Colors.grey[300]
-                                                              : Color(
-                                                                  0xFFA7E9FF),
-                                                          shape:
-                                                              BoxShape.circle),
-                                                      child: Container(
-                                                        decoration: BoxDecoration(
-                                                            color: !_login
-                                                                ? Colors
-                                                                    .grey[400]
-                                                                : Color(
-                                                                    0xFF36C8FF),
-                                                            shape: BoxShape
-                                                                .circle),
-                                                        child: Icon(
-                                                          Icons.camera_alt,
-                                                          size: 50,
-                                                          color: Colors.white,
-                                                        ),
+                                                              ? Colors.grey[400]
+                                                              : Color(0xFF36C8FF),
+                                                          shape: BoxShape.circle),
+                                                      child: Icon(
+                                                        Icons.camera_alt,
+                                                        size: 50,
+                                                        color: Colors.white,
                                                       ),
                                                     ),
-                                                  ),
-                                                  Text(
-                                                    'เข้างาน',
-                                                    style: styleLabelCamera,
-                                                  ),
-                                                  Text(
-                                                    'ถ่ายรูปคุณคู่กับสถานที่',
-                                                    style: styleDetailCamera,
-                                                  ),
-                                                  Text(
-                                                    'เวลาเข้างาน ' +
-                                                        Clock().convertTime(
-                                                            time: dayWorking
-                                                                ? timeIn
-                                                                : '--:--') +
-                                                        ' น.',
-                                                    style: styleDetailCamera,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        Expanded(
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              if (_logout) {
-                                                _imgFromCamera_out(context);
-                                                // Navigator.push(
-                                                //   context,
-                                                //   MaterialPageRoute(
-                                                //     builder: (context) => CameraCustom(),
-                                                //   ),
-                                                // );
-                                              }
-                                            },
-                                            child: Container(
-                                              padding:
-                                                  EdgeInsets.only(bottom: 5),
-                                              decoration: BoxDecoration(
-                                                border: Border(
-                                                  bottom: BorderSide(
-                                                    color: Colors.grey[400],
-                                                    width: 1,
                                                   ),
                                                 ),
-                                              ),
-                                              child: Column(
-                                                children: [
-                                                  Container(
-                                                    padding: EdgeInsets.all(10),
-                                                    width: 120,
-                                                    height: 120,
-                                                    decoration: BoxDecoration(
-                                                        color: !_logout
-                                                            ? Colors.grey[100]
-                                                            : Color(0xFFFFEDCE),
-                                                        shape: BoxShape.circle),
-                                                    child: Container(
-                                                      padding:
-                                                          EdgeInsets.all(10),
-                                                      decoration: BoxDecoration(
-                                                          color: !_logout
-                                                              ? Colors.grey[300]
-                                                              : Color(
-                                                                  0xFFFAD7A0),
-                                                          shape:
-                                                              BoxShape.circle),
-                                                      child: Container(
-                                                        decoration: BoxDecoration(
-                                                            color: !_logout
-                                                                ? Colors
-                                                                    .grey[400]
-                                                                : Color(
-                                                                    0xFFFFAF36),
-                                                            shape: BoxShape
-                                                                .circle),
-                                                        child: Icon(
-                                                          Icons.camera_alt,
-                                                          size: 50,
-                                                          color: Colors.white,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    'ออกงาน',
-                                                    style: styleLabelCamera,
-                                                  ),
-                                                  Text(
-                                                    'ถ่ายรูปคุณคู่กับสถานที่',
-                                                    style: styleDetailCamera,
-                                                  ),
-                                                  Text(
-                                                    'เวลาออกงาน ' +
-                                                        Clock().convertTime(
-                                                            time: dayWorking
-                                                                ? timeOut
-                                                                : '--:--') +
-                                                        ' น.',
-                                                    style: styleDetailCamera,
-                                                  ),
-                                                ],
-                                              ),
+                                                Text(
+                                                  'เข้างาน',
+                                                  style: styleLabelCamera,
+                                                ),
+                                                Text(
+                                                  'ถ่ายรูปคุณคู่กับสถานที่',
+                                                  style: styleDetailCamera,
+                                                ),
+                                                Text(
+                                                  'เวลาเข้างาน ' +
+                                                      Clock().convertTime(
+                                                          time: dayWorking
+                                                              ? timeIn
+                                                              : '--:--') +
+                                                      ' น.',
+                                                  style: styleDetailCamera,
+                                                ),
+                                              ],
                                             ),
                                           ),
                                         ),
-                                      ],
-                                    ),
-                                  )
-                                : Container(
-                                    height: 100,
-                                    child: Center(
-                                      child: Column(
-                                        children: [
-                                          Text(
-                                            '-- วันหยุด --',
-                                            style: TextStyle(
-                                                fontFamily:
-                                                    FontStyles().FontFamily,
-                                                fontSize: 26,
-                                                color: Colors.grey),
-                                          )
-                                        ],
                                       ),
                                     ),
-                                  )
+                                    Expanded(
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          if (_logout) {
+                                            if (dayWorking) {
+                                              _imgFromCamera_out(
+                                                  context, false);
+                                            } else {
+                                              _imgFromCamera_out(context, true);
+                                            }
+                                            // Navigator.push(
+                                            //   context,
+                                            //   MaterialPageRoute(
+                                            //     builder: (context) => CameraCustom(),
+                                            //   ),
+                                            // );
+                                          }
+                                        },
+                                        child: Container(
+                                          padding: EdgeInsets.only(bottom: 5),
+                                          decoration: BoxDecoration(
+                                            border: Border(
+                                              bottom: BorderSide(
+                                                color: Colors.grey[400],
+                                                width: 1,
+                                              ),
+                                            ),
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Column(
+                                              children: [
+                                                
+                                                Container(
+                                                  padding: EdgeInsets.all(10),
+                                                  width: 120,
+                                                  height: 150,
+                                                  decoration: BoxDecoration(
+                                                      color: !_logout
+                                                          ? Colors.grey[100]
+                                                          : Color(0xFFFFEDCE),
+                                                      shape: BoxShape.circle),
+                                                  child: Container(
+                                                    padding: EdgeInsets.all(10),
+                                                    decoration: BoxDecoration(
+                                                        color: !_logout
+                                                            ? Colors.grey[300]
+                                                            : Color(0xFFFAD7A0),
+                                                        shape: BoxShape.circle),
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                          color: !_logout
+                                                              ? Colors.grey[400]
+                                                              : Color(0xFFFFAF36),
+                                                          shape: BoxShape.circle),
+                                                      child: Icon(
+                                                        Icons.camera_alt,
+                                                        size: 50,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                Text(
+                                                  
+                                                  'ออกงาน',
+                                                  style: styleLabelCamera,
+                                                ),
+                                                Text(
+                                                  'ถ่ายรูปคุณคู่กับสถานที่',
+                                                  style: styleDetailCamera,
+                                                ),
+                                                Text(
+                                                  'เวลาออกงาน ' +
+                                                      Clock().convertTime(
+                                                          time: dayWorking
+                                                              ? timeOut
+                                                              : '--:--') +
+                                                      ' น.',
+                                                  style: styleDetailCamera,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
                             : Container(
                                 height: 150,
                                 child: Center(
@@ -854,7 +882,7 @@ class _FrontScreenState extends State<FrontScreen> {
                               ),
                         Padding(padding: EdgeInsets.all(5)),
                         Container(
-                          padding: EdgeInsets.all(10),
+                          padding: EdgeInsets.only(left: 20, bottom: 150),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -932,7 +960,38 @@ class _FrontScreenState extends State<FrontScreen> {
     );
   }
 
-  _imgFromCamera_in(BuildContext context) async {
+  _causeNote() {
+    return Container(
+      padding: EdgeInsets.all(10),
+      child: Row(
+        children: [
+          Text(
+            'สาเหตุ',
+            style: TextStyle(fontFamily: FontStyles().FontFamily, fontSize: 22),
+          ),
+          Expanded(
+            child: TextFormField(
+              controller: _inputNote,
+              keyboardType: TextInputType.text,
+              style:
+                  TextStyle(fontFamily: FontStyles().FontFamily, fontSize: 22),
+              decoration: InputDecoration(
+                prefixIcon: Padding(
+                  padding: EdgeInsets.all(0), // add padding to adjust icon
+                  child: Icon(
+                    Icons.edit,
+                    size: 22,
+                  ),
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  _imgFromCamera_in(BuildContext context, bool holiday) async {
     try {
       final pickedFile = await ImagePicker().getImage(
         source: ImageSource.camera,
@@ -952,7 +1011,7 @@ class _FrontScreenState extends State<FrontScreen> {
         "myLat": _myLat,
         "myLng": _myLng,
       };
-      print(_map);
+      print("map" + _map.toString());
       if (_imageFile != null) {
         showDialog(
             context: context,
@@ -967,6 +1026,8 @@ class _FrontScreenState extends State<FrontScreen> {
                 myLng: _myLng,
                 timeId: _time_id,
                 radius: double.parse(_resultItemDepartment[0].RADIUS),
+                holiday: holiday,
+                ot_note: OT_note,
               );
             });
       }
@@ -978,7 +1039,22 @@ class _FrontScreenState extends State<FrontScreen> {
     }
   }
 
-  _imgFromCamera_out(BuildContext context) async {
+  popupOT_in(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (_) {
+          return OTDialog(
+            onConfirmTap: (String otNote) {
+              Navigator.pop(context);
+              print("otnote $otNote");
+              OT_note = otNote;
+              _imgFromCamera_in(context, true);
+            },
+          );
+        });
+  }
+
+  _imgFromCamera_out(BuildContext context, bool holiday) async {
     try {
       final pickedFile = await ImagePicker().getImage(
         source: ImageSource.camera,
@@ -1002,6 +1078,7 @@ class _FrontScreenState extends State<FrontScreen> {
                 myLng: _myLng,
                 timeId: _time_id,
                 radius: double.parse(_resultItemDepartment[0].RADIUS),
+                holiday: holiday,
               );
             });
       }

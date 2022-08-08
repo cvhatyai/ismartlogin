@@ -21,6 +21,7 @@ import 'package:ismart_login/page/managements/org_time_screen.dart';
 import 'package:ismart_login/page/managements/org_timedatail_screen.dart';
 import 'package:ismart_login/page/org/create_screen.dart';
 import 'package:ismart_login/page/profile/profile_screen.dart';
+import 'package:ismart_login/page/profile/vacation_screen.dart';
 import 'package:ismart_login/page/sign/signout_popup.dart';
 import 'package:ismart_login/server/server.dart';
 import 'package:ismart_login/style/font_style.dart';
@@ -290,6 +291,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
               );
             },
           ),
+          
           Visibility(
             visible: widget.type_member == 'member' ? false : true,
             child: Container(

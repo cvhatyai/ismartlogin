@@ -20,6 +20,7 @@ class MemberManageFuture {
   Future<List<ItemsMemberManage>> apiGetMemberManageList(Map jsonMap) async {
     //encode Map to JSON
     var body = json.encode(jsonMap);
+    print("body ${body}");
     final response = await http.post(
       Uri.parse(Server().getMemberManage),
       headers: header,
@@ -42,6 +43,26 @@ class MemberManageFuture {
     var body = json.encode(jsonMap);
     final response = await http.post(
       Uri.parse(Server().updateMemberStatusManage),
+      headers: header,
+      body: body,
+    );
+    if (response.statusCode == 200) {
+      List responseJson = json.decode(response.body);
+      print(responseJson);
+      return responseJson
+          .map((m) => new ItemsMemberStatusManage.fromJson(m))
+          .toList();
+    } else {
+      print('Something went wrong. \nResponse Code : ${response.statusCode}');
+    }
+  }
+
+  Future<List<ItemsMemberStatusManage>> insertInfoLeave(
+      Map jsonMap) async {
+    //encode Map to JSON
+    var body = json.encode(jsonMap);
+    final response = await http.post(
+      Uri.parse(Server().insertInfoLeave),
       headers: header,
       body: body,
     );

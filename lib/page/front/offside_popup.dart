@@ -28,6 +28,7 @@ class OffsideDialog extends StatefulWidget {
   final double myLat;
   final double myLng;
   final double radius;
+  final bool holiday;
   OffsideDialog({
     Key key,
     @required this.uid,
@@ -37,7 +38,9 @@ class OffsideDialog extends StatefulWidget {
     this.time,
     this.myLat,
     this.myLng,
-    this.radius, this.timeId,
+    this.holiday,
+    this.radius,
+    this.timeId,
   }) : super(key: key);
   @override
   _OffsideDialogState createState() => _OffsideDialogState();
@@ -58,6 +61,10 @@ class _OffsideDialogState extends State<OffsideDialog> {
     super.initState();
     setLat = double.parse(widget.lat);
     setLong = double.parse(widget.long);
+    (widget.holiday == true)
+        ? print("holiday, ${widget.holiday}")
+        : print("NOT holiday, ${widget.holiday}");
+    print(widget.time);
   }
 
   @override
@@ -82,6 +89,9 @@ class _OffsideDialogState extends State<OffsideDialog> {
 
   checkTimr(String time) {
     print(time);
+    if (time == null || time == "") {
+      return true;
+    }
     var now = new DateTime.now();
     // var insite = DateFormat("HH:mm").format(DateTime.parse(time + ':00'));
     DateTime timeInsite = DateFormat("HH:mm").parse(time);
@@ -118,6 +128,15 @@ class _OffsideDialogState extends State<OffsideDialog> {
       attact_type: 'i_end',
     );
     return true;
+  }
+
+  checkHoliday(bool holiday) {
+    print(holiday);
+    if (holiday == true) {
+      return true;
+    } else {
+      return false;
+    }
   }
   //---
 
@@ -182,8 +201,16 @@ class _OffsideDialogState extends State<OffsideDialog> {
                   ],
                 ),
               ),
-              checkTimr(widget.time) ? Container() : _radioButton(),
-              checkTimr(widget.time) ? Container() : _causeNote(),
+              checkHoliday(widget.holiday)
+                  ? Container()
+                  : checkTimr(widget.time)
+                      ? Container()
+                      : _radioButton(),
+              checkHoliday(widget.holiday)
+                  ? _causeNote()
+                  : checkTimr(widget.time)
+                      ? Container()
+                      : _causeNote(),
               Container(
                 child: Row(
                   children: [
@@ -196,8 +223,9 @@ class _OffsideDialogState extends State<OffsideDialog> {
                             "image": widget.pathImage,
                             "latitude": widget.myLat.toString(),
                             "longitude": widget.myLng.toString(),
-                            "end_status":
-                                checkTimr(widget.time) ? '0' : currentIndex + 1,
+                            "end_status": checkTimr(widget.time)
+                                ? '0'
+                                : (currentIndex + 1),
                             "end_note": _inputNote.text,
                             "log": 'timeid_${widget.timeId}',
                           };
@@ -219,7 +247,8 @@ class _OffsideDialogState extends State<OffsideDialog> {
                                       mainLng: widget.long.toString(),
                                       lat: widget.myLat.toString(),
                                       long: widget.myLng.toString(),
-                                      time: widget.time);
+                                      time: widget.time
+                                      );
                                 });
                           } else {
                             EasyLoading.show();

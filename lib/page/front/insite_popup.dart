@@ -27,6 +27,8 @@ class InsiteDialog extends StatefulWidget {
   final double myLat;
   final double myLng;
   final double radius;
+  final bool holiday;
+  final String ot_note;
   InsiteDialog({
     Key key,
     @required this.uid,
@@ -38,9 +40,13 @@ class InsiteDialog extends StatefulWidget {
     this.myLng,
     this.radius,
     this.timeId,
+    this.holiday,
+    this.ot_note,
+
   }) : super(key: key);
   @override
   _InsiteDialogState createState() => _InsiteDialogState();
+  
 }
 
 class _InsiteDialogState extends State<InsiteDialog> {
@@ -61,6 +67,9 @@ class _InsiteDialogState extends State<InsiteDialog> {
   @override
   void initState() {
     super.initState();
+    (widget.holiday == true)
+        ? print("holiday, ${widget.holiday}")
+        : print("NOT holiday, ${widget.holiday}");
   }
 
   @override
@@ -85,12 +94,24 @@ class _InsiteDialogState extends State<InsiteDialog> {
 
   checkTimr(String time) {
     print(time);
+    if (time == null || time == "") {
+      return true;
+    }
     var now = new DateTime.now();
     // var insite = DateFormat("HH:mm").format(DateTime.parse(time + ':00'));
     DateTime timeInsite = DateFormat("HH:mm").parse(time);
     String insiteNow = DateFormat("HH:mm").format(now);
     DateTime timeNow = DateFormat("HH:mm").parse(insiteNow);
     if (timeNow.isBefore(timeInsite)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  checkHoliday(bool holiday) {
+    print(holiday);
+    if (holiday == true) {
       return true;
     } else {
       return false;
@@ -185,8 +206,16 @@ class _InsiteDialogState extends State<InsiteDialog> {
                   ],
                 ),
               ),
-              checkTimr(widget.time) ? Container() : _radioButton(),
-              checkTimr(widget.time) ? Container() : _causeNote(),
+              checkHoliday(widget.holiday)
+                  ? Container()
+                  : checkTimr(widget.time)
+                      ? Container()
+                      : _radioButton(),
+              checkHoliday(widget.holiday)
+                  ? Container()
+                  : checkTimr(widget.time)
+                      ? Container()
+                      : _causeNote(),
               Container(
                 child: Row(
                   children: [
@@ -199,10 +228,12 @@ class _InsiteDialogState extends State<InsiteDialog> {
                             "image": widget.pathImage,
                             "latitude": widget.myLat.toString(),
                             "longitude": widget.myLng.toString(),
-                            "start_status": checkTimr(widget.time)
-                                ? '0'
-                                : (currentIndex + 1),
-                            "start_note": _inputNote.text,
+                            "start_status": checkHoliday(widget.holiday)
+                                ? '5'
+                                : checkTimr(widget.time)
+                                    ? '0'
+                                    : (currentIndex + 1),
+                            "start_note": checkHoliday(widget.holiday) ? widget.ot_note : _inputNote.text,
                             "start_location_status": distanc() ? '0' : '1',
                             "log": 'timeid_${widget.timeId}',
                           };
@@ -268,7 +299,8 @@ class _InsiteDialogState extends State<InsiteDialog> {
   }
 
   _causeNote() {
-    return Container(
+    return 
+    Container(
       padding: EdgeInsets.all(10),
       child: Row(
         children: [
