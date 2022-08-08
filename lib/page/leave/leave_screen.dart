@@ -34,7 +34,24 @@ class _LeaveScreenState extends State<LeaveScreen> {
   bool select2 = false;
   bool select3 = false;
   List<String> items = <String>['0'];
-  List<String> itemsTime = <String>['0.5', '1', '1.5', '2', '2.5', '3', '3.5', '4', '4.5', '5', '5.5', '6', '6.5', '7', '7.5', '8'];
+  List<String> itemsTime = <String>[
+    '0.5',
+    '1',
+    '1.5',
+    '2',
+    '2.5',
+    '3',
+    '3.5',
+    '4',
+    '4.5',
+    '5',
+    '5.5',
+    '6',
+    '6.5',
+    '7',
+    '7.5',
+    '8'
+  ];
   String selectItem = '1';
   String selectItemTime = '1';
   String timeError;
@@ -60,12 +77,28 @@ class _LeaveScreenState extends State<LeaveScreen> {
   ];
 
   // final difference = LastDate.difference(FirstDate).inDays;
-  TextStyle styleDetail = TextStyle(fontFamily: FontStyles().FontFamily, fontSize: 18, color: Colors.black, height: 1);
+  TextStyle styleDetail = TextStyle(
+      fontFamily: FontStyles().FontFamily,
+      fontSize: 18,
+      color: Colors.black,
+      height: 1);
 
-  TextStyle styleButton = TextStyle(fontFamily: FontStyles().FontFamily, fontSize: 20, color: Colors.blue, height: 1);
+  TextStyle styleButton = TextStyle(
+      fontFamily: FontStyles().FontFamily,
+      fontSize: 20,
+      color: Colors.blue,
+      height: 1);
 
-  TextStyle styleHeader = TextStyle(fontFamily: FontStyles().FontFamily, fontSize: 25, color: Colors.white, height: 2);
-  TextStyle styleSubHeader = TextStyle(fontFamily: FontStyles().FontFamily, fontSize: 20, color: Colors.black38, height: 1);
+  TextStyle styleHeader = TextStyle(
+      fontFamily: FontStyles().FontFamily,
+      fontSize: 25,
+      color: Colors.white,
+      height: 2);
+  TextStyle styleSubHeader = TextStyle(
+      fontFamily: FontStyles().FontFamily,
+      fontSize: 23,
+      color: Color(0xFF8F8C8C),
+      height: 1);
 
   Future<bool> insertInfoLeave() async {
     String inputCause = _inputCause.text;
@@ -84,7 +117,8 @@ class _LeaveScreenState extends State<LeaveScreen> {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*", // Required for CORS support to work
         "Access-Control-Allow-Credentials": "true",
-        "Access-Control-Allow-Headers": "Origin,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,locale",
+        "Access-Control-Allow-Headers":
+            "Origin,Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,locale",
         "Access-Control-Allow-Methods": "*"
       },
       body: body,
@@ -154,7 +188,7 @@ class _LeaveScreenState extends State<LeaveScreen> {
     }
 
     final difference = daysBetween(FirstDate, LastDate);
-    log('difference: $difference');
+    //log('difference: $difference');
 
     for (var i = 0; i <= difference; i++) {
       if (items.every((item) => item != '${i}')) {
@@ -162,674 +196,841 @@ class _LeaveScreenState extends State<LeaveScreen> {
         items.add('${i}');
       }
     }
-    log('data: $items');
+    //log('data: $items');
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Color(0xFF00B1FF),
-          title: Text(
-            'ลา',
-            style: StylesText.titleAppBar,
-          ),
-        ),
         body: Container(
-          decoration: StylePage().background,
-          child: SafeArea(
-            child: SingleChildScrollView(
-              child: Form(
-                key: _formKey,
-                child: Container(
-                  child: Column(
-                    children: [
-                      Container(
-                        padding: EdgeInsets.only(left: 20, right: 20),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                'ใบลา',
-                                textAlign: TextAlign.left,
-                                style: styleHeader,
-                              ),
-                            ),
-                            Expanded(
-                              child: GestureDetector(
-                                onTap: () {
-                                  // Navigator.pop(context);
-                                  // EasyLoading.show();
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => LeaveDetailScreen(),
-                                    ),
-                                  );
-                                },
-                                child: Text(
-                                  'ดูสถิติการลา',
-                                  textAlign: TextAlign.right,
-                                  style: styleHeader,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          image: const DecorationImage(image: AssetImage("assets/images/other/bg2.png"), fit: BoxFit.cover),
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height,
+      decoration: StylePage().background,
+      child: SafeArea(
+        child: GestureDetector(
+          onTap: () {
+            FocusScopeNode currentFocus = FocusScope.of(context);
+            if (!currentFocus.hasPrimaryFocus) {
+              currentFocus.unfocus();
+            }
+          },
+          child: SingleChildScrollView(
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  AppBar(
+                    backgroundColor: Color(0xFF00B1FF),
+                    title: Text(
+                      'ลา',
+                      style: TextStyle(
+                          fontFamily: FontStyles().FontFamily,
+                          fontSize: 28,
                           color: Colors.white,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(15.0),
-                            topRight: Radius.circular(15.0),
+                          height: 1,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    elevation: 0,
+                  ),
+                  Form(
+                    key: _formKey,
+                    child: Container(
+                      color: Color(0xFF00B1FF),
+                      child: Column(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.only(left: 20, right: 20),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    'ใบลา',
+                                    textAlign: TextAlign.left,
+                                    style: styleHeader,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      // Navigator.pop(context);
+                                      // EasyLoading.show();
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              LeaveDetailScreen(),
+                                        ),
+                                      );
+                                    },
+                                    child: Text(
+                                      'ดูสถิติการลา',
+                                      textAlign: TextAlign.right,
+                                      style: styleHeader,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        padding: EdgeInsets.all(20),
-                        child: Row(
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  // Toggle light when tapped.
-                                  select1 = true;
-                                  select2 = false;
-                                  select3 = false;
-                                });
-                              },
-                              child: Container(
-                                  decoration: BoxDecoration(
-                                    color: select1 ? Colors.lightBlue.shade200 : Colors.grey.shade200,
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(15.0),
-                                      topRight: Radius.circular(15.0),
-                                      bottomLeft: Radius.circular(15.0),
-                                      bottomRight: Radius.circular(15.0),
-                                    ),
-                                  ),
-                                  height: 100,
-                                  width: 100,
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(15.0),
-                                            topRight: Radius.circular(15.0),
-                                          ),
-                                        ),
-                                        height: 70,
-                                        child: SvgPicture.asset(
-                                          "assets/images/other/injured.svg", //asset location
-                                          color: select1 == true ? Colors.white : Colors.grey[400], //svg color
-                                        ),
-                                      ),
-                                      Container(
-                                        child: Text(
-                                          "ลาป่วย",
-                                          style: TextStyle(
-                                              fontFamily: FontStyles().FontFamily,
-                                              fontSize: 18,
-                                              color: select1 == true ? Colors.white : Colors.black,
-                                              height: 1),
-                                        ),
-                                      )
-                                    ],
-                                  )),
+                          Container(
+                            decoration: BoxDecoration(
+                              image: const DecorationImage(
+                                  image:
+                                      AssetImage("assets/images/other/bg2.png"),
+                                  fit: BoxFit.cover),
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(15.0),
+                                topRight: Radius.circular(15.0),
+                              ),
                             ),
-                            Spacer(),
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  // Toggle light when tapped.
-                                  select1 = false;
-                                  select2 = true;
-                                  select3 = false;
-                                });
-                              },
-                              child: Container(
-                                  decoration: BoxDecoration(
-                                    color: select2 ? Colors.lightBlue.shade200 : Colors.grey.shade200,
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(15.0),
-                                      topRight: Radius.circular(15.0),
-                                      bottomLeft: Radius.circular(15.0),
-                                      bottomRight: Radius.circular(15.0),
-                                    ),
-                                  ),
-                                  height: 100,
-                                  width: 100,
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(15.0),
-                                            topRight: Radius.circular(15.0),
-                                          ),
-                                        ),
-                                        height: 70,
-                                        child: SvgPicture.asset(
-                                          "assets/images/other/exit.svg", //asset location
-                                          color: select2 == true ? Colors.white : Colors.grey[400], //svg color
-                                        ),
+                            padding: EdgeInsets.only(
+                                left: 20, right: 20, top: 10, bottom: 10),
+                            child: Row(
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      // Toggle light when tapped.
+                                      select1 = true;
+                                      select2 = false;
+                                      select3 = false;
+                                    });
+                                  },
+                                  child: Container(
+                                      decoration: BoxDecoration(
+                                        color: select1
+                                            ? Colors.lightBlue.shade200
+                                            : Colors.grey.shade200,
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(15.0)),
                                       ),
-                                      Container(
-                                        child: Text(
-                                          "ลากิจ",
-                                          style: TextStyle(
-                                              fontFamily: FontStyles().FontFamily,
-                                              fontSize: 18,
-                                              color: select2 == true ? Colors.white : Colors.black,
-                                              height: 1),
-                                        ),
-                                      )
-                                    ],
-                                  )),
-                            ),
-                            Spacer(),
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  // Toggle light when tapped.
-                                  select1 = false;
-                                  select2 = false;
-                                  select3 = true;
-                                });
-                              },
-                              child: Container(
-                                  decoration: BoxDecoration(
-                                    color: select3 ? Colors.lightBlue.shade200 : Colors.grey.shade200,
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(15.0),
-                                      topRight: Radius.circular(15.0),
-                                      bottomLeft: Radius.circular(15.0),
-                                      bottomRight: Radius.circular(15.0),
-                                    ),
-                                  ),
-                                  height: 100,
-                                  width: 100,
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.only(
-                                              topLeft: Radius.circular(15.0),
-                                              topRight: Radius.circular(15.0),
+                                      height: 100,
+                                      width: 100,
+                                      child: Column(
+                                        children: [
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.only(
+                                                topLeft: Radius.circular(15.0),
+                                                topRight: Radius.circular(15.0),
+                                              ),
+                                            ),
+                                            height: 70,
+                                            child: SvgPicture.asset(
+                                              "assets/images/other/injured.svg", //asset location
+                                              color: select1 == true
+                                                  ? Colors.white
+                                                  : Colors
+                                                      .grey[400], //svg color
                                             ),
                                           ),
-                                          height: 70,
-                                          child: SvgPicture.asset(
-                                            "assets/images/other/travel.svg", //asset location
-                                            color: select3 == true ? Colors.white : Colors.grey[400], //svg color
+                                          Container(
+                                            child: Text(
+                                              "ลาป่วย",
+                                              style: TextStyle(
+                                                  fontFamily:
+                                                      FontStyles().FontFamily,
+                                                  fontSize: 18,
+                                                  color: select1 == true
+                                                      ? Colors.white
+                                                      : Colors.black,
+                                                  height: 1),
+                                            ),
+                                          )
+                                        ],
+                                      )),
+                                ),
+                                Spacer(),
+                                GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      // Toggle light when tapped.
+                                      select1 = false;
+                                      select2 = true;
+                                      select3 = false;
+                                    });
+                                  },
+                                  child: Container(
+                                      decoration: BoxDecoration(
+                                        color: select2
+                                            ? Colors.lightBlue.shade200
+                                            : Colors.grey.shade200,
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(15.0),
+                                          topRight: Radius.circular(15.0),
+                                          bottomLeft: Radius.circular(15.0),
+                                          bottomRight: Radius.circular(15.0),
+                                        ),
+                                      ),
+                                      height: 100,
+                                      width: 100,
+                                      child: Column(
+                                        children: [
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.only(
+                                                topLeft: Radius.circular(15.0),
+                                                topRight: Radius.circular(15.0),
+                                              ),
+                                            ),
+                                            height: 70,
+                                            child: SvgPicture.asset(
+                                              "assets/images/other/exit.svg", //asset location
+                                              color: select2 == true
+                                                  ? Colors.white
+                                                  : Colors
+                                                      .grey[400], //svg color
+                                            ),
+                                          ),
+                                          Container(
+                                            child: Text(
+                                              "ลากิจ",
+                                              style: TextStyle(
+                                                  fontFamily:
+                                                      FontStyles().FontFamily,
+                                                  fontSize: 18,
+                                                  color: select2 == true
+                                                      ? Colors.white
+                                                      : Colors.black,
+                                                  height: 1),
+                                            ),
+                                          )
+                                        ],
+                                      )),
+                                ),
+                                Spacer(),
+                                GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      // Toggle light when tapped.
+                                      select1 = false;
+                                      select2 = false;
+                                      select3 = true;
+                                    });
+                                  },
+                                  child: Container(
+                                      decoration: BoxDecoration(
+                                        color: select3
+                                            ? Colors.lightBlue.shade200
+                                            : Colors.grey.shade200,
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(15.0),
+                                          topRight: Radius.circular(15.0),
+                                          bottomLeft: Radius.circular(15.0),
+                                          bottomRight: Radius.circular(15.0),
+                                        ),
+                                      ),
+                                      height: 100,
+                                      width: 100,
+                                      child: Column(
+                                        children: [
+                                          Container(
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.only(
+                                                  topLeft:
+                                                      Radius.circular(15.0),
+                                                  topRight:
+                                                      Radius.circular(15.0),
+                                                ),
+                                              ),
+                                              height: 70,
+                                              child: SvgPicture.asset(
+                                                "assets/images/other/travel.svg", //asset location
+                                                color: select3 == true
+                                                    ? Colors.white
+                                                    : Colors
+                                                        .grey[400], //svg color
+                                              )),
+                                          Container(
+                                            child: Text(
+                                              "อื่น",
+                                              style: TextStyle(
+                                                  fontFamily:
+                                                      FontStyles().FontFamily,
+                                                  fontSize: 18,
+                                                  color: select3 == true
+                                                      ? Colors.white
+                                                      : Colors.black,
+                                                  height: 1),
+                                            ),
+                                          )
+                                        ],
+                                      )),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            width: MediaQuery.of(context).size.width,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                            ),
+                            child: Column(
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.only(left: 20, right: 20),
+                                  child: TextField(
+                                    // style: styleSubHeader,
+                                    controller: _inputCause,
+                                    decoration: InputDecoration(
+                                      filled: true,
+                                      fillColor: Color(0xFFECF2F3),
+                                      border: InputBorder.none,
+                                      hintText: 'เนื่องจาก',
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                    padding: EdgeInsets.only(
+                                        top: 20, left: 20, right: 20),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            'ตั้งแต่วันที่',
+                                            textAlign: TextAlign.left,
+                                            style: styleSubHeader,
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Container(
+                                            padding: EdgeInsets.only(right: 40),
+                                            child: Text(
+                                              'รวม',
+                                              textAlign: TextAlign.right,
+                                              style: styleSubHeader,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    )),
+                                Container(
+                                   padding: const EdgeInsets.only(left:20.0),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                          child: ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              primary: Color(0xFFECF2F3),
+                                              onPrimary: Colors.black38,
+                                            ),
+                                            child: Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Text(
+                                                      '${FirstDate.day}/${FirstDate.month}/${FirstDate.year}'),
+                                                ),
+                                                Icon(
+                                                  Icons.today_outlined,
+                                                  color: Color(0xFF5B5B5B),
+                                                  size: 20,
+                                                ),
+                                              ],
+                                            ),
+                                            onPressed: () async {
+                                              DateTime newDate =
+                                                  await showDatePicker(
+                                                context: context,
+                                                initialDate: FirstDate,
+                                                firstDate: DateTime(1900),
+                                                lastDate: DateTime(2100),
+                                              );
+                                              if (newDate == null) return;
+
+                                              setState(() {
+                                                FirstDate = newDate;
+                                              });
+                                            },
                                           )),
                                       Container(
-                                        child: Text(
-                                          "อื่น",
-                                          style: TextStyle(
-                                              fontFamily: FontStyles().FontFamily,
-                                              fontSize: 18,
-                                              color: select3 == true ? Colors.white : Colors.black,
-                                              height: 1),
+                                          width: 30,
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              'ถึง',
+                                              style: styleSubHeader,
+                                            ),
+                                          )),
+                                      Expanded(
+                                          child: ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              primary: Color(0xFFECF2F3),
+                                              onPrimary: Colors.black38,
+                                            ),
+                                            child: Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Text(
+                                                      '${LastDate.day}/${LastDate.month}/${LastDate.year}'),
+                                                ),
+                                                Icon(
+                                                  Icons.today_outlined,
+                                                  color: Color(0xFF5B5B5B),
+                                                  size: 20,
+                                                ),
+                                              ],
+                                            ),
+                                            onPressed: () async {
+                                              DateTime newDate =
+                                                  await showDatePicker(
+                                                context: context,
+                                                initialDate: LastDate,
+                                                firstDate: DateTime(1900),
+                                                lastDate: DateTime(2100),
+                                              );
+                                              if (newDate == null) return;
+                                              setState(() {
+                                                LastDate = newDate;
+                                              });
+                                            },
+                                          )),
+                                      Container(
+                                        padding: EdgeInsets.only(left: 5),
+                                        child: Container(
+                                          height: 40,
+                                          decoration: BoxDecoration(
+                                            color: Color(0xFFECF2F3),
+                                            borderRadius: BorderRadius.all(
+                                              Radius.circular(4.0),
+                                            ),
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(2.0),
+                                            child: DropdownButton<String>(
+                                              underline: SizedBox(),
+                                              onChanged: (String newValue) {
+                                                setState(() {
+                                                  selectItem = newValue;
+                                                });
+                                              },
+                                              value: selectItem,
+                                              items: items.map<
+                                                      DropdownMenuItem<String>>(
+                                                  (String value) {
+                                                return DropdownMenuItem<String>(
+                                                  value: value,
+                                                  child: Container(
+                                                      alignment:
+                                                          Alignment.center,
+                                                      child: Text(' ' + value)),
+                                                );
+                                              }).toList(),
+                                              // isExpanded: true,
+                                              dropdownColor: Color(0xFFECF2F3),
+                                            ),
+                                          ),
                                         ),
-                                      )
-                                    ],
-                                  )),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        width: MediaQuery.of(context).size.width,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                        ),
-                        child: Column(
-                          children: [
-                            Container(
-                              padding: EdgeInsets.only(left: 20, right: 20),
-                              child: TextField(
-                                style: styleSubHeader,
-                                controller: _inputCause,
-                                decoration: InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  hintText: 'เนื่องจาก',
-                                ),
-                              ),
-                            ),
-                            Container(
-                                padding: EdgeInsets.only(top: 20, left: 20, right: 20),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        'ตั้งแต่วันที่',
-                                        textAlign: TextAlign.left,
-                                        style: styleSubHeader,
                                       ),
-                                    ),
-                                    Expanded(
-                                      child: Container(
-                                        padding: EdgeInsets.only(right: 40),
+                                      Container(
+                                        width: 40,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                        ),
                                         child: Text(
-                                          'รวม',
-                                          textAlign: TextAlign.right,
+                                          ' วัน',
                                           style: styleSubHeader,
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                )),
-                            Container(
-                              child: Row(
-                                children: [
-                                  Container(
-                                      width: 150,
-                                      padding: EdgeInsets.only(left: 20, right: 20),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                      ),
-                                      child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          primary: Colors.white,
-                                          onPrimary: Colors.black38,
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  padding: EdgeInsets.only(left: 10),
+                                  child: Row(
+                                    children: [
+                                      Radio(
+                                          value: 1,
+                                          groupValue: _selectFullTime,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              _selectFullTime = value;
+                                            });
+                                          }),
+                                      Text("ลาทั้งวัน"),
+                                      Radio(
+                                          value: 2,
+                                          groupValue: _selectFullTime,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              _selectFullTime = value;
+                                            });
+                                          }),
+                                      Text("ลาไม่เต็มวัน"),
+                                    ],
+                                  ),
+                                ),
+                                _selectFullTime == 2
+                                    ? Container(
+                                        child: Column(
+                                          children: [
+                                            Container(
+                                              child: Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: Container(
+                                                      padding: EdgeInsets.only(
+                                                          right: 60),
+                                                      child: Text(
+                                                        'รวม',
+                                                        textAlign:
+                                                            TextAlign.right,
+                                                        style: styleSubHeader,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Column(
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Container(
+                                                      padding: EdgeInsets.only(
+                                                          left: 20, right: 5),
+                                                      child: Text(
+                                                        "ตั้งแต่เวลา",
+                                                        style: styleSubHeader,
+                                                      ),
+                                                    ),
+                                                    Expanded(
+                                                      child: ListView.builder(
+                                                        physics:
+                                                            NeverScrollableScrollPhysics(),
+                                                        shrinkWrap: true,
+                                                        itemCount:
+                                                            _groupDay.length,
+                                                        itemBuilder:
+                                                            (BuildContext
+                                                                    context,
+                                                                int index) {
+                                                          return Container(
+                                                            // child: Text(index.toString()),
+                                                            child: Row(
+                                                              children: [
+                                                                Expanded(
+                                                                  child:
+                                                                      Container(
+                                                                    height: 40,
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      border: Border.all(
+                                                                          color:
+                                                                              Color(0xFFECF2F3)),
+                                                                    ),
+                                                                    child:
+                                                                        GestureDetector(
+                                                                      onTap:
+                                                                          () {
+                                                                        if (_groupDay[
+                                                                            index]) {
+                                                                          alert_time(
+                                                                              context,
+                                                                              1,
+                                                                              index);
+                                                                        }
+                                                                      },
+                                                                      child:
+                                                                          TextFormField(
+                                                                        controller:
+                                                                            _inputTimeIn[index],
+                                                                        enabled:
+                                                                            false,
+                                                                        textAlign:
+                                                                            TextAlign.center,
+                                                                        style: TextStyle(
+                                                                            fontFamily:
+                                                                                FontStyles().FontFamily,
+                                                                            fontSize: 24),
+                                                                        decoration:
+                                                                            InputDecoration(
+                                                                          filled:
+                                                                              true,
+                                                                          fillColor:
+                                                                              Color(0xFFECF2F3),
+                                                                          border:
+                                                                              InputBorder.none,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                Container(
+                                                                    padding: EdgeInsets
+                                                                        .only(
+                                                                            left:
+                                                                                5),
+                                                                    width: 30,
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      color: Colors
+                                                                          .white,
+                                                                    ),
+                                                                    child: Text(
+                                                                      'ถึง',
+                                                                      style:
+                                                                          styleSubHeader,
+                                                                    )),
+                                                                Expanded(
+                                                                  child:
+                                                                      Container(
+                                                                    height: 40,
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      border: Border.all(
+                                                                          color:
+                                                                              Color(0xFFECF2F3)),
+                                                                    ),
+                                                                    child:
+                                                                        GestureDetector(
+                                                                      onTap:
+                                                                          () {
+                                                                        if (_groupDay[
+                                                                            index]) {
+                                                                          alert_time(
+                                                                              context,
+                                                                              2,
+                                                                              index);
+                                                                        }
+                                                                      },
+                                                                      child:
+                                                                          TextFormField(
+                                                                        controller:
+                                                                            _inputTimeOut[index],
+                                                                        enabled:
+                                                                            false,
+                                                                        textAlign:
+                                                                            TextAlign.center,
+                                                                        style: TextStyle(
+                                                                            fontFamily:
+                                                                                FontStyles().FontFamily,
+                                                                            fontSize: 24),
+                                                                        decoration:
+                                                                            InputDecoration(
+                                                                          filled:
+                                                                              true,
+                                                                          fillColor:
+                                                                              Color(0xFFECF2F3),
+                                                                          border:
+                                                                              InputBorder.none,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          );
+                                                        },
+                                                      ),
+                                                    ),
+                                                    Container(
+                                                      padding: EdgeInsets.only(
+                                                          left: 5),
+                                                      child: Container(
+                                                        height: 40,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color:
+                                                              Color(0xFFECF2F3),
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                            Radius.circular(
+                                                                4.0),
+                                                          ),
+                                                        ),
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(2.0),
+                                                          child: DropdownButton<
+                                                              String>(
+                                                            underline:
+                                                                SizedBox(),
+                                                            onChanged: (String
+                                                                newValue) {
+                                                              setState(() {
+                                                                selectItemTime =
+                                                                    newValue;
+                                                              });
+                                                            },
+                                                            value:
+                                                                selectItemTime,
+                                                            items: itemsTime.map<
+                                                                DropdownMenuItem<
+                                                                    String>>((String
+                                                                value) {
+                                                              return DropdownMenuItem<
+                                                                  String>(
+                                                                value: value,
+                                                                child: Container(
+                                                                    alignment:
+                                                                        Alignment
+                                                                            .center,
+                                                                    child: Text(
+                                                                        ' ' +
+                                                                            value)),
+                                                              );
+                                                            }).toList(),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Container(
+                                                      width: 40,
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.white,
+                                                      ),
+                                                      child: Text(
+                                                        ' ชม.',
+                                                        style: styleSubHeader,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                if (timeError != null)
+                                                  Text(timeError)
+                                              ],
+                                            ),
+                                          ],
                                         ),
-                                        child: Text('${FirstDate.day}/${FirstDate.month}/${FirstDate.year}'),
-                                        onPressed: () async {
-                                          DateTime newDate = await showDatePicker(
-                                            context: context,
-                                            initialDate: FirstDate,
-                                            firstDate: DateTime(1900),
-                                            lastDate: DateTime(2100),
-                                          );
-                                          if (newDate == null) return;
-
-                                          setState(() {
-                                            FirstDate = newDate;
-                                          });
-                                        },
-                                      )),
-                                  Container(
-                                      width: 30,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                      ),
-                                      child: Text(
-                                        'ถึง',
-                                        style: styleSubHeader,
-                                      )),
-                                  Container(
-                                      width: 110,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                      ),
-                                      child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          primary: Colors.white,
-                                          onPrimary: Colors.black38,
-                                        ),
-                                        child: Text('${LastDate.day}/${LastDate.month}/${LastDate.year}'),
-                                        onPressed: () async {
-                                          DateTime newDate = await showDatePicker(
-                                            context: context,
-                                            initialDate: LastDate,
-                                            firstDate: DateTime(1900),
-                                            lastDate: DateTime(2100),
-                                          );
-                                          if (newDate == null) return;
-                                          setState(() {
-                                            LastDate = newDate;
-                                          });
-                                        },
-                                      )),
-                                  Container(
-                                    padding: EdgeInsets.only(left: 20),
-                                    child: DropdownButton<String>(
-                                      onChanged: (String newValue) {
-                                        setState(() {
-                                          selectItem = newValue;
-                                        });
-                                      },
-                                      value: selectItem,
-                                      items: items.map<DropdownMenuItem<String>>((String value) {
-                                        return DropdownMenuItem<String>(
-                                          value: value,
-                                          child: Text(value),
-                                        );
-                                      }).toList(),
+                                      )
+                                    : Container(),
+                                Container(
+                                  padding: EdgeInsets.only(
+                                      left: 20, right: 20, top: 15, bottom: 20),
+                                  child: TextField(
+                                    controller: inputPhone,
+                                    decoration: InputDecoration(
+                                      filled: true,
+                                      fillColor: Color(0xFFECF2F3),
+                                      border: InputBorder.none,
+                                      hintText: 'เบอร์ที่ติดต่อขณะลางาน',
                                     ),
                                   ),
-                                  Container(
-                                      width: 30,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                      ),
-                                      child: Text('วัน')),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              padding: EdgeInsets.only(left: 10),
-                              child: Row(
-                                children: [
-                                  Radio(
-                                      value: 1,
-                                      groupValue: _selectFullTime,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          _selectFullTime = value;
-                                        });
-                                      }),
-                                  Text("ลาทั้งวัน"),
-                                  Radio(
-                                      value: 2,
-                                      groupValue: _selectFullTime,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          _selectFullTime = value;
-                                        });
-                                      }),
-                                  Text("ลาไม่เต็มวัน"),
-                                ],
-                              ),
-                            ),
-                            _selectFullTime == 2
-                                ? Container(
-                                    child: Column(
-                                      children: [
-                                        Container(
+                                ),
+                                Container(
+                                  padding: EdgeInsets.only(
+                                      left: 20, right: 20, top: 15, bottom: 20),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        width: 150,
+                                        height: 50,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          border: Border.all(
+                                            color: Color(0xFFCCCCCC),
+                                            width: 1.0,
+                                          ),
+                                          borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(15.0),
+                                            topRight: Radius.circular(15.0),
+                                            bottomLeft: Radius.circular(15.0),
+                                            bottomRight: Radius.circular(15.0),
+                                          ),
+                                        ),
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            _filesExplorer();
+                                          },
                                           child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
                                             children: [
-                                              Expanded(
-                                                child: Container(
-                                                  padding: EdgeInsets.only(right: 60),
-                                                  child: Text(
-                                                    'รวม',
-                                                    textAlign: TextAlign.right,
-                                                    style: styleSubHeader,
-                                                  ),
-                                                ),
+                                              Icon(
+                                                Icons.file_upload_outlined,
+                                                color: Colors.blue,
+                                                size: 24,
+                                              ),
+                                              Text(
+                                                ' เอกสาร (หากมี)',
+                                                style: styleButton,
                                               ),
                                             ],
                                           ),
                                         ),
-                                        Column(
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Container(
-                                                  padding: EdgeInsets.only(left: 20, right: 15),
-                                                  child: Text(
-                                                    "ตั้งแต่เวลา",
-                                                    style: styleSubHeader,
-                                                  ),
-                                                ),
-                                                Container(
-                                                  width: 200,
-                                                  child: ListView.builder(
-                                                    physics: NeverScrollableScrollPhysics(),
-                                                    shrinkWrap: true,
-                                                    itemCount: _groupDay.length,
-                                                    itemBuilder: (BuildContext context, int index) {
-                                                      return Container(
-                                                        // child: Text(index.toString()),
-                                                        child: Row(
-                                                          children: [
-                                                            Expanded(
-                                                              child: Container(
-                                                                height: 40,
-                                                                decoration: BoxDecoration(
-                                                                  border: Border.all(color: Colors.grey),
-                                                                  borderRadius: BorderRadius.only(
-                                                                    topLeft: Radius.circular(5.0),
-                                                                    topRight: Radius.circular(5.0),
-                                                                    bottomLeft: Radius.circular(5.0),
-                                                                    bottomRight: Radius.circular(5.0),
-                                                                  ),
-                                                                ),
-                                                                child: GestureDetector(
-                                                                  onTap: () {
-                                                                    if (_groupDay[index]) {
-                                                                      alert_time(context, 1, index);
-                                                                    }
-                                                                  },
-                                                                  child: TextFormField(
-                                                                    controller: _inputTimeIn[index],
-                                                                    enabled: false,
-                                                                    textAlign: TextAlign.center,
-                                                                    style: TextStyle(fontFamily: FontStyles().FontFamily, fontSize: 24),
-                                                                    decoration: InputDecoration(
-                                                                        // hintText: 'เข้า',
-                                                                        // hintStyle: TextStyle(
-                                                                        //     fontFamily: FontStyles()
-                                                                        //         .FontFamily,
-                                                                        //     fontSize: 18),
-                                                                        ),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            Container(
-                                                                padding: EdgeInsets.only(left: 5),
-                                                                width: 30,
-                                                                decoration: BoxDecoration(
-                                                                  color: Colors.white,
-                                                                ),
-                                                                child: Text(
-                                                                  'ถึง',
-                                                                  style: styleSubHeader,
-                                                                )),
-                                                            Expanded(
-                                                              child: Container(
-                                                                height: 40,
-                                                                decoration: BoxDecoration(
-                                                                  border: Border.all(color: Colors.grey),
-                                                                  borderRadius: BorderRadius.only(
-                                                                    topLeft: Radius.circular(5.0),
-                                                                    topRight: Radius.circular(5.0),
-                                                                    bottomLeft: Radius.circular(5.0),
-                                                                    bottomRight: Radius.circular(5.0),
-                                                                  ),
-                                                                ),
-                                                                child: GestureDetector(
-                                                                  onTap: () {
-                                                                    if (_groupDay[index]) {
-                                                                      alert_time(context, 2, index);
-                                                                    }
-                                                                  },
-                                                                  child: TextFormField(
-                                                                    controller: _inputTimeOut[index],
-                                                                    enabled: false,
-                                                                    textAlign: TextAlign.center,
-                                                                    style: TextStyle(fontFamily: FontStyles().FontFamily, fontSize: 24),
-                                                                    decoration: InputDecoration(
-                                                                        // hintText: 'ออก',
-                                                                        // hintStyle: TextStyle(
-                                                                        //     fontFamily: FontStyles()
-                                                                        //         .FontFamily,
-                                                                        //     fontSize: 18),
-                                                                        ),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      );
-                                                    },
-                                                  ),
-                                                ),
-                                                Container(
-                                                  padding: EdgeInsets.only(left: 5),
-                                                  child: DropdownButton<String>(
-                                                    onChanged: (String newValue) {
-                                                      setState(() {
-                                                        selectItemTime = newValue;
-                                                      });
-                                                    },
-                                                    value: selectItemTime,
-                                                    items: itemsTime.map<DropdownMenuItem<String>>((String value) {
-                                                      return DropdownMenuItem<String>(
-                                                        value: value,
-                                                        child: Text(value),
-                                                      );
-                                                    }).toList(),
-                                                  ),
-                                                ),
-                                                Container(
-                                                    padding: EdgeInsets.only(right: 5),
-                                                    width: 30,
-                                                    decoration: BoxDecoration(
-                                                      color: Colors.white,
-                                                    ),
-                                                    child: Text('ชม.')),
-                                              ],
-                                            ),
-                                            if (timeError != null) Text(timeError)
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  )
-                                : Container(),
-                            Container(
-                              padding: EdgeInsets.only(left: 20, right: 20, top: 15, bottom: 20),
-                              child: TextField(
-                                controller: inputPhone,
-                                decoration: InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  hintText: 'เบอร์ที่ติดต่อขณะลางาน',
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ),
-                            Container(
-                              padding: EdgeInsets.only(left: 20, right: 20, top: 15, bottom: 20),
-                              child: Row(
-                                children: [
+                                if (_files != null && _files.length > 0)
                                   Container(
-                                    width: 150,
-                                    height: 50,
+                                    height: 120.0,
                                     decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      border: Border.all(
-                                        color: Color(0xFFCCCCCC),
-                                        width: 1.0,
-                                      ),
-                                      borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(15.0),
-                                        topRight: Radius.circular(15.0),
-                                        bottomLeft: Radius.circular(15.0),
-                                        bottomRight: Radius.circular(15.0),
+                                      border: Border(
+                                        bottom: BorderSide(
+                                          color: Color(0xFFDFDFDF),
+                                        ),
                                       ),
                                     ),
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        _filesExplorer();
-                                      },
+                                    child: _fileView(),
+                                  ),
+                                Container(
+                                  width: 200,
+                                  padding: EdgeInsets.only(
+                                      left: 20, right: 25, bottom: 50),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      if (!_formKey.currentState.validate()) {
+                                        return;
+                                      }
+                                      var timeInValid = (_inputTimeIn[0].text ==
+                                                  null ||
+                                              _inputTimeIn[0].text.isEmpty) &&
+                                          _selectFullTime == 2;
+                                      // print(timeInValid);
+                                      setState(() {
+                                        timeError = timeInValid
+                                            ? 'กรุณากรอกข้อมูล'
+                                            : null;
+                                      });
+                                      if (timeInValid) {
+                                        return;
+                                      }
+                                      popup_comfirm(context);
+                                    },
+                                    child: Container(
+                                      alignment: Alignment.center,
+                                      margin:
+                                          EdgeInsets.only(left: 10, right: 10),
+                                      padding:
+                                          EdgeInsets.only(left: 25, right: 25),
+                                      decoration: BoxDecoration(
+                                        color: Color(0xFF079CFD),
+                                        borderRadius: BorderRadius.circular(15),
+                                      ),
                                       child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
-                                          Icon(
-                                            Icons.attach_file,
-                                            color: Colors.blue,
-                                            size: 24,
+                                          Padding(
+                                            padding: EdgeInsets.all(2),
                                           ),
                                           Text(
-                                            'เอกสาร(หากมี)',
-                                            style: styleButton,
+                                            'ขอลางาน',
+                                            style: TextStyle(
+                                                fontFamily:
+                                                    FontStyles().FontFamily,
+                                                color: Colors.white,
+                                                fontSize: 26),
                                           ),
                                         ],
                                       ),
                                     ),
                                   ),
-                                ],
-                              ),
-                            ),
-                            if (_files != null && _files.length > 0)
-                              Container(
-                                height: 120.0,
-                                decoration: BoxDecoration(
-                                  border: Border(
-                                    bottom: BorderSide(
-                                      color: Color(0xFFDFDFDF),
-                                    ),
-                                  ),
                                 ),
-                                child: _fileView(),
-                              ),
-                            Container(
-                              width: 200,
-                              padding: EdgeInsets.only(left: 20, right: 25, bottom: 20),
-                              child: GestureDetector(
-                                onTap: () {
-                                  if (!_formKey.currentState.validate()) {
-                                    return;
-                                  }
-                                  var timeInValid = (_inputTimeIn[0].text == null || _inputTimeIn[0].text.isEmpty) && _selectFullTime == 2;
-                                  print(timeInValid);
-                                  setState(() {
-                                    timeError = timeInValid ? 'กรุณากรอกข้อมูล' : null;
-                                  });
-                                  if (timeInValid) {
-                                    return;
-                                  }
-                                  popup_comfirm(context);
-                                },
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  margin: EdgeInsets.only(left: 10, right: 10),
-                                  padding: EdgeInsets.only(left: 25, right: 25),
-                                  decoration: BoxDecoration(
-                                    color: Color(0xFF079CFD),
-                                    borderRadius: BorderRadius.circular(15),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.all(2),
-                                      ),
-                                      Text(
-                                        'ขอลางาน',
-                                        style: TextStyle(fontFamily: FontStyles().FontFamily, color: Colors.white, fontSize: 26),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
+                              ],
                             ),
-                          ],
-                        ),
-                      )
-                    ],
+                          )
+                        ],
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
           ),
-        )
-
-        // body: Container(
-        //   width: MediaQuery.of(context).size.width,
-        //   decoration: StylePage().background,
-        //   child: SafeArea(
-        //     child: Container(
-        //       padding: EdgeInsets.only(left: 20, right: 20),
-        //       width: MediaQuery.of(context).size.width,
-        //       child: Column(
-        //         mainAxisAlignment: MainAxisAlignment.start,
-        //         children: [
-        //           SingleChildScrollView(
-        //             child: Container(
-        //               padding: EdgeInsets.only(
-        //                   left: 5, right: 5, top: 10, bottom: 20),
-        //               width: WidhtDevice().widht(context),
-        //               decoration: StylePage().boxWhite,
-        //               // child: DevelopBlank.show(),
-        //             ),
-        //           ),
-        //         ],
-        //       ),
-
-        //     ),
-        //   ),
-        );
+        ),
+      ),
+    ));
   }
 
   Widget _fileView() {
@@ -858,7 +1059,8 @@ class _LeaveScreenState extends State<LeaveScreen> {
                         ),
                         child: Center(
                           child: Image(
-                            image: AssetImage("assets/images/extension/$extensions.png"),
+                            image: AssetImage(
+                                "assets/images/extension/$extensions.png"),
                             width: 80.0,
                           ),
                         ),
@@ -948,7 +1150,8 @@ class _LeaveScreenState extends State<LeaveScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20.0))),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20.0))),
           contentPadding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
           content: Container(
             width: WidhtDevice().widht(context),
@@ -959,15 +1162,20 @@ class _LeaveScreenState extends State<LeaveScreen> {
                   height: MediaQuery.of(context).size.height / 3,
                   child: CupertinoDatePicker(
                     mode: CupertinoDatePickerMode.time,
-                    initialDateTime: DateTime(_timeOfDay.hour, _timeOfDay.minute),
+                    initialDateTime:
+                        DateTime(_timeOfDay.hour, _timeOfDay.minute),
                     onDateTimeChanged: (DateTime newDateTime) {
                       var newTod = TimeOfDay.fromDateTime(newDateTime);
 
                       final now = new DateTime.now();
-                      print(DateFormat.Hm().format(DateTime(now.year, now.month, now.day, newTod.hour, newTod.minute)));
+                      print(DateFormat.Hm().format(DateTime(now.year, now.month,
+                          now.day, newTod.hour, newTod.minute)));
                       // print(DateTime(now.year, now.month, now.day, newTod.hour,
                       //     newTod.minute));
-                      _time = DateFormat.Hm().format(DateTime(now.year, now.month, now.day, newTod.hour, newTod.minute)).toString();
+                      _time = DateFormat.Hm()
+                          .format(DateTime(now.year, now.month, now.day,
+                              newTod.hour, newTod.minute))
+                          .toString();
                     },
                     use24hFormat: true,
                     minuteInterval: 1,
@@ -992,7 +1200,10 @@ class _LeaveScreenState extends State<LeaveScreen> {
                             alignment: Alignment.center,
                             child: Text(
                               'ปิด',
-                              style: TextStyle(fontFamily: FontStyles().FontFamily, fontSize: 22, fontWeight: FontWeight.bold),
+                              style: TextStyle(
+                                  fontFamily: FontStyles().FontFamily,
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold),
                             ),
                           ),
                         ),
@@ -1013,7 +1224,10 @@ class _LeaveScreenState extends State<LeaveScreen> {
                             alignment: Alignment.center,
                             child: Text(
                               'ตกลง',
-                              style: TextStyle(fontFamily: FontStyles().FontFamily, fontSize: 22, fontWeight: FontWeight.bold),
+                              style: TextStyle(
+                                  fontFamily: FontStyles().FontFamily,
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold),
                             ),
                           ),
                         ),

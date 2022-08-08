@@ -155,16 +155,16 @@ class _SplashscreenScreenState extends State<SplashscreenScreen> {
                         ? new_user
                             ? OrganizationScreen()
                             : MainPage()
-                        // : SignInScreen()
-                        : SignInScreen2()
+                        : SignInScreen()
+                        // : SignInScreen2()
                     : protect_switch
                         ? ProtectApp()
                         : sent
                             ? new_user
                                 ? OrganizationScreen()
                                 : MainPage()
-                            // : SignInScreen(),
-                            : SignInScreen2(),
+                            : SignInScreen(),
+                            // : SignInScreen2(),
                 title: new Text(
                   'iSmartLogin',
                   style: new TextStyle(

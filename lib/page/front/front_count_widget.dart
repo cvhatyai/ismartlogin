@@ -67,7 +67,7 @@ class _FrontCountWidgetState extends State<FrontCountWidget> {
 
   Widget _display_360(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 10),
+      margin: EdgeInsets.only(top: 0),
       padding: EdgeInsets.all(5),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

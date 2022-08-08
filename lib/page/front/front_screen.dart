@@ -326,24 +326,20 @@ class _FrontScreenState extends State<FrontScreen> {
               padding: EdgeInsets.only(top: 20),
               child: Column(
                 children: [
+                  //--- Profile
                   Container(
                     decoration: new BoxDecoration(
-                    
                       image: const DecorationImage(
                           image: AssetImage("assets/images/other/bg2.png"),
                           fit: BoxFit.cover),
                     ),
                     child: Padding(
-                      padding:
-                          const EdgeInsets.only(left: 20, right: 20, top: 20 ,bottom: 20),
+                      padding: const EdgeInsets.all(20),
                       child: Container(
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(15.0),
-                            topRight: Radius.circular(15.0),
-                            bottomLeft: Radius.circular(15.0),
-                            bottomRight: Radius.circular(15.0),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(14.0),
                           ),
                           boxShadow: [
                             BoxShadow(
@@ -355,7 +351,7 @@ class _FrontScreenState extends State<FrontScreen> {
                             ),
                           ],
                         ),
-                        height: 90,
+                        height: 100,
                         child: Row(
                           children: [
                             Expanded(
@@ -367,11 +363,9 @@ class _FrontScreenState extends State<FrontScreen> {
                                       child: _itemMember.length > 0
                                           ? _itemMember[0].AVATAR != ''
                                               ? Container(
-                                                  margin:
-                                                      EdgeInsets.only(top: 10),
                                                   alignment: Alignment.center,
-                                                  width: 30,
-                                                  height: 30,
+                                                  width: 60,
+                                                  height: 60,
                                                   decoration: new BoxDecoration(
                                                     color: Color(0xFFF2F2F2),
                                                     image: DecorationImage(
@@ -456,19 +450,16 @@ class _FrontScreenState extends State<FrontScreen> {
                                             ),
                                     ),
                                     Expanded(
-                                      child: Container(
-                                        padding:
-                                            EdgeInsets.only(left: 10, top: 20),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Container(
-                                              child: SingleChildScrollView(
-                                                scrollDirection:
-                                                    Axis.horizontal,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(12.0),
+                                        child: Container(
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceEvenly,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Expanded(
                                                 child: Text(
                                                   _itemMember.length > 0
                                                       ? _subFullname(
@@ -478,17 +469,12 @@ class _FrontScreenState extends State<FrontScreen> {
                                                   style: TextStyle(
                                                       fontFamily: FontStyles()
                                                           .FontFamily,
-                                                      fontSize: 28,
-                                                      height: 1,
+                                                      fontSize: 24,
                                                       fontWeight:
                                                           FontWeight.bold),
                                                 ),
                                               ),
-                                            ),
-                                            Container(
-                                              child: SingleChildScrollView(
-                                                scrollDirection:
-                                                    Axis.horizontal,
+                                              Expanded(
                                                 child: Text(
                                                   _itemMember.length > 0
                                                       ? _itemMember[0].ORG_NAME
@@ -497,16 +483,11 @@ class _FrontScreenState extends State<FrontScreen> {
                                                       fontFamily: FontStyles()
                                                           .FontFamily,
                                                       fontSize: 22,
-                                                      height: 1,
                                                       fontWeight:
                                                           FontWeight.normal),
                                                 ),
                                               ),
-                                            ),
-                                            Container(
-                                              child: SingleChildScrollView(
-                                                scrollDirection:
-                                                    Axis.horizontal,
+                                              Expanded(
                                                 child: Text(
                                                   _itemMember.length > 0
                                                       ? _itemMember[0].ORG_SUB_NAME ==
@@ -515,21 +496,21 @@ class _FrontScreenState extends State<FrontScreen> {
                                                                       .ORG_SUB_NAME ==
                                                                   null
                                                           ? ''
-                                                          : _itemMember[0]
-                                                              .ORG_SUB_NAME
+                                                          : 'สาขา ' +
+                                                              _itemMember[0]
+                                                                  .ORG_SUB_NAME
                                                       : '',
                                                   style: TextStyle(
                                                       fontFamily: FontStyles()
                                                           .FontFamily,
-                                                      fontSize: 10,
-                                                      height: 1,
+                                                      fontSize: 22,
                                                       color: Colors.grey,
                                                       fontWeight:
                                                           FontWeight.normal),
                                                 ),
                                               ),
-                                            ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -561,7 +542,7 @@ class _FrontScreenState extends State<FrontScreen> {
                                 padding: EdgeInsets.only(right: 20, top: 7),
                                 child: Icon(
                                   Icons.menu,
-                                  size: 35 ,
+                                  size: 35,
                                 ),
                               ),
                             )
@@ -585,9 +566,6 @@ class _FrontScreenState extends State<FrontScreen> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Container(
-                          padding: EdgeInsets.all(15),
-                        ),
                         // Container(
                         //   child: SingleChildScrollView(
                         //     scrollDirection: Axis.horizontal,
@@ -650,9 +628,16 @@ class _FrontScreenState extends State<FrontScreen> {
                         //     ),
                         //   ),
                         // ),
-                        // FrontCountWidget(),
+                        if (_itemMember != null)
+                          if (_itemMember.length > 0)
+                            if (_itemMember[0].MEMBER_TYPE == 'admin')
+                              FrontCountWidget(),
+                        if (_itemMember.length > 0 &&
+                            _itemMember[0].HISTORY == "1" &&
+                            _itemMember[0].MEMBER_TYPE == 'member')
+                          FrontCountWidget(),
                         Container(
-                          padding: EdgeInsets.only(top: 3),
+                          padding: EdgeInsets.only(top: 20),
                           alignment: Alignment.center,
                           width: MediaQuery.of(context).size.width,
                           child: Column(
@@ -682,10 +667,9 @@ class _FrontScreenState extends State<FrontScreen> {
                             ],
                           ),
                         ),
-                        
+
                         affiliate
                             ? Container(
-                              
                                 padding: EdgeInsets.all(10),
                                 child: Row(
                                   children: [
@@ -718,7 +702,6 @@ class _FrontScreenState extends State<FrontScreen> {
                                           child: Padding(
                                             padding: const EdgeInsets.all(8.0),
                                             child: Column(
-                                              
                                               children: [
                                                 Container(
                                                   padding: EdgeInsets.all(10),
@@ -740,8 +723,10 @@ class _FrontScreenState extends State<FrontScreen> {
                                                       decoration: BoxDecoration(
                                                           color: !_login
                                                               ? Colors.grey[400]
-                                                              : Color(0xFF36C8FF),
-                                                          shape: BoxShape.circle),
+                                                              : Color(
+                                                                  0xFF36C8FF),
+                                                          shape:
+                                                              BoxShape.circle),
                                                       child: Icon(
                                                         Icons.camera_alt,
                                                         size: 50,
@@ -805,7 +790,6 @@ class _FrontScreenState extends State<FrontScreen> {
                                             padding: const EdgeInsets.all(8.0),
                                             child: Column(
                                               children: [
-                                                
                                                 Container(
                                                   padding: EdgeInsets.all(10),
                                                   width: 120,
@@ -826,8 +810,10 @@ class _FrontScreenState extends State<FrontScreen> {
                                                       decoration: BoxDecoration(
                                                           color: !_logout
                                                               ? Colors.grey[400]
-                                                              : Color(0xFFFFAF36),
-                                                          shape: BoxShape.circle),
+                                                              : Color(
+                                                                  0xFFFFAF36),
+                                                          shape:
+                                                              BoxShape.circle),
                                                       child: Icon(
                                                         Icons.camera_alt,
                                                         size: 50,
@@ -837,7 +823,6 @@ class _FrontScreenState extends State<FrontScreen> {
                                                   ),
                                                 ),
                                                 Text(
-                                                  
                                                   'ออกงาน',
                                                   style: styleLabelCamera,
                                                 ),

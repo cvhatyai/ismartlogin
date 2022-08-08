@@ -63,6 +63,7 @@ class _OrgDepartmentDetailManageState extends State<OrgDepartmentDetailManage> {
   TextEditingController _inputLat = TextEditingController();
   TextEditingController _inputLng = TextEditingController();
   TextEditingController _inputDegree = TextEditingController();
+  TextEditingController _seq = TextEditingController();
   FocusNode _focusDegree = FocusNode();
 
   ///----
@@ -386,14 +387,14 @@ class _OrgDepartmentDetailManageState extends State<OrgDepartmentDetailManage> {
                                       width: 50,
                                       height: 35,
                                       child: TextFormField(
-                                        // focusNode: _focusNodes[index],
-                                        // focusNode: _focusDegree,
                                         maxLines: 1,
                                         textAlign: TextAlign.center,
                                         controller:
                                             TextEditingController.fromValue(
                                           TextEditingValue(
-                                            text: '${widget.seq}',
+                                            text: _seq.text != ''
+                                                ? _seq.text
+                                                : '${widget.seq}',
                                             selection:
                                                 TextSelection.fromPosition(
                                               TextPosition(
@@ -408,12 +409,12 @@ class _OrgDepartmentDetailManageState extends State<OrgDepartmentDetailManage> {
                                         style: TextStyle(
                                             fontFamily: FontStyles().FontFamily,
                                             fontSize: 24),
-                                        onChanged: (text) => {
-                                          if (text.toString() != "")
-                                            {
-                                              _insertSeq(text.toString(),
-                                                  widget.id.toString())
-                                            }
+                                        onChanged: (text) {
+                                          if (text.toString() != "") {
+                                            _seq.text = text;
+                                            _insertSeq(text.toString(),
+                                                widget.id.toString());
+                                          }
                                         },
                                       ),
                                     ),
