@@ -33,6 +33,8 @@ class _LeaveScreenState extends State<LeaveScreen> {
   bool select1 = true;
   bool select2 = false;
   bool select3 = false;
+  bool inputCause = false;
+  bool _inputPhone = false;
   List<String> items = <String>['0'];
   List<String> itemsTime = <String>[
     '0.5',
@@ -474,12 +476,15 @@ class _LeaveScreenState extends State<LeaveScreen> {
                                       fillColor: Color(0xFFECF2F3),
                                       border: InputBorder.none,
                                       hintText: 'เนื่องจาก',
+                                      errorText: inputCause == true
+                                          ? "กรุณากรอกข้อมูล"
+                                          : "",
                                     ),
                                   ),
                                 ),
                                 Container(
                                     padding: EdgeInsets.only(
-                                        top: 20, left: 20, right: 20),
+                                        top: 10, left: 20, right: 20),
                                     child: Row(
                                       children: [
                                         Expanded(
@@ -502,43 +507,43 @@ class _LeaveScreenState extends State<LeaveScreen> {
                                       ],
                                     )),
                                 Container(
-                                   padding: const EdgeInsets.only(left:20.0),
+                                  padding: const EdgeInsets.only(left: 20.0),
                                   child: Row(
                                     children: [
                                       Expanded(
                                           child: ElevatedButton(
-                                            style: ElevatedButton.styleFrom(
-                                              primary: Color(0xFFECF2F3),
-                                              onPrimary: Colors.black38,
+                                        style: ElevatedButton.styleFrom(
+                                          primary: Color(0xFFECF2F3),
+                                          onPrimary: Colors.black38,
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              child: Text(
+                                                  '${FirstDate.day}/${FirstDate.month}/${FirstDate.year}'),
                                             ),
-                                            child: Row(
-                                              children: [
-                                                Expanded(
-                                                  child: Text(
-                                                      '${FirstDate.day}/${FirstDate.month}/${FirstDate.year}'),
-                                                ),
-                                                Icon(
-                                                  Icons.today_outlined,
-                                                  color: Color(0xFF5B5B5B),
-                                                  size: 20,
-                                                ),
-                                              ],
+                                            Icon(
+                                              Icons.today_outlined,
+                                              color: Color(0xFF5B5B5B),
+                                              size: 20,
                                             ),
-                                            onPressed: () async {
-                                              DateTime newDate =
-                                                  await showDatePicker(
-                                                context: context,
-                                                initialDate: FirstDate,
-                                                firstDate: DateTime(1900),
-                                                lastDate: DateTime(2100),
-                                              );
-                                              if (newDate == null) return;
+                                          ],
+                                        ),
+                                        onPressed: () async {
+                                          DateTime newDate =
+                                              await showDatePicker(
+                                            context: context,
+                                            initialDate: FirstDate,
+                                            firstDate: DateTime(1900),
+                                            lastDate: DateTime(2100),
+                                          );
+                                          if (newDate == null) return;
 
-                                              setState(() {
-                                                FirstDate = newDate;
-                                              });
-                                            },
-                                          )),
+                                          setState(() {
+                                            FirstDate = newDate;
+                                          });
+                                        },
+                                      )),
                                       Container(
                                           width: 30,
                                           decoration: BoxDecoration(
@@ -552,37 +557,37 @@ class _LeaveScreenState extends State<LeaveScreen> {
                                           )),
                                       Expanded(
                                           child: ElevatedButton(
-                                            style: ElevatedButton.styleFrom(
-                                              primary: Color(0xFFECF2F3),
-                                              onPrimary: Colors.black38,
+                                        style: ElevatedButton.styleFrom(
+                                          primary: Color(0xFFECF2F3),
+                                          onPrimary: Colors.black38,
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              child: Text(
+                                                  '${LastDate.day}/${LastDate.month}/${LastDate.year}'),
                                             ),
-                                            child: Row(
-                                              children: [
-                                                Expanded(
-                                                  child: Text(
-                                                      '${LastDate.day}/${LastDate.month}/${LastDate.year}'),
-                                                ),
-                                                Icon(
-                                                  Icons.today_outlined,
-                                                  color: Color(0xFF5B5B5B),
-                                                  size: 20,
-                                                ),
-                                              ],
+                                            Icon(
+                                              Icons.today_outlined,
+                                              color: Color(0xFF5B5B5B),
+                                              size: 20,
                                             ),
-                                            onPressed: () async {
-                                              DateTime newDate =
-                                                  await showDatePicker(
-                                                context: context,
-                                                initialDate: LastDate,
-                                                firstDate: DateTime(1900),
-                                                lastDate: DateTime(2100),
-                                              );
-                                              if (newDate == null) return;
-                                              setState(() {
-                                                LastDate = newDate;
-                                              });
-                                            },
-                                          )),
+                                          ],
+                                        ),
+                                        onPressed: () async {
+                                          DateTime newDate =
+                                              await showDatePicker(
+                                            context: context,
+                                            initialDate: LastDate,
+                                            firstDate: DateTime(1900),
+                                            lastDate: DateTime(2100),
+                                          );
+                                          if (newDate == null) return;
+                                          setState(() {
+                                            LastDate = newDate;
+                                          });
+                                        },
+                                      )),
                                       Container(
                                         padding: EdgeInsets.only(left: 5),
                                         child: Container(
@@ -897,14 +902,18 @@ class _LeaveScreenState extends State<LeaveScreen> {
                                     : Container(),
                                 Container(
                                   padding: EdgeInsets.only(
-                                      left: 20, right: 20, top: 15, bottom: 20),
+                                      left: 20, right: 20, top: 15, bottom: 0),
                                   child: TextField(
+                                    keyboardType: TextInputType.number,
                                     controller: inputPhone,
                                     decoration: InputDecoration(
                                       filled: true,
                                       fillColor: Color(0xFFECF2F3),
                                       border: InputBorder.none,
                                       hintText: 'เบอร์ที่ติดต่อขณะลางาน',
+                                      errorText: _inputPhone == true
+                                          ? "กรุณากรอกข้อมูล"
+                                          : "",
                                     ),
                                   ),
                                 ),
@@ -978,7 +987,6 @@ class _LeaveScreenState extends State<LeaveScreen> {
                                                   null ||
                                               _inputTimeIn[0].text.isEmpty) &&
                                           _selectFullTime == 2;
-                                      // print(timeInValid);
                                       setState(() {
                                         timeError = timeInValid
                                             ? 'กรุณากรอกข้อมูล'
@@ -987,6 +995,31 @@ class _LeaveScreenState extends State<LeaveScreen> {
                                       if (timeInValid) {
                                         return;
                                       }
+
+                                      if (_inputCause.text == "" &&
+                                          inputPhone.text == "") {
+                                        inputCause = true;
+                                        _inputPhone = true;
+                                        return;
+                                      } else {
+                                        inputCause = false;
+                                        _inputPhone = false;
+                                      }
+
+                                      if (_inputCause.text == "") {
+                                        inputCause = true;
+                                        return;
+                                      } else {
+                                        inputCause = false;
+                                      }
+
+                                      if (inputPhone.text == "") {
+                                        _inputPhone = true;
+                                        return;
+                                      } else {
+                                        _inputPhone = false;
+                                      }
+
                                       popup_comfirm(context);
                                     },
                                     child: Container(
