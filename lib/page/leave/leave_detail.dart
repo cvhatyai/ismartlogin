@@ -23,16 +23,27 @@ class LeaveDetailScreen extends StatefulWidget {
   _LeaveDetailScreenState createState() => _LeaveDetailScreenState();
 }
 
-
-
 class _LeaveDetailScreenState extends State<LeaveDetailScreen> {
+  List data = [];
   List<int> _daySelect = [];
   DateTime FirstDate = DateTime.now();
   DateTime LastDate = DateTime.now();
   bool select1 = true;
   bool select2 = false;
   bool select3 = false;
+
   List<String> items = <String>['0'];
+  final List<Color> colorCodes = <Color>[
+    Color(0xFFFDAB28),
+    Color(0xFF30BEE3),
+    Color(0xFF305AE3)
+  ];
+  final List<Color> colorTextCodes = <Color>[
+    Color(0xFFFF7700),
+    Color(0xFF01BB50),
+    Color(0xFFFF0000),
+    Color(0xFFA0BAC6),
+  ];
   List<String> itemsTime = <String>[
     '0.5',
     '1',
@@ -53,6 +64,9 @@ class _LeaveDetailScreenState extends State<LeaveDetailScreen> {
   ];
   String selectItem = '1';
   String selectItemTime = '1';
+  String sick = '0';
+  String leave = '0';
+  String other = '0';
   int _selectFullTime = 1;
 
   TextEditingController _inputCause = TextEditingController();
@@ -134,8 +148,30 @@ class _LeaveDetailScreenState extends State<LeaveDetailScreen> {
   }
 
   void initState() {
+    onLoadListLeaveManage();
     onLoadMemberManage();
     super.initState();
+  }
+
+  onLoadListLeaveManage() async {
+    Map map = {
+      "org_id": await SharedCashe.getItemsWay(name: 'org_id'),
+      "uid": await SharedCashe.getItemsWay(name: 'id'),
+    };
+    var body = json.encode(map);
+    final response = await http.Client().post(
+      Uri.parse(Server().getListLeave),
+      headers: {"Content-Type": "application/json"},
+      body: body,
+    );
+    data = json.decode(response.body);
+    // print(data);
+    if (data[0]['status'] == true) {
+      sick = data[0]['sick'].toString();
+      leave = data[0]['leave'].toString();
+      other = data[0]['other'].toString();
+    }
+    setState(() {});
   }
 
   Future<bool> onLoadMemberManage() async {
@@ -185,738 +221,637 @@ class _LeaveDetailScreenState extends State<LeaveDetailScreen> {
     }
 
     final difference = daysBetween(FirstDate, LastDate);
-    log('difference: $difference');
-
+    // log('difference: $difference');
     for (var i = 0; i <= difference; i++) {
       if (items.every((item) => item != '${i}')) {
         items.add('${i - 0.5}');
         items.add('${i}');
       }
     }
-    log('data: $items');
-    return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Color(0xFF00B1FF),
-          title: Text(
-            'สถิติ',
-            style: StylesText.titleAppBar,
-          ),
-        ),
-        body: Container(
-          decoration: StylePage().background,
-          child: SafeArea(
-            child: SingleChildScrollView(
-              child: Container(
-                child: Column(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.only(left: 20, right: 20),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              'ใบลา',
-                              textAlign: TextAlign.left,
-                              style: styleHeader,
-                            ),
-                          ),
-                          GestureDetector(
-                            child:
-                          Expanded(
-                            child: Text(
-                              'ดูสถิติการลา',
-                              textAlign: TextAlign.right,
-                              style: styleHeader,
-                            ),
-                            
-                          ),
-                          onTap: () {
-                            Navigator.pop(context);
-                            // EasyLoading.show();
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => OrgMemberScreen(),
-                              ),
-                            );
-                          },),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                        image: const DecorationImage(
-                            image: AssetImage("assets/images/other/bg2.png"),
-                            fit: BoxFit.cover),
-                        color: Colors.white,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(15.0),
-                          topRight: Radius.circular(15.0),
-                        ),
-                      ),
-                      padding: EdgeInsets.all(20),
-                      child: Row(
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                // Toggle light when tapped.
-                                select1 = true;
-                                select2 = false;
-                                select3 = false;
-                              });
-                            },
-                            child: Container(
-                                decoration: BoxDecoration(
-                                  color: select1
-                                      ? Colors.lightBlue.shade200
-                                      : Colors.grey.shade200,
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(15.0),
-                                    topRight: Radius.circular(15.0),
-                                    bottomLeft: Radius.circular(15.0),
-                                    bottomRight: Radius.circular(15.0),
-                                  ),
-                                ),
-                                height: 100,
-                                width: 100,
-                                child: Column(
-                                  children: [
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(15.0),
-                                          topRight: Radius.circular(15.0),
-                                        ),
-                                      ),
-                                      height: 70,
-                                      child: SvgPicture.asset(
-                                        "assets/images/other/injured.svg", //asset location
-                                        color: select1 == true
-                                            ? Colors.white
-                                            : Colors.grey[400], //svg color
-                                      ),
-                                    ),
-                                    Container(
-                                      child: Text(
-                                        "ลาป่วย",
-                                        style: TextStyle(
-                                            fontFamily: FontStyles().FontFamily,
-                                            fontSize: 18,
-                                            color: select1 == true
-                                                ? Colors.white
-                                                : Colors.black,
-                                            height: 1),
-                                      ),
-                                    )
-                                  ],
-                                )),
-                          ),
-                          Spacer(),
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                // Toggle light when tapped.
-                                select1 = false;
-                                select2 = true;
-                                select3 = false;
-                              });
-                            },
-                            child: Container(
-                                decoration: BoxDecoration(
-                                  color: select2
-                                      ? Colors.lightBlue.shade200
-                                      : Colors.grey.shade200,
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(15.0),
-                                    topRight: Radius.circular(15.0),
-                                    bottomLeft: Radius.circular(15.0),
-                                    bottomRight: Radius.circular(15.0),
-                                  ),
-                                ),
-                                height: 100,
-                                width: 100,
-                                child: Column(
-                                  children: [
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(15.0),
-                                          topRight: Radius.circular(15.0),
-                                        ),
-                                      ),
-                                      height: 70,
-                                      child: SvgPicture.asset(
-                                        "assets/images/other/exit.svg", //asset location
-                                        color: select2 == true
-                                            ? Colors.white
-                                            : Colors.grey[400], //svg color
-                                      ),
-                                    ),
-                                    Container(
-                                      child: Text(
-                                        "ลากิจ",
-                                        style: TextStyle(
-                                            fontFamily: FontStyles().FontFamily,
-                                            fontSize: 18,
-                                            color: select2 == true
-                                                ? Colors.white
-                                                : Colors.black,
-                                            height: 1),
-                                      ),
-                                    )
-                                  ],
-                                )),
-                          ),
-                          Spacer(),
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                // Toggle light when tapped.
-                                select1 = false;
-                                select2 = false;
-                                select3 = true;
-                              });
-                            },
-                            child: Container(
-                                decoration: BoxDecoration(
-                                  color: select3
-                                      ? Colors.lightBlue.shade200
-                                      : Colors.grey.shade200,
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(15.0),
-                                    topRight: Radius.circular(15.0),
-                                    bottomLeft: Radius.circular(15.0),
-                                    bottomRight: Radius.circular(15.0),
-                                  ),
-                                ),
-                                height: 100,
-                                width: 100,
-                                child: Column(
-                                  children: [
-                                    Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(15.0),
-                                            topRight: Radius.circular(15.0),
-                                          ),
-                                        ),
-                                        height: 70,
-                                        child: SvgPicture.asset(
-                                          "assets/images/other/travel.svg", //asset location
-                                          color: select3 == true
-                                              ? Colors.white
-                                              : Colors.grey[400], //svg color
-                                        )),
-                                    Container(
-                                      child: Text(
-                                        "อื่น",
-                                        style: TextStyle(
-                                            fontFamily: FontStyles().FontFamily,
-                                            fontSize: 18,
-                                            color: select3 == true
-                                                ? Colors.white
-                                                : Colors.black,
-                                            height: 1),
-                                      ),
-                                    )
-                                  ],
-                                )),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                      ),
-                      child: Column(
-                        children: [
-                          Container(
-                            padding: EdgeInsets.only(left: 20, right: 20),
-                            child: TextField(
-                              style: styleSubHeader,
-                              controller: _inputCause,
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(),
-                                hintText: 'เนื่องจาก',
-                              ),
-                            ),
-                          ),
-                          Container(
-                              padding:
-                                  EdgeInsets.only(top: 20, left: 20, right: 20),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      'ตั้งแต่วันที่',
-                                      textAlign: TextAlign.left,
-                                      style: styleSubHeader,
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Container(
-                                      padding: EdgeInsets.only(right: 40),
-                                      child: Text(
-                                        'รวม',
-                                        textAlign: TextAlign.right,
-                                        style: styleSubHeader,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              )),
-                          Container(
-                            child: Row(
-                              children: [
-                                Container(
-                                    width: 150,
-                                    padding:
-                                        EdgeInsets.only(left: 20, right: 20),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                    ),
-                                    child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        primary: Colors.white,
-                                        onPrimary: Colors.black38,
-                                      ),
-                                      child: Text(
-                                          '${FirstDate.day}/${FirstDate.month}/${FirstDate.year}'),
-                                      onPressed: () async {
-                                        DateTime newDate = await showDatePicker(
-                                          context: context,
-                                          initialDate: FirstDate,
-                                          firstDate: DateTime(1900),
-                                          lastDate: DateTime(2100),
-                                        );
-                                        if (newDate == null) return;
+    // log('data: $items');
 
-                                        setState(() {
-                                          FirstDate = newDate;
-                                        });
-                                      },
-                                    )),
-                                Container(
-                                    width: 30,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                    ),
-                                    child: Text(
-                                      'ถึง',
-                                      style: styleSubHeader,
-                                    )),
-                                Container(
-                                    width: 110,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                    ),
-                                    child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        primary: Colors.white,
-                                        onPrimary: Colors.black38,
-                                      ),
-                                      child: Text(
-                                          '${LastDate.day}/${LastDate.month}/${LastDate.year}'),
-                                      onPressed: () async {
-                                        DateTime newDate = await showDatePicker(
-                                          context: context,
-                                          initialDate: LastDate,
-                                          firstDate: DateTime(1900),
-                                          lastDate: DateTime(2100),
-                                        );
-                                        if (newDate == null) return;
-                                        setState(() {
-                                          LastDate = newDate;
-                                        });
-                                      },
-                                    )),
-                                Container(
-                                  padding: EdgeInsets.only(left: 20),
-                                  child: DropdownButton<String>(
-                                    onChanged: (String newValue) {
-                                      setState(() {
-                                        selectItem = newValue;
-                                      });
-                                    },
-                                    value: selectItem,
-                                    items: items.map<DropdownMenuItem<String>>(
-                                        (String value) {
-                                      return DropdownMenuItem<String>(
-                                        value: value,
-                                        child: Text(value),
-                                      );
-                                    }).toList(),
-                                  ),
-                                ),
-                                Container(
-                                    width: 30,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                    ),
-                                    child: Text('วัน')),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            padding: EdgeInsets.only(left: 10),
-                            child: Row(
-                              children: [
-                                Radio(
-                                    value: 1,
-                                    groupValue: _selectFullTime,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        _selectFullTime = value;
-                                      });
-                                    }),
-                                Text("ลาทั้งวัน"),
-                                Radio(
-                                    value: 2,
-                                    groupValue: _selectFullTime,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        _selectFullTime = value;
-                                      });
-                                    }),
-                                Text("ลาไม่เต็มวัน"),
-                              ],
-                            ),
-                          ),
-                          _selectFullTime == 2
-                              ? Container(
-                                  child: Column(
-                                    children: [
-                                      Container(
+    var now = new DateTime.now();
+    var formatter = new DateFormat('yyyy-MM-dd');
+    String formattedDate = formatter.format(now);
+    final values = formattedDate.split('-');
+    final yearCurr = int.parse(values[0]) + 543;
+
+    List rs = [];
+    if (data.length > 0) {
+      rs = data[0]['result'];
+    }
+
+    return Scaffold(
+        body: Container(
+      decoration: StylePage().background,
+      child: SafeArea(
+        child: GestureDetector(
+          onTap: () {
+            FocusScopeNode currentFocus = FocusScope.of(context);
+            if (!currentFocus.hasPrimaryFocus) {
+              currentFocus.unfocus();
+            }
+          },
+          child: SingleChildScrollView(
+            physics: const NeverScrollableScrollPhysics(),
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  AppBar(
+                    backgroundColor: Color(0xFF00B1FF),
+                    title: Text(
+                      'สถิติการลา',
+                      style: TextStyle(
+                          fontFamily: FontStyles().FontFamily,
+                          fontSize: 28,
+                          color: Colors.white,
+                          height: 1,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    elevation: 0,
+                  ),
+                  Container(
+                    color: Color(0xFF01b4fa),
+                    child: Center(
+                      child: Text(
+                        'สถิติการลาสะสมปี ${yearCurr.toString()}',
+                        style: TextStyle(
+                            fontFamily: FontStyles().FontFamily,
+                            fontSize: 30,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Container(
+                      height: MediaQuery.of(context).size.height,
+                      color: Colors.white,
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 20),
+                        child: Column(
+                          children: [
+                            Align(
+                              alignment: Alignment.topCenter,
+                              child: Container(
+                                width: MediaQuery.of(context).size.width,
+                                child: Stack(
+                                  children: [
+                                    Image(
+                                        image: AssetImage(
+                                            "assets/images/other/bg2.png")),
+                                    Padding(
+                                      padding: const EdgeInsets.all(20),
+                                      child: Container(
+                                        height: 180,
                                         child: Row(
                                           children: [
                                             Expanded(
                                               child: Container(
-                                                padding:
-                                                    EdgeInsets.only(right: 60),
-                                                child: Text(
-                                                  'รวม',
-                                                  textAlign: TextAlign.right,
-                                                  style: styleSubHeader,
+                                                decoration: BoxDecoration(
+                                                  color: Color(0xFFFF9C04),
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(
+                                                              15.0)),
                                                 ),
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(
+                                                      16.0),
+                                                  child: Center(
+                                                    child: Column(
+                                                      children: [
+                                                        Expanded(
+                                                          child:
+                                                              SvgPicture.asset(
+                                                            "assets/images/other/injured.svg", //asset location
+                                                            height:
+                                                                double.infinity,
+                                                          ),
+                                                        ),
+                                                        Container(
+                                                          height: 30,
+                                                          child: Align(
+                                                            alignment: Alignment
+                                                                .bottomCenter,
+                                                            child: Text(
+                                                              "ลาป่วย",
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontSize: 18,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Container(
+                                                          height: 40,
+                                                          child: Align(
+                                                            alignment: Alignment
+                                                                .center,
+                                                            child: Text(
+                                                              sick,
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontSize: 40,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(width: 5),
+                                            Expanded(
+                                              child: Column(
+                                                children: [
+                                                  Expanded(
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                        color:
+                                                            Color(0xFF5AD1E9),
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    15.0)),
+                                                      ),
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .only(
+                                                                left: 24.0,
+                                                                right: 24.0),
+                                                        child: Row(
+                                                          children: [
+                                                            Expanded(
+                                                              child: Container(
+                                                                child: Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                              .all(
+                                                                          6.0),
+                                                                  child: Center(
+                                                                    child: SvgPicture
+                                                                        .asset(
+                                                                      "assets/images/other/exit.svg", //asset location
+                                                                      color: Colors
+                                                                          .white,
+                                                                      width: double
+                                                                          .infinity,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Expanded(
+                                                              child: Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .only(
+                                                                        top:
+                                                                            8.0,
+                                                                        bottom:
+                                                                            8.0),
+                                                                child: Column(
+                                                                  children: [
+                                                                    Container(
+                                                                      height:
+                                                                          30,
+                                                                      child:
+                                                                          Text(
+                                                                        "ลากิจ",
+                                                                        style: TextStyle(
+                                                                            color: Colors
+                                                                                .white,
+                                                                            fontSize:
+                                                                                18,
+                                                                            height:
+                                                                                1.8),
+                                                                      ),
+                                                                    ),
+                                                                    Expanded(
+                                                                      child:
+                                                                          Text(
+                                                                        leave,
+                                                                        style:
+                                                                            TextStyle(
+                                                                          color:
+                                                                              Colors.white,
+                                                                          fontSize:
+                                                                              40,
+                                                                          fontWeight:
+                                                                              FontWeight.bold,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(height: 5),
+                                                  Expanded(
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                        color:
+                                                            Color(0xFF305AE3),
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    15.0)),
+                                                      ),
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .only(
+                                                                left: 24.0,
+                                                                right: 24.0),
+                                                        child: Row(
+                                                          children: [
+                                                            Expanded(
+                                                              child: Container(
+                                                                child: Padding(
+                                                                  padding:
+                                                                      const EdgeInsets
+                                                                              .all(
+                                                                          6.0),
+                                                                  child: Center(
+                                                                    child: SvgPicture
+                                                                        .asset(
+                                                                      "assets/images/other/travel.svg", //asset location
+                                                                      color: Colors
+                                                                          .white,
+                                                                      width: double
+                                                                          .infinity,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Expanded(
+                                                              child: Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .only(
+                                                                        top:
+                                                                            8.0,
+                                                                        bottom:
+                                                                            8.0),
+                                                                child: Column(
+                                                                  children: [
+                                                                    Container(
+                                                                      height:
+                                                                          30,
+                                                                      child:
+                                                                          Text(
+                                                                        "อื่นๆ",
+                                                                        style: TextStyle(
+                                                                            color: Colors
+                                                                                .white,
+                                                                            fontSize:
+                                                                                18,
+                                                                            height:
+                                                                                1.8),
+                                                                      ),
+                                                                    ),
+                                                                    Expanded(
+                                                                      child:
+                                                                          Text(
+                                                                        other,
+                                                                        style:
+                                                                            TextStyle(
+                                                                          color:
+                                                                              Colors.white,
+                                                                          fontSize:
+                                                                              40,
+                                                                          fontWeight:
+                                                                              FontWeight.bold,
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
                                             ),
                                           ],
                                         ),
                                       ),
-                                      Row(
-                                        children: [
-                                          Container(
-                                            padding: EdgeInsets.only(
-                                                left: 20, right: 15),
-                                            child: Text(
-                                              "ตั้งแต่เวลา",
-                                              style: styleSubHeader,
-                                            ),
-                                          ),
-                                          Container(
-                                            width: 200,
-                                            child: ListView.builder(
-                                              physics:
-                                                  NeverScrollableScrollPhysics(),
-                                              shrinkWrap: true,
-                                              itemCount: _groupDay.length,
-                                              itemBuilder:
-                                                  (BuildContext context,
-                                                      int index) {
-                                                return Container(
-                                                  // child: Text(index.toString()),
-                                                  child: Row(
-                                                    children: [
-                                                      Expanded(
-                                                        child: Container(
-                                                          height: 40,
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            border: Border.all(
-                                                                color: Colors
-                                                                    .grey),
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .only(
-                                                              topLeft: Radius
-                                                                  .circular(
-                                                                      5.0),
-                                                              topRight: Radius
-                                                                  .circular(
-                                                                      5.0),
-                                                              bottomLeft: Radius
-                                                                  .circular(
-                                                                      5.0),
-                                                              bottomRight:
-                                                                  Radius
-                                                                      .circular(
-                                                                          5.0),
-                                                            ),
-                                                          ),
-                                                          child:
-                                                              GestureDetector(
-                                                            onTap: () {
-                                                              if (_groupDay[
-                                                                  index]) {
-                                                                alert_time(
-                                                                    context,
-                                                                    1,
-                                                                    index);
-                                                              }
-                                                            },
-                                                            child:
-                                                                TextFormField(
-                                                              controller:
-                                                                  _inputTimeIn[
-                                                                      index],
-                                                              enabled: false,
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .center,
-                                                              style: TextStyle(
-                                                                  fontFamily:
-                                                                      FontStyles()
-                                                                          .FontFamily,
-                                                                  fontSize: 24),
-                                                              decoration: InputDecoration(
-                                                                  // hintText: 'เข้า',
-                                                                  // hintStyle: TextStyle(
-                                                                  //     fontFamily: FontStyles()
-                                                                  //         .FontFamily,
-                                                                  //     fontSize: 18),
-                                                                  ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Container(
-                                                          padding:
-                                                              EdgeInsets.only(
-                                                                  left: 5),
-                                                          width: 30,
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            color: Colors.white,
-                                                          ),
-                                                          child: Text(
-                                                            'ถึง',
-                                                            style:
-                                                                styleSubHeader,
-                                                          )),
-                                                      Expanded(
-                                                        child: Container(
-                                                          height: 40,
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            border: Border.all(
-                                                                color: Colors
-                                                                    .grey),
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .only(
-                                                              topLeft: Radius
-                                                                  .circular(
-                                                                      5.0),
-                                                              topRight: Radius
-                                                                  .circular(
-                                                                      5.0),
-                                                              bottomLeft: Radius
-                                                                  .circular(
-                                                                      5.0),
-                                                              bottomRight:
-                                                                  Radius
-                                                                      .circular(
-                                                                          5.0),
-                                                            ),
-                                                          ),
-                                                          child:
-                                                              GestureDetector(
-                                                            onTap: () {
-                                                              if (_groupDay[
-                                                                  index]) {
-                                                                alert_time(
-                                                                    context,
-                                                                    2,
-                                                                    index);
-                                                              }
-                                                            },
-                                                            child:
-                                                                TextFormField(
-                                                              controller:
-                                                                  _inputTimeOut[
-                                                                      index],
-                                                              enabled: false,
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .center,
-                                                              style: TextStyle(
-                                                                  fontFamily:
-                                                                      FontStyles()
-                                                                          .FontFamily,
-                                                                  fontSize: 24),
-                                                              decoration: InputDecoration(
-                                                                  // hintText: 'ออก',
-                                                                  // hintStyle: TextStyle(
-                                                                  //     fontFamily: FontStyles()
-                                                                  //         .FontFamily,
-                                                                  //     fontSize: 18),
-                                                                  ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                );
-                                              },
-                                            ),
-                                          ),
-                                          Container(
-                                            padding: EdgeInsets.only(left: 5),
-                                            child: DropdownButton<String>(
-                                              onChanged: (String newValue) {
-                                                setState(() {
-                                                  selectItemTime = newValue;
-                                                });
-                                              },
-                                              value: selectItemTime,
-                                              items: itemsTime.map<
-                                                      DropdownMenuItem<String>>(
-                                                  (String value) {
-                                                return DropdownMenuItem<String>(
-                                                  value: value,
-                                                  child: Text(value),
-                                                );
-                                              }).toList(),
-                                            ),
-                                          ),
-                                          Container(
-                                              padding:
-                                                  EdgeInsets.only(right: 5),
-                                              width: 30,
-                                              decoration: BoxDecoration(
-                                                color: Colors.white,
-                                              ),
-                                              child: Text('ชม.')),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              : Container(),
-                          Container(
-                            padding: EdgeInsets.only(
-                                left: 20, right: 20, top: 15, bottom: 20),
-                            child: TextField(
-                              controller: inputPhone,
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(),
-                                hintText: 'เบอร์ที่ติดต่อขณะลางาน',
-                              ),
-                            ),
-                          ),
-                          Container(
-                            padding: EdgeInsets.only(
-                                left: 20, right: 20, top: 15, bottom: 20),
-                            child: Row(
-                              children: [
-                                Container(
-                                  width: 150,
-                                  height: 50,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    border: Border.all(
-                                      color: Color(0xFFCCCCCC),
-                                      width: 1.0,
-                                    ),
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(15.0),
-                                      topRight: Radius.circular(15.0),
-                                      bottomLeft: Radius.circular(15.0),
-                                      bottomRight: Radius.circular(15.0),
-                                    ),
-                                  ),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      _filesExplorer();
-                                    },
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Icon(
-                                          Icons.attach_file,
-                                          color: Colors.blue,
-                                          size: 24,
-                                        ),
-                                        Text(
-                                          'เอกสาร(หากมี)',
-                                          style: styleButton,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          if (_files != null && _files.length > 0)
-                            Container(
-                              height: 120.0,
-                              decoration: BoxDecoration(
-                                border: Border(
-                                  bottom: BorderSide(
-                                    color: Color(0xFFDFDFDF),
-                                  ),
-                                ),
-                              ),
-                              child: _fileView(),
-                            ),
-                          Container(
-                            width: 200,
-                            padding: EdgeInsets.only(
-                                left: 20, right: 25, bottom: 20),
-                            child: GestureDetector(
-                              onTap: () {
-                                popup_comfirm(context);
-                              },
-                              child: Container(
-                                alignment: Alignment.center,
-                                margin: EdgeInsets.only(left: 10, right: 10),
-                                padding: EdgeInsets.only(left: 25, right: 25),
-                                decoration: BoxDecoration(
-                                  color: Color(0xFF079CFD),
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.all(2),
-                                    ),
-                                    Text(
-                                      'ขอลางาน',
-                                      style: TextStyle(
-                                          fontFamily: FontStyles().FontFamily,
-                                          color: Colors.white,
-                                          fontSize: 26),
                                     ),
                                   ],
                                 ),
                               ),
                             ),
-                          ),
-                        ],
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 24, right: 24),
+                              child: GestureDetector(
+                                onTap: () {
+                                  print("ตรวจสอบสิทธิ");
+                                },
+                                child: Container(
+                                  margin: const EdgeInsets.only(bottom: 12),
+                                  width: MediaQuery.of(context).size.width,
+                                  child: Text(
+                                    "ตรวจสอบสิทธิ >",
+                                    textAlign: TextAlign.right,
+                                    style: TextStyle(
+                                        color: Color(0xFF8F8C8C), fontSize: 17),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 24, right: 24),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Container(
+                                      child: Text(
+                                        "ประวัติลางาน",
+                                        textAlign: TextAlign.left,
+                                        style: TextStyle(
+                                            color: Color(0xFF616161),
+                                            fontSize: 20),
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        print("ตัวกรอง");
+                                      },
+                                      child: Container(
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: [
+                                            Text(
+                                              "ตัวกรอง",
+                                              style: TextStyle(
+                                                  color: Color(0xFF8F8C8C),
+                                                  fontSize: 17,
+                                                  height: 1),
+                                            ),
+                                            Icon(Icons.tune_outlined),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 18, right: 18, top: 4),
+                                child: Container(
+                                  child: data.length > 0
+                                      ? ListView.builder(
+                                          padding: EdgeInsets.all(8),
+                                          itemCount: rs.length,
+                                          itemBuilder: (BuildContext context,
+                                              int index) {
+                                            return Container(
+                                              margin:
+                                                  EdgeInsets.only(bottom: 8),
+                                              height: 70,
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(
+                                                              26.0)),
+                                                  border: Border.all(
+                                                    color: Color(0xFF8F8C8C),
+                                                  ),
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors.grey
+                                                          .withOpacity(0.5),
+                                                      spreadRadius: 0,
+                                                      blurRadius: 7,
+                                                      offset: Offset(3,
+                                                          0), // changes position of shadow
+                                                    ),
+                                                  ],
+                                                ),
+                                                child: Column(
+                                                  children: [
+                                                    Expanded(
+                                                      child: Container(
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius.only(
+                                                            topLeft:
+                                                                Radius.circular(
+                                                                    26.0),
+                                                            topRight:
+                                                                Radius.circular(
+                                                                    26.0),
+                                                          ),
+                                                        ),
+                                                        child: Row(
+                                                          children: [
+                                                            Container(
+                                                              width: 100,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                color: colorCodes[rs[index]
+                                                                            [
+                                                                            'cid'] ==
+                                                                        "1"
+                                                                    ? 0
+                                                                    : rs[index]['cid'] ==
+                                                                            "2"
+                                                                        ? 1
+                                                                        : 2],
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .only(
+                                                                  topLeft: Radius
+                                                                      .circular(
+                                                                          26.0),
+                                                                  bottomRight: Radius
+                                                                      .circular(
+                                                                          20.0),
+                                                                ),
+                                                              ),
+                                                              child: Center(
+                                                                child: Text(
+                                                                  rs[index][
+                                                                          'cate_name']
+                                                                      .toString(),
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .white,
+                                                                      fontSize:
+                                                                          15),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Expanded(
+                                                              child: Container(
+                                                                padding: EdgeInsets
+                                                                    .only(
+                                                                        left:
+                                                                            10),
+                                                                child: Text(
+                                                                  rs[index][
+                                                                          'dateLeave']
+                                                                      .toString(),
+                                                                  style: TextStyle(
+                                                                      color: Color(
+                                                                          0xFF008FFF),
+                                                                      fontSize:
+                                                                          15),
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                  maxLines: 1,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Container(
+                                                              width: 40,
+                                                              child: Center(
+                                                                child: Icon(
+                                                                  Icons
+                                                                      .navigate_next_outlined,
+                                                                  color: Color(
+                                                                      0xFFa0bac6),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Expanded(
+                                                      child: Container(
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius.only(
+                                                            bottomLeft:
+                                                                Radius.circular(
+                                                                    26.0),
+                                                            bottomRight:
+                                                                Radius.circular(
+                                                                    26.0),
+                                                          ),
+                                                        ),
+                                                        child: Row(
+                                                          children: [
+                                                            Expanded(
+                                                              child: Container(
+                                                                padding: EdgeInsets
+                                                                    .only(
+                                                                        left:
+                                                                            20),
+                                                                child: Text(
+                                                                  "ส่งใบลา " +
+                                                                      rs[index][
+                                                                              'create_date']
+                                                                          .toString(),
+                                                                  style: TextStyle(
+                                                                      color: Color(
+                                                                          0xFF858585),
+                                                                      fontSize:
+                                                                          13),
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                  maxLines: 1,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Expanded(
+                                                              child: Container(
+                                                                padding:
+                                                                    EdgeInsets
+                                                                        .only(
+                                                                  right: 20,
+                                                                ),
+                                                                child: Text(
+                                                                  rs[index][
+                                                                          'status_leave_text']
+                                                                      .toString(),
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .right,
+                                                                  style: TextStyle(
+                                                                      color: colorTextCodes[
+                                                                          int.parse(rs[index]['status_leave']) -
+                                                                              1],
+                                                                      fontSize:
+                                                                          15),
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                  maxLines: 1,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            );
+                                          })
+                                      : Container(
+                                          margin: EdgeInsets.only(top: 40),
+                                          child: Text(
+                                            "- ไม่มีข้อมูลการลา - ",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                color: Color(0xFF616161),
+                                                fontSize: 20),
+                                          ),
+                                        ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    )
-                  ],
-                ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
-        )
+        ),
+      ),
+    )
 
         // body: Container(
         //   width: MediaQuery.of(context).size.width,

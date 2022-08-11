@@ -10,7 +10,9 @@ import 'package:intl/intl.dart';
 import 'package:ismart_login/page/front/confirm_leave.dart';
 import 'package:ismart_login/page/leave/leave_detail.dart';
 import 'package:ismart_login/page/managements/future/member_manage_future.dart';
+import 'package:ismart_login/page/managements/future/time_manage_future.dart';
 import 'package:ismart_login/page/managements/model/itemMemberResultManage.dart';
+import 'package:ismart_login/page/managements/model/itemTimeResultMange.dart';
 import 'package:ismart_login/page/managements/org_member_screen.dart';
 import 'package:ismart_login/server/server.dart';
 import 'package:ismart_login/style/font_style.dart';
@@ -35,6 +37,8 @@ class _LeaveScreenState extends State<LeaveScreen> {
   bool select3 = false;
   bool inputCause = false;
   bool _inputPhone = false;
+  var start;
+  var end;
   List<String> items = <String>['0'];
   List<String> itemsTime = <String>[
     '0.5',
@@ -61,6 +65,8 @@ class _LeaveScreenState extends State<LeaveScreen> {
 
   TextEditingController _inputCause = TextEditingController();
   TextEditingController inputPhone = TextEditingController();
+  TextEditingController _inputTotalDays = TextEditingController();
+  TextEditingController _inputTotalTimes = TextEditingController();
   List<ItemsMemberResultManage> _itemMember = [];
   List<File> _files = [];
 
@@ -108,6 +114,7 @@ class _LeaveScreenState extends State<LeaveScreen> {
     print(inputCause);
     Map map = {
       "uid": await SharedCashe.getItemsWay(name: 'id'),
+      "org_id": await SharedCashe.getItemsWay(name: 'org_id'),
       'cause': inputCause,
     };
     var body = json.encode(map);
@@ -138,6 +145,8 @@ class _LeaveScreenState extends State<LeaveScreen> {
   }
 
   void initState() {
+    _inputTotalDays.text = "1";
+    onLoadGetAllTypes();
     onLoadMemberManage();
     super.initState();
   }
@@ -158,6 +167,23 @@ class _LeaveScreenState extends State<LeaveScreen> {
     return true;
   }
 
+  String dropdownValueTime = '0';
+  List<ItemsTimeResultManage> _itemTypes = [];
+  Future<bool> onLoadGetAllTypes() async {
+    Map map = {
+      "org_id": await SharedCashe.getItemsWay(name: 'org_id'),
+    };
+    await TimeManageFuture().apiGetTypesManageList(map).then((onValue) {
+      if (onValue[0].STATUS == true) {
+        setState(() {
+          _itemTypes = onValue[0].RESULT;
+          dropdownValueTime = _itemTypes[0].ID;
+        });
+      }
+    });
+    return true;
+  }
+
   popup_comfirm(BuildContext context) {
     var newFormat = DateFormat("yyyy-MM-dd");
     showDialog(
@@ -167,14 +193,16 @@ class _LeaveScreenState extends State<LeaveScreen> {
             select1: select1,
             select2: select2,
             select3: select3,
+            cidSub: dropdownValueTime,
             FirstDate: newFormat.format(FirstDate),
             LastDate: newFormat.format(LastDate),
-            numDate: selectItem,
+            numDate: _inputTotalTimes.text != ""
+                ? _inputTotalTimes.text
+                : _inputTotalDays.text,
             phoneNum: inputPhone.text,
             selectFulltime: _selectFullTime.toString(),
             firstTime: _inputTimeIn[0].text,
             lastTime: _inputTimeOut[0].text,
-            // uid: SharedCashe.getItemsWay(name: 'id'),
             cause: _inputCause.text,
             fullName: _itemMember[0].FULLNAME,
           );
@@ -219,6 +247,7 @@ class _LeaveScreenState extends State<LeaveScreen> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   AppBar(
+                    automaticallyImplyLeading: false,
                     backgroundColor: Color(0xFF00B1FF),
                     title: Text(
                       'ลา',
@@ -289,7 +318,6 @@ class _LeaveScreenState extends State<LeaveScreen> {
                                 GestureDetector(
                                   onTap: () {
                                     setState(() {
-                                      // Toggle light when tapped.
                                       select1 = true;
                                       select2 = false;
                                       select3 = false;
@@ -401,7 +429,6 @@ class _LeaveScreenState extends State<LeaveScreen> {
                                 GestureDetector(
                                   onTap: () {
                                     setState(() {
-                                      // Toggle light when tapped.
                                       select1 = false;
                                       select2 = false;
                                       select3 = true;
@@ -459,600 +486,736 @@ class _LeaveScreenState extends State<LeaveScreen> {
                               ],
                             ),
                           ),
-                          Container(
-                            width: MediaQuery.of(context).size.width,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                            ),
-                            child: Column(
-                              children: [
-                                Container(
-                                  padding: EdgeInsets.only(left: 20, right: 20),
-                                  child: TextField(
-                                    // style: styleSubHeader,
-                                    controller: _inputCause,
-                                    decoration: InputDecoration(
-                                      filled: true,
-                                      fillColor: Color(0xFFECF2F3),
-                                      border: InputBorder.none,
-                                      hintText: 'เนื่องจาก',
-                                      errorText: inputCause == true
-                                          ? "กรุณากรอกข้อมูล"
-                                          : "",
+                            Container(
+                              width: MediaQuery.of(context).size.width,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                              ),
+                              child: Column(
+                                children: [
+                                  if (select3)
+                                  Container(
+                                    width: double.infinity,
+                                    padding: EdgeInsets.only(
+                                        top: 10,
+                                        left: 20,
+                                        right: 20,
+                                        bottom: 10),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Color(0xFFECF2F3),
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(4.0),
+                                        ),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(4.0),
+                                        child: DropdownButton(
+                                          underline: SizedBox(),
+                                          value: dropdownValueTime,
+                                          onChanged: (newValue) {
+                                            setState(() {
+                                              dropdownValueTime = newValue;
+                                            });
+                                          },
+                                          items: _itemTypes.length == 0
+                                              ? <String>[
+                                                  '0'
+                                                ].map<DropdownMenuItem<String>>(
+                                                  (String value) {
+                                                  return DropdownMenuItem(
+                                                    child: Text('- เลือก -'),
+                                                    value: value,
+                                                  );
+                                                }).toList()
+                                              : _itemTypes.map((map) {
+                                                  return DropdownMenuItem(
+                                                    child: Container(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 4.0),
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width *
+                                                              0.82,
+                                                      child: Text(map.SUBJECT),
+                                                    ),
+                                                    value: map.ID,
+                                                  );
+                                                }).toList(),
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
-                                Container(
-                                    padding: EdgeInsets.only(
-                                        top: 10, left: 20, right: 20),
+                                  Container(
+                                    padding:
+                                        EdgeInsets.only(left: 20, right: 20),
+                                    child: TextField(
+                                      // style: styleSubHeader,
+                                      controller: _inputCause,
+                                      decoration: InputDecoration(
+                                        filled: true,
+                                        fillColor: Color(0xFFECF2F3),
+                                        border: InputBorder.none,
+                                        hintText: 'เนื่องจาก',
+                                        errorText: inputCause == true
+                                            ? "กรุณากรอกข้อมูล"
+                                            : "",
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                      padding: EdgeInsets.only(
+                                          top: 10, left: 20, right: 20),
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              'ตั้งแต่วันที่',
+                                              textAlign: TextAlign.left,
+                                              style: styleSubHeader,
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: Container(
+                                              padding:
+                                                  EdgeInsets.only(right: 40),
+                                              child: Text(
+                                                'รวม',
+                                                textAlign: TextAlign.right,
+                                                style: styleSubHeader,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      )),
+                                  Container(
+                                    padding: const EdgeInsets.only(left: 20.0),
                                     child: Row(
                                       children: [
                                         Expanded(
-                                          child: Text(
-                                            'ตั้งแต่วันที่',
-                                            textAlign: TextAlign.left,
-                                            style: styleSubHeader,
+                                            child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            primary: Color(0xFFECF2F3),
+                                            onPrimary: Colors.black38,
                                           ),
-                                        ),
-                                        Expanded(
-                                          child: Container(
-                                            padding: EdgeInsets.only(right: 40),
-                                            child: Text(
-                                              'รวม',
-                                              textAlign: TextAlign.right,
-                                              style: styleSubHeader,
-                                            ),
+                                          child: Row(
+                                            children: [
+                                              Expanded(
+                                                child: Text(
+                                                    '${FirstDate.day}/${FirstDate.month}/${FirstDate.year}'),
+                                              ),
+                                              Icon(
+                                                Icons.today_outlined,
+                                                color: Color(0xFF5B5B5B),
+                                                size: 20,
+                                              ),
+                                            ],
                                           ),
-                                        ),
-                                      ],
-                                    )),
-                                Container(
-                                  padding: const EdgeInsets.only(left: 20.0),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                          child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          primary: Color(0xFFECF2F3),
-                                          onPrimary: Colors.black38,
-                                        ),
-                                        child: Row(
-                                          children: [
-                                            Expanded(
-                                              child: Text(
-                                                  '${FirstDate.day}/${FirstDate.month}/${FirstDate.year}'),
-                                            ),
-                                            Icon(
-                                              Icons.today_outlined,
-                                              color: Color(0xFF5B5B5B),
-                                              size: 20,
-                                            ),
-                                          ],
-                                        ),
-                                        onPressed: () async {
-                                          DateTime newDate =
-                                              await showDatePicker(
-                                            context: context,
-                                            initialDate: FirstDate,
-                                            firstDate: DateTime(1900),
-                                            lastDate: DateTime(2100),
-                                          );
-                                          if (newDate == null) return;
+                                          onPressed: () async {
+                                            DateTime newDate =
+                                                await showDatePicker(
+                                              context: context,
+                                              initialDate: FirstDate,
+                                              firstDate: DateTime(1900),
+                                              lastDate: DateTime(2100),
+                                            );
+                                            if (newDate == null) return;
 
-                                          setState(() {
-                                            FirstDate = newDate;
-                                          });
-                                        },
-                                      )),
-                                      Container(
-                                          width: 30,
+                                            setState(() {
+                                              FirstDate = newDate;
+                                            });
+                                          },
+                                        )),
+                                        Container(
+                                            width: 30,
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                            ),
+                                            child: Center(
+                                              child: Text(
+                                                'ถึง',
+                                                style: styleSubHeader,
+                                              ),
+                                            )),
+                                        Expanded(
+                                            child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            primary: Color(0xFFECF2F3),
+                                            onPrimary: Colors.black38,
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Expanded(
+                                                child: Text(
+                                                    '${LastDate.day}/${LastDate.month}/${LastDate.year}'),
+                                              ),
+                                              Icon(
+                                                Icons.today_outlined,
+                                                color: Color(0xFF5B5B5B),
+                                                size: 20,
+                                              ),
+                                            ],
+                                          ),
+                                          onPressed: () async {
+                                            DateTime newDate =
+                                                await showDatePicker(
+                                              context: context,
+                                              initialDate: LastDate,
+                                              firstDate: DateTime(1900),
+                                              lastDate: DateTime(2100),
+                                            );
+                                            if (newDate == null) return;
+                                            setState(() {
+                                              LastDate = newDate;
+                                              FirstDate = DateTime(
+                                                  FirstDate.year,
+                                                  FirstDate.month,
+                                                  FirstDate.day);
+                                              newDate = DateTime(newDate.year,
+                                                  newDate.month, newDate.day);
+                                              _inputTotalDays.text = ((newDate
+                                                                  .difference(
+                                                                      FirstDate)
+                                                                  .inHours /
+                                                              24)
+                                                          .round() +
+                                                      1)
+                                                  .toString();
+                                            });
+                                          },
+                                        )),
+                                        Container(
+                                          width: 60,
+                                          height: 40,
+                                          padding: EdgeInsets.only(left: 8),
+                                          child: TextField(
+                                            readOnly: true,
+                                            textAlign: TextAlign.center,
+                                            controller: _inputTotalDays,
+                                            style: TextStyle(height: 1),
+                                            decoration: InputDecoration(
+                                              filled: true,
+                                              contentPadding:
+                                                  EdgeInsets.only(top: -8),
+                                              fillColor: Color(0xFFECF2F3),
+                                              border: InputBorder.none,
+                                            ),
+                                          ),
+                                        ),
+                                        // Container(
+                                        //   padding: EdgeInsets.only(left: 5),
+                                        //   child: Container(
+                                        //     height: 40,
+                                        //     decoration: BoxDecoration(
+                                        //       color: Color(0xFFECF2F3),
+                                        //       borderRadius: BorderRadius.all(
+                                        //         Radius.circular(4.0),
+                                        //       ),
+                                        //     ),
+                                        //     child: Padding(
+                                        //       padding: const EdgeInsets.all(2.0),
+                                        //       // child: DropdownButton<String>(
+                                        //       //   underline: SizedBox(),
+                                        //       //   onChanged: (String newValue) {
+                                        //       //     setState(() {
+                                        //       //       selectItem = newValue;
+                                        //       //     });
+                                        //       //   },
+                                        //       //   value: selectItem,
+                                        //       //   items: items.map<
+                                        //       //           DropdownMenuItem<String>>(
+                                        //       //       (String value) {
+                                        //       //     return DropdownMenuItem<String>(
+                                        //       //       value: value,
+                                        //       //       child: Container(
+                                        //       //           alignment:
+                                        //       //               Alignment.center,
+                                        //       //           child: Text(' ' + value)),
+                                        //       //     );
+                                        //       //   }).toList(),
+                                        //       //   // isExpanded: true,
+                                        //       //   dropdownColor: Color(0xFFECF2F3),
+                                        //       // ),
+                                        //     ),
+                                        //   ),
+                                        // ),
+
+                                        Container(
+                                          width: 40,
                                           decoration: BoxDecoration(
                                             color: Colors.white,
                                           ),
-                                          child: Center(
-                                            child: Text(
-                                              'ถึง',
-                                              style: styleSubHeader,
-                                            ),
-                                          )),
-                                      Expanded(
-                                          child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          primary: Color(0xFFECF2F3),
-                                          onPrimary: Colors.black38,
-                                        ),
-                                        child: Row(
-                                          children: [
-                                            Expanded(
-                                              child: Text(
-                                                  '${LastDate.day}/${LastDate.month}/${LastDate.year}'),
-                                            ),
-                                            Icon(
-                                              Icons.today_outlined,
-                                              color: Color(0xFF5B5B5B),
-                                              size: 20,
-                                            ),
-                                          ],
-                                        ),
-                                        onPressed: () async {
-                                          DateTime newDate =
-                                              await showDatePicker(
-                                            context: context,
-                                            initialDate: LastDate,
-                                            firstDate: DateTime(1900),
-                                            lastDate: DateTime(2100),
-                                          );
-                                          if (newDate == null) return;
-                                          setState(() {
-                                            LastDate = newDate;
-                                          });
-                                        },
-                                      )),
-                                      Container(
-                                        padding: EdgeInsets.only(left: 5),
-                                        child: Container(
-                                          height: 40,
-                                          decoration: BoxDecoration(
-                                            color: Color(0xFFECF2F3),
-                                            borderRadius: BorderRadius.all(
-                                              Radius.circular(4.0),
-                                            ),
-                                          ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(2.0),
-                                            child: DropdownButton<String>(
-                                              underline: SizedBox(),
-                                              onChanged: (String newValue) {
-                                                setState(() {
-                                                  selectItem = newValue;
-                                                });
-                                              },
-                                              value: selectItem,
-                                              items: items.map<
-                                                      DropdownMenuItem<String>>(
-                                                  (String value) {
-                                                return DropdownMenuItem<String>(
-                                                  value: value,
-                                                  child: Container(
-                                                      alignment:
-                                                          Alignment.center,
-                                                      child: Text(' ' + value)),
-                                                );
-                                              }).toList(),
-                                              // isExpanded: true,
-                                              dropdownColor: Color(0xFFECF2F3),
-                                            ),
+                                          child: Text(
+                                            ' วัน',
+                                            style: styleSubHeader,
                                           ),
                                         ),
-                                      ),
-                                      Container(
-                                        width: 40,
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                        ),
-                                        child: Text(
-                                          ' วัน',
-                                          style: styleSubHeader,
-                                        ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
-                                ),
-                                Container(
-                                  padding: EdgeInsets.only(left: 10),
-                                  child: Row(
-                                    children: [
-                                      Radio(
-                                          value: 1,
-                                          groupValue: _selectFullTime,
-                                          onChanged: (value) {
-                                            setState(() {
-                                              _selectFullTime = value;
-                                            });
-                                          }),
-                                      Text("ลาทั้งวัน"),
-                                      Radio(
-                                          value: 2,
-                                          groupValue: _selectFullTime,
-                                          onChanged: (value) {
-                                            setState(() {
-                                              _selectFullTime = value;
-                                            });
-                                          }),
-                                      Text("ลาไม่เต็มวัน"),
-                                    ],
+                                  Container(
+                                    padding: EdgeInsets.only(left: 10),
+                                    child: Row(
+                                      children: [
+                                        Radio(
+                                            value: 1,
+                                            groupValue: _selectFullTime,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                _selectFullTime = value;
+                                              });
+                                            }),
+                                        Text("ลาทั้งวัน"),
+                                        Radio(
+                                            value: 2,
+                                            groupValue: _selectFullTime,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                _selectFullTime = value;
+                                              });
+                                            }),
+                                        Text("ลาไม่เต็มวัน"),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                                _selectFullTime == 2
-                                    ? Container(
-                                        child: Column(
-                                          children: [
-                                            Container(
-                                              child: Row(
-                                                children: [
-                                                  Expanded(
-                                                    child: Container(
-                                                      padding: EdgeInsets.only(
-                                                          right: 60),
-                                                      child: Text(
-                                                        'รวม',
-                                                        textAlign:
-                                                            TextAlign.right,
-                                                        style: styleSubHeader,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Column(
-                                              children: [
-                                                Row(
+                                  _selectFullTime == 2
+                                      ? Container(
+                                          child: Column(
+                                            children: [
+                                              Container(
+                                                child: Row(
                                                   children: [
-                                                    Container(
-                                                      padding: EdgeInsets.only(
-                                                          left: 20, right: 5),
-                                                      child: Text(
-                                                        "ตั้งแต่เวลา",
-                                                        style: styleSubHeader,
-                                                      ),
-                                                    ),
                                                     Expanded(
-                                                      child: ListView.builder(
-                                                        physics:
-                                                            NeverScrollableScrollPhysics(),
-                                                        shrinkWrap: true,
-                                                        itemCount:
-                                                            _groupDay.length,
-                                                        itemBuilder:
-                                                            (BuildContext
-                                                                    context,
-                                                                int index) {
-                                                          return Container(
-                                                            // child: Text(index.toString()),
-                                                            child: Row(
-                                                              children: [
-                                                                Expanded(
-                                                                  child:
-                                                                      Container(
-                                                                    height: 40,
-                                                                    decoration:
-                                                                        BoxDecoration(
-                                                                      border: Border.all(
-                                                                          color:
-                                                                              Color(0xFFECF2F3)),
-                                                                    ),
-                                                                    child:
-                                                                        GestureDetector(
-                                                                      onTap:
-                                                                          () {
-                                                                        if (_groupDay[
-                                                                            index]) {
-                                                                          alert_time(
-                                                                              context,
-                                                                              1,
-                                                                              index);
-                                                                        }
-                                                                      },
-                                                                      child:
-                                                                          TextFormField(
-                                                                        controller:
-                                                                            _inputTimeIn[index],
-                                                                        enabled:
-                                                                            false,
-                                                                        textAlign:
-                                                                            TextAlign.center,
-                                                                        style: TextStyle(
-                                                                            fontFamily:
-                                                                                FontStyles().FontFamily,
-                                                                            fontSize: 24),
-                                                                        decoration:
-                                                                            InputDecoration(
-                                                                          filled:
-                                                                              true,
-                                                                          fillColor:
-                                                                              Color(0xFFECF2F3),
-                                                                          border:
-                                                                              InputBorder.none,
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                Container(
-                                                                    padding: EdgeInsets
-                                                                        .only(
-                                                                            left:
-                                                                                5),
-                                                                    width: 30,
-                                                                    decoration:
-                                                                        BoxDecoration(
-                                                                      color: Colors
-                                                                          .white,
-                                                                    ),
-                                                                    child: Text(
-                                                                      'ถึง',
-                                                                      style:
-                                                                          styleSubHeader,
-                                                                    )),
-                                                                Expanded(
-                                                                  child:
-                                                                      Container(
-                                                                    height: 40,
-                                                                    decoration:
-                                                                        BoxDecoration(
-                                                                      border: Border.all(
-                                                                          color:
-                                                                              Color(0xFFECF2F3)),
-                                                                    ),
-                                                                    child:
-                                                                        GestureDetector(
-                                                                      onTap:
-                                                                          () {
-                                                                        if (_groupDay[
-                                                                            index]) {
-                                                                          alert_time(
-                                                                              context,
-                                                                              2,
-                                                                              index);
-                                                                        }
-                                                                      },
-                                                                      child:
-                                                                          TextFormField(
-                                                                        controller:
-                                                                            _inputTimeOut[index],
-                                                                        enabled:
-                                                                            false,
-                                                                        textAlign:
-                                                                            TextAlign.center,
-                                                                        style: TextStyle(
-                                                                            fontFamily:
-                                                                                FontStyles().FontFamily,
-                                                                            fontSize: 24),
-                                                                        decoration:
-                                                                            InputDecoration(
-                                                                          filled:
-                                                                              true,
-                                                                          fillColor:
-                                                                              Color(0xFFECF2F3),
-                                                                          border:
-                                                                              InputBorder.none,
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          );
-                                                        },
-                                                      ),
-                                                    ),
-                                                    Container(
-                                                      padding: EdgeInsets.only(
-                                                          left: 5),
                                                       child: Container(
-                                                        height: 40,
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color:
-                                                              Color(0xFFECF2F3),
-                                                          borderRadius:
-                                                              BorderRadius.all(
-                                                            Radius.circular(
-                                                                4.0),
-                                                          ),
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                right: 60),
+                                                        child: Text(
+                                                          'รวม',
+                                                          textAlign:
+                                                              TextAlign.right,
+                                                          style: styleSubHeader,
                                                         ),
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(2.0),
-                                                          child: DropdownButton<
-                                                              String>(
-                                                            underline:
-                                                                SizedBox(),
-                                                            onChanged: (String
-                                                                newValue) {
-                                                              setState(() {
-                                                                selectItemTime =
-                                                                    newValue;
-                                                              });
-                                                            },
-                                                            value:
-                                                                selectItemTime,
-                                                            items: itemsTime.map<
-                                                                DropdownMenuItem<
-                                                                    String>>((String
-                                                                value) {
-                                                              return DropdownMenuItem<
-                                                                  String>(
-                                                                value: value,
-                                                                child: Container(
-                                                                    alignment:
-                                                                        Alignment
-                                                                            .center,
-                                                                    child: Text(
-                                                                        ' ' +
-                                                                            value)),
-                                                              );
-                                                            }).toList(),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Container(
-                                                      width: 40,
-                                                      decoration: BoxDecoration(
-                                                        color: Colors.white,
-                                                      ),
-                                                      child: Text(
-                                                        ' ชม.',
-                                                        style: styleSubHeader,
                                                       ),
                                                     ),
                                                   ],
                                                 ),
-                                                if (timeError != null)
-                                                  Text(timeError)
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                    : Container(),
-                                Container(
-                                  padding: EdgeInsets.only(
-                                      left: 20, right: 20, top: 15, bottom: 0),
-                                  child: TextField(
-                                    keyboardType: TextInputType.number,
-                                    controller: inputPhone,
-                                    decoration: InputDecoration(
-                                      filled: true,
-                                      fillColor: Color(0xFFECF2F3),
-                                      border: InputBorder.none,
-                                      hintText: 'เบอร์ที่ติดต่อขณะลางาน',
-                                      errorText: _inputPhone == true
-                                          ? "กรุณากรอกข้อมูล"
-                                          : "",
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  padding: EdgeInsets.only(
-                                      left: 20, right: 20, top: 15, bottom: 20),
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        width: 150,
-                                        height: 50,
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          border: Border.all(
-                                            color: Color(0xFFCCCCCC),
-                                            width: 1.0,
-                                          ),
-                                          borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(15.0),
-                                            topRight: Radius.circular(15.0),
-                                            bottomLeft: Radius.circular(15.0),
-                                            bottomRight: Radius.circular(15.0),
-                                          ),
-                                        ),
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            _filesExplorer();
-                                          },
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Icon(
-                                                Icons.file_upload_outlined,
-                                                color: Colors.blue,
-                                                size: 24,
                                               ),
-                                              Text(
-                                                ' เอกสาร (หากมี)',
-                                                style: styleButton,
+                                              Column(
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      Container(
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                left: 20,
+                                                                right: 5),
+                                                        child: Text(
+                                                          "ตั้งแต่เวลา",
+                                                          style: styleSubHeader,
+                                                        ),
+                                                      ),
+                                                      Expanded(
+                                                        child: ListView.builder(
+                                                          physics:
+                                                              NeverScrollableScrollPhysics(),
+                                                          shrinkWrap: true,
+                                                          itemCount:
+                                                              _groupDay.length,
+                                                          itemBuilder:
+                                                              (BuildContext
+                                                                      context,
+                                                                  int index) {
+                                                            return Container(
+                                                              // child: Text(index.toString()),
+                                                              child: Row(
+                                                                children: [
+                                                                  Expanded(
+                                                                    child:
+                                                                        Container(
+                                                                      height:
+                                                                          40,
+                                                                      decoration:
+                                                                          BoxDecoration(
+                                                                        border: Border.all(
+                                                                            color:
+                                                                                Color(0xFFECF2F3)),
+                                                                      ),
+                                                                      child:
+                                                                          GestureDetector(
+                                                                        onTap:
+                                                                            () {
+                                                                          if (_groupDay[
+                                                                              index]) {
+                                                                            alert_time(
+                                                                                context,
+                                                                                1,
+                                                                                index);
+                                                                          }
+                                                                        },
+                                                                        child:
+                                                                            TextFormField(
+                                                                          controller:
+                                                                              _inputTimeIn[index],
+                                                                          enabled:
+                                                                              false,
+                                                                          textAlign:
+                                                                              TextAlign.center,
+                                                                          style: TextStyle(
+                                                                              fontFamily: FontStyles().FontFamily,
+                                                                              fontSize: 24),
+                                                                          decoration:
+                                                                              InputDecoration(
+                                                                            contentPadding:
+                                                                                EdgeInsets.only(top: -12),
+                                                                            filled:
+                                                                                true,
+                                                                            fillColor:
+                                                                                Color(0xFFECF2F3),
+                                                                            border:
+                                                                                InputBorder.none,
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  Container(
+                                                                      padding: EdgeInsets.only(
+                                                                          left:
+                                                                              5),
+                                                                      width: 30,
+                                                                      decoration:
+                                                                          BoxDecoration(
+                                                                        color: Colors
+                                                                            .white,
+                                                                      ),
+                                                                      child:
+                                                                          Text(
+                                                                        'ถึง',
+                                                                        style:
+                                                                            styleSubHeader,
+                                                                      )),
+                                                                  Expanded(
+                                                                    child:
+                                                                        Container(
+                                                                      height:
+                                                                          40,
+                                                                      decoration:
+                                                                          BoxDecoration(
+                                                                        border: Border.all(
+                                                                            color:
+                                                                                Color(0xFFECF2F3)),
+                                                                      ),
+                                                                      child:
+                                                                          GestureDetector(
+                                                                        onTap:
+                                                                            () {
+                                                                          if (_groupDay[
+                                                                              index]) {
+                                                                            alert_time(
+                                                                                context,
+                                                                                2,
+                                                                                index);
+                                                                          }
+                                                                        },
+                                                                        child:
+                                                                            TextFormField(
+                                                                          controller:
+                                                                              _inputTimeOut[index],
+                                                                          enabled:
+                                                                              false,
+                                                                          textAlign:
+                                                                              TextAlign.center,
+                                                                          style: TextStyle(
+                                                                              fontFamily: FontStyles().FontFamily,
+                                                                              fontSize: 24),
+                                                                          decoration:
+                                                                              InputDecoration(
+                                                                            contentPadding:
+                                                                                EdgeInsets.only(top: -12),
+                                                                            filled:
+                                                                                true,
+                                                                            fillColor:
+                                                                                Color(0xFFECF2F3),
+                                                                            border:
+                                                                                InputBorder.none,
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            );
+                                                          },
+                                                        ),
+                                                      ),
+                                                      Container(
+                                                        width: 60,
+                                                        height: 40,
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                left: 8),
+                                                        child: TextField(
+                                                          readOnly: true,
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          controller:
+                                                              _inputTotalTimes,
+                                                          style: TextStyle(
+                                                              height: 1),
+                                                          decoration:
+                                                              InputDecoration(
+                                                            filled: true,
+                                                            contentPadding:
+                                                                EdgeInsets.only(
+                                                                    top: -8),
+                                                            fillColor: Color(
+                                                                0xFFECF2F3),
+                                                            border: InputBorder
+                                                                .none,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      // Container(
+                                                      //   padding: EdgeInsets.only(
+                                                      //       left: 5),
+                                                      //   child: Container(
+                                                      //     height: 40,
+                                                      //     decoration:
+                                                      //         BoxDecoration(
+                                                      //       color:
+                                                      //           Color(0xFFECF2F3),
+                                                      //       borderRadius:
+                                                      //           BorderRadius.all(
+                                                      //         Radius.circular(
+                                                      //             4.0),
+                                                      //       ),
+                                                      //     ),
+                                                      //     child: Padding(
+                                                      //       padding:
+                                                      //           const EdgeInsets
+                                                      //               .all(2.0),
+                                                      //       child: DropdownButton<
+                                                      //           String>(
+                                                      //         underline:
+                                                      //             SizedBox(),
+                                                      //         onChanged: (String
+                                                      //             newValue) {
+                                                      //           setState(() {
+                                                      //             selectItemTime =
+                                                      //                 newValue;
+                                                      //           });
+                                                      //         },
+                                                      //         value:
+                                                      //             selectItemTime,
+                                                      //         items: itemsTime.map<
+                                                      //             DropdownMenuItem<
+                                                      //                 String>>((String
+                                                      //             value) {
+                                                      //           return DropdownMenuItem<
+                                                      //               String>(
+                                                      //             value: value,
+                                                      //             child: Container(
+                                                      //                 alignment:
+                                                      //                     Alignment
+                                                      //                         .center,
+                                                      //                 child: Text(
+                                                      //                     ' ' +
+                                                      //                         value)),
+                                                      //           );
+                                                      //         }).toList(),
+                                                      //       ),
+                                                      //     ),
+                                                      //   ),
+                                                      // ),
+
+                                                      Container(
+                                                        width: 40,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: Colors.white,
+                                                        ),
+                                                        child: Text(
+                                                          ' ชม.',
+                                                          style: styleSubHeader,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  if (timeError != null)
+                                                    Text(timeError)
+                                                ],
                                               ),
                                             ],
                                           ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                if (_files != null && _files.length > 0)
+                                        )
+                                      : Container(),
                                   Container(
-                                    height: 120.0,
-                                    decoration: BoxDecoration(
-                                      border: Border(
-                                        bottom: BorderSide(
-                                          color: Color(0xFFDFDFDF),
+                                    padding: EdgeInsets.only(
+                                        left: 20,
+                                        right: 20,
+                                        top: 15,
+                                        bottom: 0),
+                                    child: TextField(
+                                      keyboardType: TextInputType.number,
+                                      controller: inputPhone,
+                                      decoration: InputDecoration(
+                                        filled: true,
+                                        fillColor: Color(0xFFECF2F3),
+                                        border: InputBorder.none,
+                                        hintText: 'เบอร์ที่ติดต่อขณะลางาน',
+                                        errorText: _inputPhone == true
+                                            ? "กรุณากรอกข้อมูล"
+                                            : "",
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    padding: EdgeInsets.only(
+                                        left: 20,
+                                        right: 20,
+                                        top: 15,
+                                        bottom: 20),
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          width: 150,
+                                          height: 50,
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            border: Border.all(
+                                              color: Color(0xFFCCCCCC),
+                                              width: 1.0,
+                                            ),
+                                            borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(15.0),
+                                              topRight: Radius.circular(15.0),
+                                              bottomLeft: Radius.circular(15.0),
+                                              bottomRight:
+                                                  Radius.circular(15.0),
+                                            ),
+                                          ),
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              _filesExplorer();
+                                            },
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Icon(
+                                                  Icons.file_upload_outlined,
+                                                  color: Colors.blue,
+                                                  size: 24,
+                                                ),
+                                                Text(
+                                                  ' เอกสาร (หากมี)',
+                                                  style: styleButton,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  if (_files != null && _files.length > 0)
+                                    Container(
+                                      height: 120.0,
+                                      decoration: BoxDecoration(
+                                        border: Border(
+                                          bottom: BorderSide(
+                                            color: Color(0xFFDFDFDF),
+                                          ),
+                                        ),
+                                      ),
+                                      child: _fileView(),
+                                    ),
+                                  Container(
+                                    width: 200,
+                                    padding: EdgeInsets.only(
+                                        left: 20, right: 25, bottom: 50),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        if (!_formKey.currentState.validate()) {
+                                          return;
+                                        }
+                                        var timeInValid =
+                                            (_inputTimeIn[0].text == null ||
+                                                    _inputTimeIn[0]
+                                                        .text
+                                                        .isEmpty) &&
+                                                _selectFullTime == 2;
+                                        setState(() {
+                                          timeError = timeInValid
+                                              ? 'กรุณากรอกข้อมูล'
+                                              : null;
+                                        });
+                                        if (timeInValid) {
+                                          return;
+                                        }
+
+                                        if (_inputCause.text == "" &&
+                                            inputPhone.text == "") {
+                                          inputCause = true;
+                                          _inputPhone = true;
+                                          return;
+                                        } else {
+                                          inputCause = false;
+                                          _inputPhone = false;
+                                        }
+
+                                        if (_inputCause.text == "") {
+                                          inputCause = true;
+                                          return;
+                                        } else {
+                                          inputCause = false;
+                                        }
+
+                                        if (inputPhone.text == "") {
+                                          _inputPhone = true;
+                                          return;
+                                        } else {
+                                          _inputPhone = false;
+                                        }
+
+                                        popup_comfirm(context);
+                                      },
+                                      child: Container(
+                                        alignment: Alignment.center,
+                                        margin: EdgeInsets.only(
+                                            left: 10, right: 10),
+                                        padding: EdgeInsets.only(
+                                            left: 25, right: 25),
+                                        decoration: BoxDecoration(
+                                          color: Color(0xFF079CFD),
+                                          borderRadius:
+                                              BorderRadius.circular(15),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsets.all(2),
+                                            ),
+                                            Text(
+                                              'ขอลางาน',
+                                              style: TextStyle(
+                                                  fontFamily:
+                                                      FontStyles().FontFamily,
+                                                  color: Colors.white,
+                                                  fontSize: 26),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ),
-                                    child: _fileView(),
                                   ),
-                                Container(
-                                  width: 200,
-                                  padding: EdgeInsets.only(
-                                      left: 20, right: 25, bottom: 50),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      if (!_formKey.currentState.validate()) {
-                                        return;
-                                      }
-                                      var timeInValid = (_inputTimeIn[0].text ==
-                                                  null ||
-                                              _inputTimeIn[0].text.isEmpty) &&
-                                          _selectFullTime == 2;
-                                      setState(() {
-                                        timeError = timeInValid
-                                            ? 'กรุณากรอกข้อมูล'
-                                            : null;
-                                      });
-                                      if (timeInValid) {
-                                        return;
-                                      }
-
-                                      if (_inputCause.text == "" &&
-                                          inputPhone.text == "") {
-                                        inputCause = true;
-                                        _inputPhone = true;
-                                        return;
-                                      } else {
-                                        inputCause = false;
-                                        _inputPhone = false;
-                                      }
-
-                                      if (_inputCause.text == "") {
-                                        inputCause = true;
-                                        return;
-                                      } else {
-                                        inputCause = false;
-                                      }
-
-                                      if (inputPhone.text == "") {
-                                        _inputPhone = true;
-                                        return;
-                                      } else {
-                                        _inputPhone = false;
-                                      }
-
-                                      popup_comfirm(context);
-                                    },
-                                    child: Container(
-                                      alignment: Alignment.center,
-                                      margin:
-                                          EdgeInsets.only(left: 10, right: 10),
-                                      padding:
-                                          EdgeInsets.only(left: 25, right: 25),
-                                      decoration: BoxDecoration(
-                                        color: Color(0xFF079CFD),
-                                        borderRadius: BorderRadius.circular(15),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Padding(
-                                            padding: EdgeInsets.all(2),
-                                          ),
-                                          Text(
-                                            'ขอลางาน',
-                                            style: TextStyle(
-                                                fontFamily:
-                                                    FontStyles().FontFamily,
-                                                color: Colors.white,
-                                                fontSize: 26),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          )
+                                ],
+                              ),
+                            )
                         ],
                       ),
                     ),
@@ -1152,28 +1315,6 @@ class _LeaveScreenState extends State<LeaveScreen> {
     } else {
       // User canceled the picker
     }
-
-    /*try {
-      path = null;
-      paths = await FilePicker.platform.pickFiles(
-        type: FileType.custom,
-        allowedExtensions: ['jpg', 'pdf', 'doc'],
-      );
-    } on PlatformException catch (e) {
-      print("Unsupported operation file _filesExplorer" + e.toString());
-    }
-    //print('wit file storage: ${paths}');
-    if (!mounted) return;
-
-    if (paths != null && paths.length > 0) {
-      setState(() {
-        if (_files != null && _files.length > 0) {
-          _files.addAll(paths);
-        } else {
-          _files = paths.toList();
-        }
-      });
-    }*/
   }
 
   alert_time(BuildContext context, int _status, int _day) async {
@@ -1201,17 +1342,15 @@ class _LeaveScreenState extends State<LeaveScreen> {
                       var newTod = TimeOfDay.fromDateTime(newDateTime);
 
                       final now = new DateTime.now();
-                      print(DateFormat.Hm().format(DateTime(now.year, now.month,
-                          now.day, newTod.hour, newTod.minute)));
-                      // print(DateTime(now.year, now.month, now.day, newTod.hour,
-                      //     newTod.minute));
+                      // print(DateFormat.Hm().format(DateTime(now.year, now.month,
+                      //     now.day, newTod.hour, newTod.minute)));
                       _time = DateFormat.Hm()
                           .format(DateTime(now.year, now.month, now.day,
                               newTod.hour, newTod.minute))
                           .toString();
                     },
                     use24hFormat: true,
-                    minuteInterval: 1,
+                    minuteInterval: 30,
                   ),
                 ),
                 Container(
@@ -1275,12 +1414,21 @@ class _LeaveScreenState extends State<LeaveScreen> {
       },
     ).then((value) {
       if (value != null) {
-        print(value.toString());
+        var format = DateFormat("HH:mm");
         setState(() {
           if (_status == 1) {
             _inputTimeIn[_day].text = value.toString().substring(0, 5);
+            start = format.parse(value);
           } else {
             _inputTimeOut[_day].text = value.toString().substring(0, 5);
+            end = format.parse(value);
+          }
+          print(start);
+          print(end);
+          if (start != null && end != null) {
+            Duration duration = end.difference(start).abs();
+            final hours = duration.inHours;
+            _inputTotalTimes.text = hours.toString();
           }
         });
       }

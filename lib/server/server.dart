@@ -63,6 +63,8 @@ class Server {
   String updateOrgSwitch = _baseUrl + 'manage/updateSwitchOrg';
   String updateOrgSuspend = _baseUrl + 'manage/updateSuspendOrg'; // ระงับบริษัท
   String insertInfoLeave = _baseUrl + 'manage/insertInfoLeave'; 
+  String getCateLeave = _baseUrl + 'manage/getCateLeave'; 
+  String getListLeave = _baseUrl + 'manage/getListLeave'; 
 
   //---- *switch protect
   String getProtectSwitch = _baseUrl + 'protectapp/protectSwitch';
