@@ -7,8 +7,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:ismart_login/page/front/confirm_leave.dart';
-import 'package:ismart_login/page/leave/leave_detail.dart';
+import 'package:ismart_login/page/leave/confirm_leave.dart';
+import 'package:ismart_login/page/leave/leave_statistics.dart';
 import 'package:ismart_login/page/managements/future/member_manage_future.dart';
 import 'package:ismart_login/page/managements/future/time_manage_future.dart';
 import 'package:ismart_login/page/managements/model/itemMemberResultManage.dart';
@@ -205,6 +205,7 @@ class _LeaveScreenState extends State<LeaveScreen> {
             lastTime: _inputTimeOut[0].text,
             cause: _inputCause.text,
             fullName: _itemMember[0].FULLNAME,
+            filesAll: _files,
           );
         });
   }
@@ -286,7 +287,7 @@ class _LeaveScreenState extends State<LeaveScreen> {
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
-                                              LeaveDetailScreen(),
+                                              LeaveStatisticsScreen(),
                                         ),
                                       );
                                     },
@@ -1125,6 +1126,7 @@ class _LeaveScreenState extends State<LeaveScreen> {
                                   if (_files != null && _files.length > 0)
                                     Container(
                                       height: 120.0,
+                                      margin: EdgeInsets.only(bottom: 10),
                                       decoration: BoxDecoration(
                                         border: Border(
                                           bottom: BorderSide(

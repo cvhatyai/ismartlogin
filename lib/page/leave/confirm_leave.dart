@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:http_parser/http_parser.dart';
 import 'package:ismart_login/server/server.dart';
 import 'package:ismart_login/style/font_style.dart';
 import 'package:ismart_login/system/clock.dart';
@@ -25,6 +27,7 @@ class ConfirmDialog extends StatefulWidget {
   final bool select1;
   final bool select2;
   final bool select3;
+  final List<File> filesAll;
 
   const ConfirmDialog(
       {Key key,
@@ -41,7 +44,8 @@ class ConfirmDialog extends StatefulWidget {
       this.selectFulltime,
       this.firstTime,
       this.lastTime,
-      this.cidSub})
+      this.cidSub,
+      this.filesAll})
       : super(key: key);
 
   @override
@@ -75,6 +79,7 @@ class _ConfirmDialogState extends State<ConfirmDialog> {
     }
   }
 
+  // ignore: missing_return
   Future<bool> insertInfoLeave() async {
     Map map = {
       "uid": await SharedCashe.getItemsWay(name: 'id'),
@@ -119,6 +124,53 @@ class _ConfirmDialogState extends State<ConfirmDialog> {
     } else {
       Navigator.pop(context);
       alert_end(context, "ไม่สามารถบันทึกข้อมูลใบลา กรุณาติดต่อเจ้าหน้าที่");
+    }
+  }
+
+  insertLeave() async {
+    var uri = Uri.parse(Server().insertInfoLeave);
+    print("inform uri: ${uri.toString()}");
+    var request = http.MultipartRequest('POST', uri);
+    request.fields['uid'] = await SharedCashe.getItemsWay(name: 'id');
+    request.fields['org_id'] = await SharedCashe.getItemsWay(name: 'org_id');
+    request.fields['cause'] = widget.cause;
+    request.fields['firstdate'] = widget.FirstDate;
+    request.fields['lastdate'] = widget.LastDate;
+    request.fields['phoneNum'] = widget.phoneNum;
+    request.fields['numDate'] = widget.numDate;
+    request.fields['selectFultime'] = widget.selectFulltime;
+    request.fields['firstTime'] = widget.firstTime;
+    request.fields['lastTime'] = widget.lastTime;
+    request.fields['selectFulltime'] = widget.selectFulltime;
+    if (widget.cidSub != null && widget.cidSub != '') {
+      request.fields['cid'] = widget.cidSub;
+    } else {
+      request.fields['cid'] = cidLeave;
+    }
+    if (widget.filesAll != null) {
+      var lenFile = widget.filesAll.length;
+      if (lenFile > 0) {
+        for (int i = 0; i < lenFile; i++) {
+          var ext = widget.filesAll[i].path.split('.').last;
+          var file = await http.MultipartFile.fromPath(
+              'file[$i]', widget.filesAll[i].path,
+              contentType: MediaType('image', ext));
+          request.files.add(file);
+        }
+      }
+    }
+
+    final streamedResponse = await request.send();
+    final response = await http.Response.fromStream(streamedResponse);
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      if (data['msg'] == 'success') {
+        Navigator.pop(context);
+        alert_end(context, "บันทึกข้อมูลใบลาเรียบร้อยแล้ว");
+      } else {
+        Navigator.pop(context);
+        alert_end(context, "ไม่สามารถบันทึกข้อมูลใบลา กรุณาติดต่อเจ้าหน้าที่");
+      }
     }
   }
 
@@ -326,7 +378,8 @@ class _ConfirmDialogState extends State<ConfirmDialog> {
                     Expanded(
                       child: InkWell(
                         onTap: () {
-                          insertInfoLeave();
+                          // insertInfoLeave();
+                          insertLeave();
                         },
                         child: Container(
                           decoration: BoxDecoration(

@@ -65,6 +65,8 @@ class Server {
   String insertInfoLeave = _baseUrl + 'manage/insertInfoLeave'; 
   String getCateLeave = _baseUrl + 'manage/getCateLeave'; 
   String getListLeave = _baseUrl + 'manage/getListLeave'; 
+  String getDetailLeave = _baseUrl + 'manage/getDetailLeave'; 
+  String postupdateStatusLeave = _baseUrl + 'manage/updateStatusLeave'; 
 
   //---- *switch protect
   String getProtectSwitch = _baseUrl + 'protectapp/protectSwitch';
