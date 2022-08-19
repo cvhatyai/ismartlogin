@@ -1,5 +1,6 @@
 import 'dart:async';
-
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -8,6 +9,9 @@ import 'package:ismart_login/page/faq/faq_screen.dart';
 import 'package:ismart_login/page/front/future/relationship_future.dart';
 import 'package:ismart_login/page/front/model/itemMemberRelationship.dart';
 import 'package:ismart_login/page/front/model/itemMemberResultRelationship.dart';
+import 'package:ismart_login/page/leave/leave_list.dart';
+import 'package:ismart_login/page/leave/leave_settings.dart';
+import 'package:ismart_login/page/leave/leave_statistics.dart';
 import 'package:ismart_login/page/managements/future/department_manage_future.dart';
 import 'package:ismart_login/page/managements/future/time_manage_future.dart';
 import 'package:ismart_login/page/managements/model/itemDepartmentResultManage.dart';
@@ -37,6 +41,9 @@ class MenuDrawer extends StatefulWidget {
   final String org_sub;
   final String org_id;
   final String type_member;
+  final String leave;
+  final String badge;
+  final Function updateBadge;
   MenuDrawer({
     Key key,
     @required this.images,
@@ -45,6 +52,9 @@ class MenuDrawer extends StatefulWidget {
     this.org_sub,
     this.org_id,
     this.type_member,
+    this.leave,
+    this.badge,
+    this.updateBadge,
   }) : super(key: key);
   @override
   _MenuDrawerState createState() => _MenuDrawerState();
@@ -58,6 +68,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
   );
 //----
   String _org_id = '';
+  String badge = '0';
 
   ///----
   double latMain = 0.0;
@@ -133,13 +144,34 @@ class _MenuDrawerState extends State<MenuDrawer> {
     onLoadCountTime();
     onLoadCountDepartment();
     onLoadRelation();
+    onLoadBadgeLeaveManage();
     _checkVer();
   }
 
   @override
   void dispose() {
     locationSubscription.cancel();
+    widget.updateBadge();
     super.dispose();
+  }
+
+  onLoadBadgeLeaveManage() async {
+    Map map = {
+      "org_id": await SharedCashe.getItemsWay(name: 'org_id'),
+      "uid": await SharedCashe.getItemsWay(name: 'id'),
+    };
+    var body = json.encode(map);
+    final response = await http.Client().post(
+      Uri.parse(Server().getBadgeLeave),
+      headers: {"Content-Type": "application/json"},
+      body: body,
+    );
+    var data = json.decode(response.body);
+
+    if (data[0]['status'] == true) {
+      badge = data[0]['badge'].toString();
+    }
+    setState(() {});
   }
 
   @override
@@ -291,7 +323,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
               );
             },
           ),
-          
+
           Visibility(
             visible: widget.type_member == 'member' ? false : true,
             child: Container(
@@ -439,6 +471,103 @@ class _MenuDrawerState extends State<MenuDrawer> {
                             }
                           },
                         ),
+                        if (widget.leave == "1")
+                          ListTile(
+                            minLeadingWidth: 0.5,
+                            leading: FaIcon(
+                              FontAwesomeIcons.envelope,
+                              size: 20,
+                            ),
+                            title: Container(
+                              child: Stack(
+                                children: [
+                                  Text(
+                                    'อนุมัติลางาน',
+                                    style: _txt,
+                                  ),
+                                  if (badge != "0")
+                                    Positioned(
+                                      top: 0.5,
+                                      right: 7,
+                                      child: new Container(
+                                        padding: EdgeInsets.all(1.0),
+                                        decoration: new BoxDecoration(
+                                          color: Colors.red,
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                        ),
+                                        constraints: BoxConstraints(
+                                          minWidth: 20.0,
+                                          minHeight: 20.0,
+                                        ),
+                                        child: new Text(
+                                          badge.toString(),
+                                          textScaleFactor: 1.0,
+                                          style: new TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 10.0,
+                                              height: 1.5),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                    )
+                                ],
+                              ),
+                            ),
+                            onTap: () {
+                              Navigator.pop(context);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => LeaveListScreen(
+                                    updateBadge: widget.updateBadge,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        if (widget.leave == "1")
+                          ListTile(
+                            minLeadingWidth: 0.5,
+                            leading: FaIcon(
+                              FontAwesomeIcons.chartLine,
+                              size: 20,
+                            ),
+                            title: Text(
+                              'สถิติการลา',
+                              style: _txt,
+                            ),
+                            onTap: () {
+                              Navigator.pop(context);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => LeaveStatisticsScreen(),
+                                ),
+                              );
+                            },
+                          ),
+                        if (widget.leave == "1")
+                          ListTile(
+                            minLeadingWidth: 0.5,
+                            leading: FaIcon(
+                              FontAwesomeIcons.cogs,
+                              size: 20,
+                            ),
+                            title: Text(
+                              'ตั้งค่าลางาน',
+                              style: _txt,
+                            ),
+                            onTap: () {
+                              Navigator.pop(context);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => LeaveSettingsScreen(),
+                                ),
+                              );
+                            },
+                          ),
                         // ListTile(
                         //   minLeadingWidth: 0.5,
                         //   leading: FaIcon(

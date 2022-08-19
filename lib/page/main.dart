@@ -8,7 +8,11 @@ import 'package:ismart_login/page/front/front_screen.dart';
 import 'package:ismart_login/page/history/history_screen.dart';
 import 'package:ismart_login/page/leave/leave_screen.dart';
 import 'package:ismart_login/style/font_style.dart';
+import 'package:ismart_login/system/shared_preferences.dart';
 import 'package:ismart_login/system/widht_device.dart';
+import 'leave/leave_free_screen.dart';
+import 'managements/future/member_manage_future.dart';
+import 'managements/model/itemMemberResultManage.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -19,8 +23,37 @@ class _MainPageState extends State<MainPage> {
   ///--
   int selectedIndex = 1;
 
+  @override
+  void initState() {
+    onLoadMemberManage();
+    super.initState();
+  }
+
+  List<ItemsMemberResultManage> _itemMember = [];
+  Future<bool> onLoadMemberManage() async {
+    Map map = {
+      "org_id": await SharedCashe.getItemsWay(name: 'org_id'),
+      "uid": await SharedCashe.getItemsWay(name: 'id'),
+    };
+    await MemberManageFuture().apiGetMemberManageList(map).then((onValue) {
+      setState(() {
+        if (onValue[0].STATUS) {
+          _itemMember = onValue[0].RESULT;
+          print("main leave : " + _itemMember[0].LEAVE);
+        }
+      });
+    });
+    setState(() {});
+    return true;
+  }
+
   List _widgetOptions = [
     LeaveScreen(),
+    FrontScreen(),
+    HistoryScreen(),
+  ];
+  List _widgetFreeOptions = [
+    LeaveFreeScreen(),
     FrontScreen(),
     HistoryScreen(),
   ];
@@ -30,7 +63,10 @@ class _MainPageState extends State<MainPage> {
     return WillPopScope(
       onWillPop: alert_back_system,
       child: Scaffold(
-        body: _widgetOptions.elementAt(selectedIndex),
+        body: _itemMember.length > 0 && _itemMember[0].LEAVE == "1"
+            ? _widgetOptions.elementAt(selectedIndex)
+            : _widgetFreeOptions.elementAt(selectedIndex),
+        // body: _widgetOptions.elementAt(selectedIndex),
         bottomNavigationBar: FFNavigationBar(
           theme: FFNavigationBarTheme(
             barBackgroundColor: Colors.white,

@@ -1,32 +1,28 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:ismart_login/page/leave/confirm_leave.dart';
 import 'package:ismart_login/page/managements/future/member_manage_future.dart';
 import 'package:ismart_login/page/managements/model/itemMemberResultManage.dart';
-import 'package:ismart_login/page/managements/org_member_screen.dart';
 import 'package:ismart_login/server/server.dart';
 import 'package:ismart_login/style/font_style.dart';
 import 'package:ismart_login/style/page_style.dart';
-import 'package:ismart_login/style/text_style.dart';
 import 'package:ismart_login/system/shared_preferences.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:ismart_login/system/widht_device.dart';
-import 'package:http/http.dart' as http;
 
+import 'confirm_leave.dart';
 import 'leave_detail.dart';
-import 'leave_statistics_dateil.dart';
 
-class LeaveStatisticsScreen extends StatefulWidget {
+class LeaveHistoryScreen extends StatefulWidget {
   @override
-  _LeaveStatisticsScreenState createState() => _LeaveStatisticsScreenState();
+  _LeaveHistoryScreenState createState() => _LeaveHistoryScreenState();
 }
 
-class _LeaveStatisticsScreenState extends State<LeaveStatisticsScreen> {
+class _LeaveHistoryScreenState extends State<LeaveHistoryScreen> {
   List data = [];
   List<int> _daySelect = [];
   DateTime FirstDate = DateTime.now();
@@ -70,6 +66,7 @@ class _LeaveStatisticsScreenState extends State<LeaveStatisticsScreen> {
   String sick = '0';
   String leave = '0';
   String other = '0';
+  String len = '0';
   int _selectFullTime = 1;
 
   TextEditingController _inputCause = TextEditingController();
@@ -163,16 +160,19 @@ class _LeaveStatisticsScreenState extends State<LeaveStatisticsScreen> {
     };
     var body = json.encode(map);
     final response = await http.Client().post(
-      Uri.parse(Server().getListLeave),
+      Uri.parse(Server().getListHistoryLeave),
       headers: {"Content-Type": "application/json"},
       body: body,
     );
     data = json.decode(response.body);
     // print(data);
     if (data[0]['status'] == true) {
+      len = data[0]['result'].length.toString();
       sick = data[0]['sick'].toString();
       leave = data[0]['leave'].toString();
       other = data[0]['other'].toString();
+    } else {
+      len = data[0]['result'].length.toString();
     }
     setState(() {});
   }
@@ -266,7 +266,7 @@ class _LeaveStatisticsScreenState extends State<LeaveStatisticsScreen> {
                   AppBar(
                     backgroundColor: Color(0xFF00B1FF),
                     title: Text(
-                      'สถิติการลา',
+                      'ประวัติการอนุมัติ',
                       style: TextStyle(
                           fontFamily: FontStyles().FontFamily,
                           fontSize: 28,
@@ -276,326 +276,17 @@ class _LeaveStatisticsScreenState extends State<LeaveStatisticsScreen> {
                     ),
                     elevation: 0,
                   ),
-                  Container(
-                    color: Color(0xFF01b4fa),
-                    child: Center(
-                      child: Text(
-                        'สถิติการลาสะสมปี ${yearCurr.toString()}',
-                        style: TextStyle(
-                            fontFamily: FontStyles().FontFamily,
-                            fontSize: 30,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
                   Expanded(
                     child: Container(
                       height: MediaQuery.of(context).size.height,
-                      color: Colors.white,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                      ),
                       child: Padding(
-                        padding: const EdgeInsets.only(bottom: 20),
+                        padding: const EdgeInsets.only(bottom: 20, top: 20),
                         child: Column(
                           children: [
-                            Align(
-                              alignment: Alignment.topCenter,
-                              child: Container(
-                                width: MediaQuery.of(context).size.width,
-                                child: Stack(
-                                  children: [
-                                    Image(
-                                        image: AssetImage(
-                                            "assets/images/other/bg2.png")),
-                                    Padding(
-                                      padding: const EdgeInsets.all(20),
-                                      child: Container(
-                                        height: 180,
-                                        child: Row(
-                                          children: [
-                                            Expanded(
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                  color: Color(0xFFFF9C04),
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(
-                                                              15.0)),
-                                                ),
-                                                child: Padding(
-                                                  padding: const EdgeInsets.all(
-                                                      16.0),
-                                                  child: Center(
-                                                    child: Column(
-                                                      children: [
-                                                        Expanded(
-                                                          child:
-                                                              SvgPicture.asset(
-                                                            "assets/images/other/injured.svg", //asset location
-                                                            height:
-                                                                double.infinity,
-                                                          ),
-                                                        ),
-                                                        Container(
-                                                          height: 30,
-                                                          child: Align(
-                                                            alignment: Alignment
-                                                                .bottomCenter,
-                                                            child: Text(
-                                                              "ลาป่วย",
-                                                              style: TextStyle(
-                                                                color: Colors
-                                                                    .white,
-                                                                fontSize: 18,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Container(
-                                                          height: 40,
-                                                          child: Align(
-                                                            alignment: Alignment
-                                                                .center,
-                                                            child: Text(
-                                                              sick,
-                                                              style: TextStyle(
-                                                                color: Colors
-                                                                    .white,
-                                                                fontSize: 40,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            SizedBox(width: 5),
-                                            Expanded(
-                                              child: Column(
-                                                children: [
-                                                  Expanded(
-                                                    child: Container(
-                                                      decoration: BoxDecoration(
-                                                        color:
-                                                            Color(0xFF5AD1E9),
-                                                        borderRadius:
-                                                            BorderRadius.all(
-                                                                Radius.circular(
-                                                                    15.0)),
-                                                      ),
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .only(
-                                                                left: 24.0,
-                                                                right: 24.0),
-                                                        child: Row(
-                                                          children: [
-                                                            Expanded(
-                                                              child: Container(
-                                                                child: Padding(
-                                                                  padding:
-                                                                      const EdgeInsets
-                                                                              .all(
-                                                                          6.0),
-                                                                  child: Center(
-                                                                    child: SvgPicture
-                                                                        .asset(
-                                                                      "assets/images/other/exit.svg", //asset location
-                                                                      color: Colors
-                                                                          .white,
-                                                                      width: double
-                                                                          .infinity,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            Expanded(
-                                                              child: Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .only(
-                                                                        top:
-                                                                            8.0,
-                                                                        bottom:
-                                                                            8.0),
-                                                                child: Column(
-                                                                  children: [
-                                                                    Container(
-                                                                      height:
-                                                                          30,
-                                                                      child:
-                                                                          Text(
-                                                                        "ลากิจ",
-                                                                        style: TextStyle(
-                                                                            color: Colors
-                                                                                .white,
-                                                                            fontSize:
-                                                                                18,
-                                                                            height:
-                                                                                1.8),
-                                                                      ),
-                                                                    ),
-                                                                    Expanded(
-                                                                      child:
-                                                                          Text(
-                                                                        leave,
-                                                                        style:
-                                                                            TextStyle(
-                                                                          color:
-                                                                              Colors.white,
-                                                                          fontSize:
-                                                                              40,
-                                                                          fontWeight:
-                                                                              FontWeight.bold,
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(height: 5),
-                                                  Expanded(
-                                                    child: Container(
-                                                      decoration: BoxDecoration(
-                                                        color:
-                                                            Color(0xFF305AE3),
-                                                        borderRadius:
-                                                            BorderRadius.all(
-                                                                Radius.circular(
-                                                                    15.0)),
-                                                      ),
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                    .only(
-                                                                left: 24.0,
-                                                                right: 24.0),
-                                                        child: Row(
-                                                          children: [
-                                                            Expanded(
-                                                              child: Container(
-                                                                child: Padding(
-                                                                  padding:
-                                                                      const EdgeInsets
-                                                                              .all(
-                                                                          6.0),
-                                                                  child: Center(
-                                                                    child: SvgPicture
-                                                                        .asset(
-                                                                      "assets/images/other/travel.svg", //asset location
-                                                                      color: Colors
-                                                                          .white,
-                                                                      width: double
-                                                                          .infinity,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            Expanded(
-                                                              child: Padding(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                            .only(
-                                                                        top:
-                                                                            8.0,
-                                                                        bottom:
-                                                                            8.0),
-                                                                child: Column(
-                                                                  children: [
-                                                                    Container(
-                                                                      height:
-                                                                          30,
-                                                                      child:
-                                                                          Text(
-                                                                        "อื่นๆ",
-                                                                        style: TextStyle(
-                                                                            color: Colors
-                                                                                .white,
-                                                                            fontSize:
-                                                                                18,
-                                                                            height:
-                                                                                1.8),
-                                                                      ),
-                                                                    ),
-                                                                    Expanded(
-                                                                      child:
-                                                                          Text(
-                                                                        other,
-                                                                        style:
-                                                                            TextStyle(
-                                                                          color:
-                                                                              Colors.white,
-                                                                          fontSize:
-                                                                              40,
-                                                                          fontWeight:
-                                                                              FontWeight.bold,
-                                                                        ),
-                                                                      ),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.only(left: 24, right: 24),
-                              child: GestureDetector(
-                                onTap: () {
-                                  print("ตรวจสอบสิทธิ");
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          LeaveStatisticsDetailScreen(
-                                        sick: sick,
-                                        leave: leave,
-                                        other: other,
-                                      ),
-                                    ),
-                                  );
-                                },
-                                child: Container(
-                                  margin: const EdgeInsets.only(bottom: 12),
-                                  width: MediaQuery.of(context).size.width,
-                                  child: Text(
-                                    "ตรวจสอบสิทธิ >",
-                                    textAlign: TextAlign.right,
-                                    style: TextStyle(
-                                        color: Color(0xFF8F8C8C), fontSize: 17),
-                                  ),
-                                ),
-                              ),
-                            ),
                             Padding(
                               padding:
                                   const EdgeInsets.only(left: 24, right: 24),
@@ -604,7 +295,7 @@ class _LeaveStatisticsScreenState extends State<LeaveStatisticsScreen> {
                                   Expanded(
                                     child: Container(
                                       child: Text(
-                                        "ประวัติลางาน",
+                                        "ประวัติการอนุมัติ ${len} รายการ",
                                         textAlign: TextAlign.left,
                                         style: TextStyle(
                                             color: Color(0xFF616161),
@@ -612,7 +303,7 @@ class _LeaveStatisticsScreenState extends State<LeaveStatisticsScreen> {
                                       ),
                                     ),
                                   ),
-                                  Expanded(
+                                  Container(
                                     child: GestureDetector(
                                       onTap: () {
                                         print("ตัวกรอง");
@@ -625,7 +316,7 @@ class _LeaveStatisticsScreenState extends State<LeaveStatisticsScreen> {
                                             Text(
                                               "ตัวกรอง",
                                               style: TextStyle(
-                                                  color: Color(0xFF8F8C8C),
+                                                  color: Color(0xFF919191),
                                                   fontSize: 17,
                                                   height: 1),
                                             ),
@@ -667,7 +358,7 @@ class _LeaveStatisticsScreenState extends State<LeaveStatisticsScreen> {
                                               child: Container(
                                                 margin:
                                                     EdgeInsets.only(bottom: 8),
-                                                height: 70,
+                                                height: 104,
                                                 child: Container(
                                                   decoration: BoxDecoration(
                                                     color: Colors.white,
@@ -676,7 +367,7 @@ class _LeaveStatisticsScreenState extends State<LeaveStatisticsScreen> {
                                                             Radius.circular(
                                                                 26.0)),
                                                     border: Border.all(
-                                                      color: Color(0xFF8F8C8C),
+                                                      color: Color(0xFF919191),
                                                     ),
                                                     boxShadow: [
                                                       BoxShadow(
@@ -780,6 +471,33 @@ class _LeaveStatisticsScreenState extends State<LeaveStatisticsScreen> {
                                                                 ),
                                                               ),
                                                             ],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Expanded(
+                                                        child: Align(
+                                                          alignment: Alignment
+                                                              .bottomLeft,
+                                                          child: Container(
+                                                            padding:
+                                                                EdgeInsets.only(
+                                                                    left: 20),
+                                                            child: Text(
+                                                              rs[index][
+                                                                      'fullname']
+                                                                  .toString(),
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .left,
+                                                              style: TextStyle(
+                                                                  color: Color(
+                                                                      0xFF3E3E3E),
+                                                                  fontSize: 16),
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              maxLines: 1,
+                                                            ),
                                                           ),
                                                         ),
                                                       ),

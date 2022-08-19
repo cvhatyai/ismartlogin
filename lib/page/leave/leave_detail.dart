@@ -11,6 +11,7 @@ import 'package:ismart_login/style/font_style.dart';
 import 'package:ismart_login/style/page_style.dart';
 import 'package:ismart_login/system/shared_preferences.dart';
 import 'package:ismart_login/system/widht_device.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LeaveDetailScreen extends StatefulWidget {
   final String id;
@@ -23,6 +24,7 @@ class LeaveDetailScreen extends StatefulWidget {
 
 class _LeaveDetailScreenState extends State<LeaveDetailScreen> {
   List data = [];
+  List dataFiles = [];
   List<String> items = <String>['0'];
   List<ItemsMemberResultManage> _itemMember = [];
   List<File> _files = [];
@@ -99,6 +101,19 @@ class _LeaveDetailScreenState extends State<LeaveDetailScreen> {
     setState(() {});
   }
 
+  Future<void> _launchInBrowser(String url) async {
+    if (await canLaunch(url)) {
+      await launch(
+        url,
+        forceSafariVC: false,
+        forceWebView: false,
+        headers: <String, String>{'my_header_key': 'my_header_value'},
+      );
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
   onLoadDetailLeaveManage() async {
     Map map = {
       "org_id": await SharedCashe.getItemsWay(name: 'org_id'),
@@ -127,6 +142,7 @@ class _LeaveDetailScreenState extends State<LeaveDetailScreen> {
       phone = data[0]['phone'].toString();
       uid = await SharedCashe.getItemsWay(name: 'id');
       leaveStatusText = data[0]['leaveStatusText'].toString();
+      dataFiles = data[0]['files'];
     }
     setState(() {});
   }
@@ -513,15 +529,74 @@ class _LeaveDetailScreenState extends State<LeaveDetailScreen> {
                                                                               child: Text(leaveStatusText, style: TextStyle(fontSize: 20, color: colorTextCodes[int.parse(leaveStatus) - 1])),
                                                                             )
                                                                           ],
-                                                                        ))
+                                                                        )),
+                                                                    if (dataFiles !=
+                                                                            null &&
+                                                                        dataFiles.length >
+                                                                            0)
+                                                                      Align(
+                                                                        alignment:
+                                                                            Alignment.centerLeft,
+                                                                        child:
+                                                                            Container(
+                                                                          padding:
+                                                                              EdgeInsets.only(bottom: 10),
+                                                                          child:
+                                                                              Container(
+                                                                            child: Text("เอกสารแนบ",
+                                                                                textAlign: TextAlign.left,
+                                                                                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF8E8E8E))),
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    if (dataFiles !=
+                                                                            null &&
+                                                                        dataFiles.length >
+                                                                            0)
+                                                                      for (var i =
+                                                                              0;
+                                                                          i < dataFiles.length;
+                                                                          i++)
+                                                                        Align(
+                                                                          alignment:
+                                                                              Alignment.centerLeft,
+                                                                          child:
+                                                                              GestureDetector(
+                                                                            onTap:
+                                                                                () {
+                                                                              _launchInBrowser(dataFiles[i]['path']);
+                                                                            },
+                                                                            child:
+                                                                                Container(
+                                                                              padding: EdgeInsets.only(bottom: 10),
+                                                                              child: Text(
+                                                                                "- " + dataFiles[i]['filename'].toString(),
+                                                                                maxLines: 1,
+                                                                                overflow: TextOverflow.ellipsis,
+                                                                                style: TextStyle(
+                                                                                  fontSize: 15,
+                                                                                  fontWeight: FontWeight.bold,
+                                                                                  color: Color(0xFF8E8E8E),
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                        ),
                                                                   ],
                                                                 ),
                                                               ),
                                                             ),
                                                           ),
+
                                                           //button
                                                           Container(
-                                                            height: 120,
+                                                            height: dataFiles !=
+                                                                        null &&
+                                                                    dataFiles
+                                                                            .length >
+                                                                        0
+                                                                ? 65
+                                                                : 120,
                                                             child: (data !=
                                                                         null &&
                                                                     data.length >
@@ -561,10 +636,43 @@ class _LeaveDetailScreenState extends State<LeaveDetailScreen> {
                                                                             ),
                                                                           ),
                                                                         ),
+                                                                      if ((createBy !=
+                                                                              uid) &&
+                                                                          (leaveStatus ==
+                                                                              "2"))
+                                                                        Container(
+                                                                          width:
+                                                                              200,
+                                                                          child:
+                                                                              GestureDetector(
+                                                                            onTap:
+                                                                                () {
+                                                                              alert_confirm(context, "คุณต้องการ “ยกเลิก” การลาหรือไม่", "4");
+                                                                            },
+                                                                            child:
+                                                                                Container(
+                                                                              decoration: BoxDecoration(
+                                                                                color: Color(0xFFBBBBBB),
+                                                                                borderRadius: BorderRadius.circular(26),
+                                                                              ),
+                                                                              child: Padding(
+                                                                                padding: const EdgeInsets.all(8.0),
+                                                                                child: Center(
+                                                                                  child: Text(
+                                                                                    'ยกเลิก',
+                                                                                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                        ),
                                                                       // อนุมัติ //ไม่อนุมัติิ
                                                                       if ((createBy != uid) &&
                                                                           (leaveStatus !=
                                                                               "3") &&
+                                                                          (leaveStatus !=
+                                                                              "2") &&
                                                                           (leaveStatus !=
                                                                               "4") &&
                                                                           (userclass ==

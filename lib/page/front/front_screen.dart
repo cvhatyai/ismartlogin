@@ -31,7 +31,7 @@ import 'package:ismart_login/system/shared_preferences.dart';
 import 'package:ismart_login/system/widht_device.dart';
 import 'package:location/location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:http/http.dart' as http;
 import 'outtime_popup.dart';
 
 class FrontScreen extends StatefulWidget {
@@ -59,6 +59,7 @@ class _FrontScreenState extends State<FrontScreen> {
   List<ItemsMemberList> _items = [];
   String _dateString;
   String _timeString;
+  String badge = '0';
   //----
   String org_id;
   bool dayWorking = false;
@@ -90,6 +91,7 @@ class _FrontScreenState extends State<FrontScreen> {
   @override
   void initState() {
     onLoadMemberManage();
+    onLoadBadgeLeaveManage();
     _getMyLocation();
     _getShaerd();
     _timeString = _formatTime(DateTime.now());
@@ -105,6 +107,25 @@ class _FrontScreenState extends State<FrontScreen> {
     _date.cancel();
     super.dispose();
     locationSubscription.cancel();
+  }
+
+  onLoadBadgeLeaveManage() async {
+    Map map = {
+      "org_id": await SharedCashe.getItemsWay(name: 'org_id'),
+      "uid": await SharedCashe.getItemsWay(name: 'id'),
+    };
+    var body = json.encode(map);
+    final response = await http.Client().post(
+      Uri.parse(Server().getBadgeLeave),
+      headers: {"Content-Type": "application/json"},
+      body: body,
+    );
+    var data = json.decode(response.body);
+
+    if (data[0]['status'] == true) {
+      badge = data[0]['badge'].toString();
+    }
+    setState(() {});
   }
 
   _getMyLocation() {
@@ -300,6 +321,9 @@ class _FrontScreenState extends State<FrontScreen> {
       key: _scaffoldKey,
       drawer: MenuDrawer(
           images: _itemMember.length > 0 ? _itemMember[0].AVATAR : '',
+          leave: _itemMember.length > 0 ? _itemMember[0].LEAVE : '0',
+          updateBadge: onLoadBadgeLeaveManage,
+          // badge: badge,
           fullname: _itemMember.length > 0
               ? _itemMember[0].NICKNAME == '' || _itemMember[0].NICKNAME == null
                   ? _subFullname(_itemMember[0].FULLNAME)
@@ -520,15 +544,46 @@ class _FrontScreenState extends State<FrontScreen> {
                             ),
                             GestureDetector(
                               onTap: () {
-                                // _scaffoldKey.currentState.openDrawer();
-                                // Scaffold.of(context).openDrawer();
-                                // alert_signout(context);
+                                //noti
                               },
                               child: Container(
-                                padding: EdgeInsets.only(right: 10, top: 7),
-                                child: Icon(
-                                  Icons.notifications,
-                                  size: 35,
+                                child: Stack(
+                                  children: [
+                                    Container(
+                                      padding:
+                                          EdgeInsets.only(right: 10, top: 7),
+                                      child: Icon(
+                                        Icons.notifications,
+                                        size: 35,
+                                      ),
+                                    ),
+                                    if (badge != "0")
+                                      Positioned(
+                                        top: 0.5,
+                                        right: 7,
+                                        child: new Container(
+                                          padding: EdgeInsets.all(1.0),
+                                          decoration: new BoxDecoration(
+                                            color: Colors.red,
+                                            borderRadius:
+                                                BorderRadius.circular(10.0),
+                                          ),
+                                          constraints: BoxConstraints(
+                                            minWidth: 20.0,
+                                            minHeight: 20.0,
+                                          ),
+                                          child: new Text(
+                                            badge.toString(),
+                                            textScaleFactor: 1.0,
+                                            style: new TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 10.0,
+                                                height: 1.5),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ),
+                                      )
+                                  ],
                                 ),
                               ),
                             ),

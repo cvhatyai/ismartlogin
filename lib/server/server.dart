@@ -62,11 +62,18 @@ class Server {
   String getOrgAdmin = _baseUrl + 'manage/getOrg';
   String updateOrgSwitch = _baseUrl + 'manage/updateSwitchOrg';
   String updateOrgSuspend = _baseUrl + 'manage/updateSuspendOrg'; // ระงับบริษัท
-  String insertInfoLeave = _baseUrl + 'manage/insertInfoLeave'; 
-  String getCateLeave = _baseUrl + 'manage/getCateLeave'; 
-  String getListLeave = _baseUrl + 'manage/getListLeave'; 
-  String getDetailLeave = _baseUrl + 'manage/getDetailLeave'; 
-  String postupdateStatusLeave = _baseUrl + 'manage/updateStatusLeave'; 
+  String insertInfoLeave = _baseUrl + 'manage/insertInfoLeave';
+  String getCateLeave = _baseUrl + 'manage/getCateLeave';
+  String getListLeave = _baseUrl + 'manage/getListLeave';
+  String getDetailLeave = _baseUrl + 'manage/getDetailLeave';
+  String postupdateStatusLeave = _baseUrl + 'manage/updateStatusLeave';
+  String getListLeaveWait = _baseUrl + 'manage/getListLeaveWait';
+  String getBadgeLeave = _baseUrl + 'manage/getBadgeLeave';
+  String getListHistoryLeave = _baseUrl + 'manage/getListHistoryLeave';
+  String getCateLeaveOrg = _baseUrl + 'manage/getCateLeaveOrg';
+  String getCateLeaveDetail = _baseUrl + 'manage/getCateLeaveDetail';
+  String insertCateLeave = _baseUrl + 'manage/insertCateLeave';
+  String updateCateLeave = _baseUrl + 'manage/updateCateLeave';
 
   //---- *switch protect
   String getProtectSwitch = _baseUrl + 'protectapp/protectSwitch';
