@@ -16,6 +16,7 @@ import 'package:ismart_login/system/widht_device.dart';
 import '../main.dart';
 import 'confirm_leave.dart';
 import 'leave_detail.dart';
+import 'leave_filter.dart';
 import 'leave_history.dart';
 
 class LeaveListScreen extends StatefulWidget {
@@ -27,6 +28,8 @@ class LeaveListScreen extends StatefulWidget {
 
 class _LeaveListScreenState extends State<LeaveListScreen> {
   List data = [];
+  List statusData = [];
+  List typesData = [];
   List<int> _daySelect = [];
   DateTime FirstDate = DateTime.now();
   DateTime LastDate = DateTime.now();
@@ -162,10 +165,71 @@ class _LeaveListScreenState extends State<LeaveListScreen> {
     super.dispose();
   }
 
+  String dropdownValueStartMonth = "เลือกเดือน";
+  String dropdownValueStartYear = "เลือกปี";
+  String dropdownValueEndMonth = "เลือกเดือน";
+  String dropdownValueEndYear = "เลือกปี";
+
+  onSetDataFilter(List status, List types, String monthStart, String yearStart,
+      String monthEnd, String yearEnd) async {
+    if (status != null && status.length > 0) {
+      statusData = status;
+    }
+    if (types != null && types.length > 0) {
+      typesData = types;
+    }
+
+    if (monthStart != null && monthStart != "") {
+      dropdownValueStartMonth = monthStart;
+    }else{
+      dropdownValueStartMonth = "เลือกเดือน";
+    }
+
+    if (yearStart != null && yearStart != "") {
+      dropdownValueStartYear = yearStart;
+    }else{
+      dropdownValueStartYear = "เลือกปี";
+    }
+
+    if (monthEnd != null && monthEnd != "") {
+      dropdownValueEndMonth = monthEnd;
+    }else{
+      dropdownValueEndMonth = "เลือกเดือน";
+    }
+
+    if (yearEnd != null && yearEnd != "") {
+      dropdownValueEndYear = yearEnd;
+    }else{
+      dropdownValueEndYear = "เลือกปี";
+    }
+
+    onLoadListLeaveManage();
+    print("status : $status");
+    print("types : $types");
+  }
+
   onLoadListLeaveManage() async {
+    String statusLeave = '';
+    String typesLeave = '';
+    if (statusData != null && statusData.length > 0) {
+      statusLeave = statusData.join(',');
+    }
+    if (typesData != null && typesData.length > 0) {
+      typesLeave = typesData.join(',');
+    }
     Map map = {
       "org_id": await SharedCashe.getItemsWay(name: 'org_id'),
       "uid": await SharedCashe.getItemsWay(name: 'id'),
+      "status_leave": statusLeave,
+      "cid": typesLeave,
+      "month_start": dropdownValueStartMonth != "เลือกเดือน"
+          ? dropdownValueStartMonth
+          : "",
+      "year_start":
+          dropdownValueStartYear != "เลือกปี" ? dropdownValueStartYear : "",
+      "month_end":
+          dropdownValueEndMonth != "เลือกเดือน" ? dropdownValueEndMonth : "",
+      "year_end": dropdownValueEndYear != "เลือกปี" ? dropdownValueEndYear : "",
     };
     var body = json.encode(map);
     final response = await http.Client().post(
@@ -354,6 +418,45 @@ class _LeaveListScreenState extends State<LeaveListScreen> {
                                     child: GestureDetector(
                                       onTap: () {
                                         print("ตัวกรอง");
+                                        showModalBottomSheet(
+                                          elevation: 0.0,
+                                          backgroundColor: Colors.transparent,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.only(
+                                                topLeft:
+                                                    const Radius.circular(10.0),
+                                                topRight: const Radius.circular(
+                                                    10.0)),
+                                          ),
+                                          isScrollControlled: true,
+                                          context: context,
+                                          builder: (BuildContext bc) {
+                                            return Container(
+                                              child: Wrap(
+                                                alignment: WrapAlignment.center,
+                                                children: <Widget>[
+                                                  Container(
+                                                     height: 390,
+                                                    child: LeaveFilterScreen(
+                                                      statusDataTmp: statusData,
+                                                      typesDataTmp: typesData,
+                                                      setDataFilterLeaveData:
+                                                          onSetDataFilter,
+                                                      dropdownValueStartMonthTmp:
+                                                          dropdownValueStartMonth,
+                                                      dropdownValueStartYearTmp:
+                                                          dropdownValueStartYear,
+                                                      dropdownValueEndMonthTmp:
+                                                          dropdownValueEndMonth,
+                                                      dropdownValueEndYearTmp:
+                                                          dropdownValueEndYear,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          },
+                                        );
                                       },
                                       child: Container(
                                         child: Row(
@@ -630,7 +733,7 @@ class _LeaveListScreenState extends State<LeaveListScreen> {
                                       : Container(
                                           margin: EdgeInsets.only(top: 40),
                                           child: Text(
-                                            "- ไม่มีข้อมูลการลา - ",
+                                            "- ไม่มีข้อมูล - ",
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
                                                 color: Color(0xFF616161),
