@@ -157,29 +157,27 @@ class _OrgDepartmentDetailManageState extends State<OrgDepartmentDetailManage> {
     });
   }
 
-  // GoogleMapController _controller;
-
-//แผนที่
-  // void showPlacePicker() async {
-  //   LocationResult result = await Navigator.of(context).push(
-  //     MaterialPageRoute(
-  //         builder: (context) =>
-  //             //PlacePicker("AIzaSyC_toS4JYdMubnqCRVg7mbJk4t6nvkRUlY")),
-  //             PlacePicker("AIzaSyB91yhHGMRWDgLYajpg8ACtG5Dl1YUFFEw")),
-  //   );
-  //   // Handle the result in your way
-  //   print("result : " + result.toString());
-  //   if (result != null) {
-  //     latMain = result.latLng.latitude;
-  //     logMain = result.latLng.longitude;
-  //     setState(() {
-  //       setMarker(lat: latMain, log: logMain);
-  //       mapMark();
-  //       addMarker();
-  //       //initState();
-  //     });
-  //   }
-  // }
+  //แผนที่
+  Completer<GoogleMapController> _controller = Completer();
+  Future<void> showPlacePicker() async {
+    LocationResult result = await Navigator.of(context).push(
+      MaterialPageRoute(
+          builder: (context) =>
+              //PlacePicker("AIzaSyC_toS4JYdMubnqCRVg7mbJk4t6nvkRUlY")),
+              PlacePicker("AIzaSyB91yhHGMRWDgLYajpg8ACtG5Dl1YUFFEw", displayLocation: LatLng(latMain, logMain),)),
+    );
+    // Handle the result in your way
+    if (result == null) {
+      return;
+    }
+    final cameraPosition = CameraPosition(
+      target: LatLng(result.latLng.latitude, result.latLng.longitude),
+      zoom: 18,
+    );
+    final GoogleMapController controller = await _controller.future;
+    await controller.moveCamera(CameraUpdate.newCameraPosition(cameraPosition));
+    setMarker(lat: result.latLng.latitude, log: result.latLng.longitude);
+  }
 
   ///---- GPS
   mapMark() {
@@ -445,7 +443,7 @@ class _OrgDepartmentDetailManageState extends State<OrgDepartmentDetailManage> {
                                         ),
                                       ),
                                       Container(
-                                        width: 0,
+                                        width: 120,
                                         child: ElevatedButton(
                                           style: ButtonStyle(
                                             backgroundColor:
@@ -453,7 +451,7 @@ class _OrgDepartmentDetailManageState extends State<OrgDepartmentDetailManage> {
                                                     Color>(Color(0xFFFF841B)),
                                           ),
                                           onPressed: () {
-                                            // showPlacePicker();
+                                            showPlacePicker();
                                           },
                                           child: Container(
                                             alignment: Alignment.center,
@@ -493,6 +491,9 @@ class _OrgDepartmentDetailManageState extends State<OrgDepartmentDetailManage> {
                                       markers: addMarker(),
                                       initialCameraPosition: mapMark(),
                                       zoomGesturesEnabled: true,
+                                      onMapCreated: (GoogleMapController controller) {
+                                        _controller.complete(controller);
+                                      },
                                       // all the other arguments
                                       onTap: (latLng) {
                                         setMarker(
