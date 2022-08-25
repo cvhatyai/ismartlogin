@@ -16,7 +16,8 @@ import 'package:url_launcher/url_launcher.dart';
 class LeaveDetailScreen extends StatefulWidget {
   final String id;
   final Function loadListLeave;
-  const LeaveDetailScreen({Key key, this.id, this.loadListLeave})
+  final Function loadData;
+  const LeaveDetailScreen({Key key, this.id, this.loadListLeave, this.loadData})
       : super(key: key);
   @override
   _LeaveDetailScreenState createState() => _LeaveDetailScreenState();
@@ -78,6 +79,14 @@ class _LeaveDetailScreenState extends State<LeaveDetailScreen> {
     onLoadDetailLeaveManage();
     onLoadMemberManage();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    if (widget.loadData != null) {
+      widget.loadData();
+    }
   }
 
   updateStatusLeave(String status) async {

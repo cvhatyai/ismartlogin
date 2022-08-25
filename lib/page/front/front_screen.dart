@@ -13,6 +13,7 @@ import 'package:ismart_login/page/front/insite_popup.dart';
 import 'package:ismart_login/page/front/model/attendToDay.dart';
 import 'package:ismart_login/page/front/model/orglist.dart';
 import 'package:ismart_login/page/front/offside_popup.dart';
+import 'package:ismart_login/page/leave/leave_noti_list.dart';
 import 'package:ismart_login/page/main.dart';
 import 'package:ismart_login/page/managements/future/department_manage_future.dart';
 import 'package:ismart_login/page/managements/future/member_manage_future.dart';
@@ -545,6 +546,12 @@ class _FrontScreenState extends State<FrontScreen> {
                             GestureDetector(
                               onTap: () {
                                 //noti
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => LeaveNotiListScreen(),
+                                  ),
+                                );
                               },
                               child: Container(
                                 child: Stack(

@@ -74,6 +74,7 @@ class Server {
   String getCateLeaveDetail = _baseUrl + 'manage/getCateLeaveDetail';
   String insertCateLeave = _baseUrl + 'manage/insertCateLeave';
   String updateCateLeave = _baseUrl + 'manage/updateCateLeave';
+  String getListNotiLeave = _baseUrl + 'manage/getListNotiLeave';
 
   //---- *switch protect
   String getProtectSwitch = _baseUrl + 'protectapp/protectSwitch';
