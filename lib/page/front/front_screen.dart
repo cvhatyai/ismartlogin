@@ -543,57 +543,62 @@ class _FrontScreenState extends State<FrontScreen> {
                                 ),
                               ),
                             ),
-                            GestureDetector(
-                              onTap: () {
-                                //noti
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => LeaveNotiListScreen(),
-                                  ),
-                                );
-                              },
-                              child: Container(
-                                child: Stack(
-                                  children: [
-                                    Container(
-                                      padding:
-                                          EdgeInsets.only(right: 10, top: 7),
-                                      child: Icon(
-                                        Icons.notifications,
-                                        size: 35,
+                            if (_itemMember != null)
+                              if (_itemMember.length > 0)
+                                if (_itemMember[0].LEAVE == 1)
+                                  GestureDetector(
+                                    onTap: () {
+                                      //noti
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              LeaveNotiListScreen(),
+                                        ),
+                                      );
+                                    },
+                                    child: Container(
+                                      child: Stack(
+                                        children: [
+                                          Container(
+                                            padding: EdgeInsets.only(
+                                                right: 10, top: 7),
+                                            child: Icon(
+                                              Icons.notifications,
+                                              size: 35,
+                                            ),
+                                          ),
+                                          if (badge != "0")
+                                            Positioned(
+                                              top: 0.5,
+                                              right: 7,
+                                              child: new Container(
+                                                padding: EdgeInsets.all(1.0),
+                                                decoration: new BoxDecoration(
+                                                  color: Colors.red,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10.0),
+                                                ),
+                                                constraints: BoxConstraints(
+                                                  minWidth: 20.0,
+                                                  minHeight: 20.0,
+                                                ),
+                                                child: new Text(
+                                                  badge.toString(),
+                                                  textScaleFactor: 1.0,
+                                                  style: new TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 10.0,
+                                                      height: 1.5),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ),
+                                            )
+                                        ],
                                       ),
                                     ),
-                                    if (badge != "0")
-                                      Positioned(
-                                        top: 0.5,
-                                        right: 7,
-                                        child: new Container(
-                                          padding: EdgeInsets.all(1.0),
-                                          decoration: new BoxDecoration(
-                                            color: Colors.red,
-                                            borderRadius:
-                                                BorderRadius.circular(10.0),
-                                          ),
-                                          constraints: BoxConstraints(
-                                            minWidth: 20.0,
-                                            minHeight: 20.0,
-                                          ),
-                                          child: new Text(
-                                            badge.toString(),
-                                            textScaleFactor: 1.0,
-                                            style: new TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 10.0,
-                                                height: 1.5),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ),
-                                      )
-                                  ],
-                                ),
-                              ),
-                            ),
+                                  ),
                             GestureDetector(
                               onTap: () {
                                 _scaffoldKey.currentState.openDrawer();
