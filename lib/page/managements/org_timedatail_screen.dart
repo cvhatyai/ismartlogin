@@ -18,8 +18,14 @@ class OrgTimeDetailManage extends StatefulWidget {
   final String id;
   final String org_id;
   final String type;
-  OrgTimeDetailManage({Key key, @required this.id, this.org_id, this.type})
-      : super(key: key);
+  final Function updateLoadTime;
+  OrgTimeDetailManage({
+    Key key,
+    @required this.id,
+    this.org_id,
+    this.type,
+    this.updateLoadTime,
+  }) : super(key: key);
   @override
   _OrgTimeDetailManageState createState() => _OrgTimeDetailManageState();
 }
@@ -110,6 +116,9 @@ class _OrgTimeDetailManageState extends State<OrgTimeDetailManage> {
       print(onValue[0].MSG);
       if (onValue[0].STATUS == true) {
         EasyLoading.showSuccess('บันทึกแล้ว');
+        if (widget.updateLoadTime != null) {
+          widget.updateLoadTime();
+        }
       } else {
         EasyLoading.showError('ล้มเหลว');
       }

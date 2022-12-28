@@ -10,6 +10,7 @@ class ItemsDepartmentResultManage {
   final String UPDATE_DATE;
   final String STATUS;
   final String SEQ;
+  final String TIME_ID;
 
   ItemsDepartmentResultManage({
     this.ID,
@@ -23,6 +24,7 @@ class ItemsDepartmentResultManage {
     this.UPDATE_DATE,
     this.STATUS,
     this.SEQ,
+    this.TIME_ID,
   });
 
   factory ItemsDepartmentResultManage.fromJson(Map<String, dynamic> json) {
@@ -38,6 +40,7 @@ class ItemsDepartmentResultManage {
       UPDATE_DATE: json['update_date'],
       STATUS: json['status'],
       SEQ: json['seq'],
+      TIME_ID: json['time_id'],
     );
   }
 }

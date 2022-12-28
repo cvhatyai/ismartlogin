@@ -17,6 +17,10 @@ import 'package:ismart_login/system/widht_device.dart';
 import 'package:location/location.dart';
 import 'package:place_picker/place_picker.dart';
 
+import 'future/time_manage_future.dart';
+import 'model/itemTimeResultMange.dart';
+import 'org_timedatail_screen.dart';
+
 class OrgDepartmentDetailManage extends StatefulWidget {
   final String id;
   final String seq;
@@ -83,6 +87,7 @@ class _OrgDepartmentDetailManageState extends State<OrgDepartmentDetailManage> {
       "radius": _inputDegree.text,
       "id": widget.id,
       "type": widget.type,
+      "time_id": dropdownValueTime,
     };
     print(json.encode(map).toString());
     // EasyLoading.showError('ล้มเหลว');
@@ -164,7 +169,10 @@ class _OrgDepartmentDetailManageState extends State<OrgDepartmentDetailManage> {
       MaterialPageRoute(
           builder: (context) =>
               //PlacePicker("AIzaSyC_toS4JYdMubnqCRVg7mbJk4t6nvkRUlY")),
-              PlacePicker("AIzaSyB91yhHGMRWDgLYajpg8ACtG5Dl1YUFFEw", displayLocation: LatLng(latMain, logMain),)),
+              PlacePicker(
+                "AIzaSyB91yhHGMRWDgLYajpg8ACtG5Dl1YUFFEw",
+                displayLocation: LatLng(latMain, logMain),
+              )),
     );
     // Handle the result in your way
     if (result == null) {
@@ -208,6 +216,32 @@ class _OrgDepartmentDetailManageState extends State<OrgDepartmentDetailManage> {
     return markers;
   }
 
+  String dropdownValueTime = '0';
+  List<ItemsTimeResultManage> _itemTime = [];
+  Future<bool> onLoadGetAllTime() async {
+    Map map = {
+      "org_id": await SharedCashe.getItemsWay(name: 'org_id'),
+    };
+    await TimeManageFuture().apiGetTimeManageList(map).then((onValue) {
+      if (onValue[0].STATUS == true) {
+        setState(() {
+          _itemTime = onValue[0].RESULT;
+          if (_resultItem != null && _resultItem.length > 0) {
+            if (_resultItem[0].TIME_ID != '') {
+              dropdownValueTime = _resultItem[0].TIME_ID;
+            } else {
+              dropdownValueTime = _itemTime[0].ID;
+            }
+          } else {
+            dropdownValueTime = _itemTime[0].ID;
+          }
+          print("onloadTime : ${dropdownValueTime}");
+        });
+      }
+    });
+    return true;
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -220,6 +254,7 @@ class _OrgDepartmentDetailManageState extends State<OrgDepartmentDetailManage> {
     } else {
       // _getLocation();
     }
+    onLoadGetAllTime();
   }
 
   @override
@@ -421,6 +456,107 @@ class _OrgDepartmentDetailManageState extends State<OrgDepartmentDetailManage> {
                                 Padding(
                                   padding: EdgeInsets.all(5),
                                 ),
+
+                                Row(
+                                  children: [
+                                    Container(
+                                      child: Text(
+                                        'กำหนดเวลาทำงาน : ',
+                                        style: TextStyle(
+                                          fontFamily: FontStyles().FontFamily,
+                                          fontSize: 24,
+                                          height: 1,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      width: 120,
+                                      child: DropdownButton(
+                                        value: dropdownValueTime,
+                                        icon: Icon(
+                                          Icons.arrow_drop_down,
+                                          color: Colors.grey,
+                                        ),
+                                        iconSize: 24,
+                                        elevation: 16,
+                                        style: TextStyle(
+                                          fontFamily: FontStyles().FontFamily,
+                                          fontSize: 24,
+                                          height: 1,
+                                          color: Colors.black,
+                                        ),
+                                        isExpanded: true,
+                                        underline: Container(
+                                          height: 2,
+                                          color: Colors.blue,
+                                        ),
+                                        onChanged: (newValue) {
+                                          setState(() {
+                                            dropdownValueTime = newValue;
+                                          });
+                                          print('id time ' + dropdownValueTime);
+                                        },
+                                        items: _itemTime.length == 0
+                                            ? <String>['0']
+                                                .map<DropdownMenuItem<String>>(
+                                                    (String value) {
+                                                return DropdownMenuItem(
+                                                  child: Text('- เลือก -'),
+                                                  value: value,
+                                                );
+                                              }).toList()
+                                            : _itemTime.map((map) {
+                                                return DropdownMenuItem(
+                                                  child: Text(map.SUBJECT,overflow: TextOverflow.ellipsis),
+                                                  value: map.ID,                                                  
+                                                );
+                                              }).toList(),
+                                      ),
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        if (_formKey.currentState.validate()) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  OrgTimeDetailManage(
+                                                id: '0',
+                                                org_id: widget.org_id,
+                                                type: 'insert',
+                                                updateLoadTime:
+                                                    onLoadGetAllTime,
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                      },
+                                      child: Container(
+                                        margin: EdgeInsets.only(left: 5),
+                                        padding: EdgeInsets.only(
+                                            left: 10, right: 10),
+                                        decoration: BoxDecoration(
+                                          color: Color(0xFF079CFD),
+                                          borderRadius:
+                                              BorderRadius.circular(30),
+                                        ),
+                                        child: Text(
+                                          'เพิ่มใหม่',
+                                          style: TextStyle(
+                                              fontFamily:
+                                                  FontStyles().FontFamily,
+                                              color: Colors.white,
+                                              fontSize: 24),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+
+                                Padding(
+                                  padding: EdgeInsets.all(5),
+                                ),
                                 Container(
                                   alignment: Alignment.centerLeft,
                                   child: Row(
@@ -486,12 +622,13 @@ class _OrgDepartmentDetailManageState extends State<OrgDepartmentDetailManage> {
                                 ),
                                 Container(
                                   height:
-                                      MediaQuery.of(context).size.height * 0.55,
+                                      MediaQuery.of(context).size.height * 0.45,
                                   child: GoogleMap(
                                       markers: addMarker(),
                                       initialCameraPosition: mapMark(),
                                       zoomGesturesEnabled: true,
-                                      onMapCreated: (GoogleMapController controller) {
+                                      onMapCreated:
+                                          (GoogleMapController controller) {
                                         _controller.complete(controller);
                                       },
                                       // all the other arguments
