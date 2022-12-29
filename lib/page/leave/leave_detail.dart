@@ -43,6 +43,7 @@ class _LeaveDetailScreenState extends State<LeaveDetailScreen> {
   String leaveStatusText = '';
   String createBy = '';
   String userclass = '';
+  String leave_member = '0';
   final List<Color> colorCodes = <Color>[
     Color(0xFFFDAB28),
     Color(0xFF30BEE3),
@@ -129,6 +130,7 @@ class _LeaveDetailScreenState extends State<LeaveDetailScreen> {
       "uid": await SharedCashe.getItemsWay(name: 'id'),
       "id": widget.id,
     };
+    print("onLoadDetailLeaveManage : ${map}");
     var body = json.encode(map);
     final response = await http.Client().post(
       Uri.parse(Server().getDetailLeave),
@@ -166,6 +168,7 @@ class _LeaveDetailScreenState extends State<LeaveDetailScreen> {
         if (onValue[0].STATUS) {
           _itemMember = onValue[0].RESULT;
           userclass = _itemMember[0].MEMBER_TYPE.toString();
+          leave_member = _itemMember[0].LEAVE_MEMBER.toString();
         }
       });
     });
@@ -684,8 +687,8 @@ class _LeaveDetailScreenState extends State<LeaveDetailScreen> {
                                                                               "2") &&
                                                                           (leaveStatus !=
                                                                               "4") &&
-                                                                          (userclass ==
-                                                                              "admin"))
+                                                                          (userclass == "admin" ||
+                                                                              leave_member == "1"))
                                                                         Padding(
                                                                           padding: const EdgeInsets.only(
                                                                               left: 16.0,

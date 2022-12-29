@@ -72,7 +72,8 @@ dependencies:
   new_version: ^0.3.1
   package_info: ^2.0.2
 #  flutter_local_notifications: ^5.0.0+4
-#  firebase_messaging: ^10.0.2
+  # firebase_messaging: ^10.0.2
+  firebase_messaging: ^11.2.7
 #  firebase_core: ^1.2.0
 #  firebase_messaging_platform_interface: ^3.1.6
 

@@ -42,6 +42,7 @@ class MenuDrawer extends StatefulWidget {
   final String org_id;
   final String type_member;
   final String leave;
+  final String leave_member;
   final String badge;
   final Function updateBadge;
   MenuDrawer({
@@ -55,6 +56,7 @@ class MenuDrawer extends StatefulWidget {
     this.leave,
     this.badge,
     this.updateBadge,
+    this.leave_member,
   }) : super(key: key);
   @override
   _MenuDrawerState createState() => _MenuDrawerState();
@@ -325,153 +327,163 @@ class _MenuDrawerState extends State<MenuDrawer> {
           ),
 
           Visibility(
-            visible: widget.type_member == 'member' ? false : true,
+            // visible: widget.type_member == 'member' ? false : true,
             child: Container(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Divider(), //here is a divider
-                  Text(
-                    " Administrator",
-                    style: TextStyle(
-                        fontFamily: FontStyles().FontFamily,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold),
-                  ),
+                  if (widget.type_member != 'member')
+                    Text(
+                      "Administrator",
+                      style: TextStyle(
+                          fontFamily: FontStyles().FontFamily,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold),
+                    ),
                   Container(
                     child: Column(
                       children: [
-                        ListTile(
-                          minLeadingWidth: 0.5,
-                          leading: FaIcon(
-                            FontAwesomeIcons.building,
-                            size: 20,
-                          ),
-                          title: Text(
-                            'จัดการองค์กร',
-                            style: _txt,
-                          ),
-                          onTap: () {
-                            Navigator.pop(context);
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => OrgManageScreen(),
+                        if (widget.type_member != 'member')
+                          Column(
+                            children: [
+                              ListTile(
+                                minLeadingWidth: 0.5,
+                                leading: FaIcon(
+                                  FontAwesomeIcons.building,
+                                  size: 20,
+                                ),
+                                title: Text(
+                                  'จัดการองค์กร',
+                                  style: _txt,
+                                ),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => OrgManageScreen(),
+                                    ),
+                                  );
+                                },
                               ),
-                            );
-                          },
-                        ),
-                        ListTile(
-                          minLeadingWidth: 0.5,
-                          leading: FaIcon(
-                            FontAwesomeIcons.userFriends,
-                            size: 20,
-                          ),
-                          title: Text(
-                            'สมาชิก',
-                            style: _txt,
-                          ),
-                          onTap: () {
-                            Navigator.pop(context);
-                            EasyLoading.show();
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => OrgMemberScreen(),
+                              ListTile(
+                                minLeadingWidth: 0.5,
+                                leading: FaIcon(
+                                  FontAwesomeIcons.userFriends,
+                                  size: 20,
+                                ),
+                                title: Text(
+                                  'สมาชิก',
+                                  style: _txt,
+                                ),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  EasyLoading.show();
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => OrgMemberScreen(),
+                                    ),
+                                  );
+                                },
                               ),
-                            );
-                          },
-                        ),
-                        ListTile(
-                          minLeadingWidth: 0.5,
-                          leading: FaIcon(
-                            FontAwesomeIcons.streetView,
-                            size: 20,
-                          ),
-                          title: Text(
-                            'สาขา',
-                            style: _txt,
-                          ),
-                          onTap: () {
-                            Navigator.pop(context);
-                            if (_resultDepartCount.length > 1) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => OrgDepartmentManage(
-                                      org_id: widget.org_id),
+                              ListTile(
+                                minLeadingWidth: 0.5,
+                                leading: FaIcon(
+                                  FontAwesomeIcons.streetView,
+                                  size: 20,
                                 ),
-                              );
-                            } else {
-                              EasyLoading.show();
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      OrgDepartmentDetailManage(
-                                    id: _resultDepartCount.length == 1
-                                        ? _resultDepartCount[0].ID
-                                        : '0',
-                                    org_id: widget.org_id,
-                                    type: _resultDepartCount.length == 1
-                                        ? 'update'
-                                        : 'insert',
-                                    lat: _resultDepartCount.length == 1
-                                        ? double.parse(
-                                            _resultDepartCount[0].LATITUDE)
-                                        : latMain,
-                                    lng: _resultDepartCount.length == 1
-                                        ? double.parse(
-                                            _resultDepartCount[0].LONGTITUDE)
-                                        : logMain,
-                                  ),
+                                title: Text(
+                                  'สาขา',
+                                  style: _txt,
                                 ),
-                              );
-                            }
-                          },
-                        ),
-                        ListTile(
-                          minLeadingWidth: 0.5,
-                          leading: FaIcon(
-                            FontAwesomeIcons.businessTime,
-                            size: 20,
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  if (_resultDepartCount.length > 1) {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            OrgDepartmentManage(
+                                                org_id: widget.org_id),
+                                      ),
+                                    );
+                                  } else {
+                                    EasyLoading.show();
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            OrgDepartmentDetailManage(
+                                          id: _resultDepartCount.length == 1
+                                              ? _resultDepartCount[0].ID
+                                              : '0',
+                                          org_id: widget.org_id,
+                                          type: _resultDepartCount.length == 1
+                                              ? 'update'
+                                              : 'insert',
+                                          lat: _resultDepartCount.length == 1
+                                              ? double.parse(
+                                                  _resultDepartCount[0]
+                                                      .LATITUDE)
+                                              : latMain,
+                                          lng: _resultDepartCount.length == 1
+                                              ? double.parse(
+                                                  _resultDepartCount[0]
+                                                      .LONGTITUDE)
+                                              : logMain,
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                },
+                              ),
+                              ListTile(
+                                minLeadingWidth: 0.5,
+                                leading: FaIcon(
+                                  FontAwesomeIcons.businessTime,
+                                  size: 20,
+                                ),
+                                title: Text(
+                                  'เวลาทำงาน',
+                                  style: _txt,
+                                ),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  if (_resultCount.length > 1) {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => OrgTimeManage(
+                                          org_id: widget.org_id,
+                                        ),
+                                      ),
+                                    );
+                                  } else {
+                                    EasyLoading.show();
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            OrgTimeDetailManage(
+                                          id: _resultCount.length == 1
+                                              ? _resultCount[0].ID
+                                              : '0',
+                                          org_id: widget.org_id,
+                                          type: _resultCount.length == 1
+                                              ? 'update'
+                                              : 'insert',
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                },
+                              ),
+                            ],
                           ),
-                          title: Text(
-                            'เวลาทำงาน',
-                            style: _txt,
-                          ),
-                          onTap: () {
-                            Navigator.pop(context);
-                            if (_resultCount.length > 1) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => OrgTimeManage(
-                                    org_id: widget.org_id,
-                                  ),
-                                ),
-                              );
-                            } else {
-                              EasyLoading.show();
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => OrgTimeDetailManage(
-                                    id: _resultCount.length == 1
-                                        ? _resultCount[0].ID
-                                        : '0',
-                                    org_id: widget.org_id,
-                                    type: _resultCount.length == 1
-                                        ? 'update'
-                                        : 'insert',
-                                  ),
-                                ),
-                              );
-                            }
-                          },
-                        ),
-                        if (widget.leave == "1")
+                        if ((widget.leave == "1" && widget.type_member != 'member') || (widget.leave_member == "1" && widget.type_member != 'admin'))
                           ListTile(
                             minLeadingWidth: 0.5,
                             leading: FaIcon(
@@ -547,7 +559,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
                               );
                             },
                           ),
-                        if (widget.leave == "1")
+                        if (widget.leave == "1" && widget.type_member != 'member')
                           ListTile(
                             minLeadingWidth: 0.5,
                             leading: FaIcon(

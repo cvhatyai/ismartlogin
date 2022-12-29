@@ -115,6 +115,7 @@ class _FrontScreenState extends State<FrontScreen> {
       "org_id": await SharedCashe.getItemsWay(name: 'org_id'),
       "uid": await SharedCashe.getItemsWay(name: 'id'),
     };
+    print("onLoadBadgeLeaveManage : ${map}");
     var body = json.encode(map);
     final response = await http.Client().post(
       Uri.parse(Server().getBadgeLeave),
@@ -126,6 +127,7 @@ class _FrontScreenState extends State<FrontScreen> {
     if (data[0]['status'] == true) {
       badge = data[0]['badge'].toString();
     }
+    print("onLoadBadgeLeaveManage badge : $badge");
     setState(() {});
   }
 
@@ -202,6 +204,7 @@ class _FrontScreenState extends State<FrontScreen> {
           _time_id = _itemMember[0].TIME_ID;
           print("onLoadMemberManage ${_itemMember[0].ORG_SUB_ID}");
           print("onLoadMemberManage ${_itemMember[0].TIME_ID}");
+          print("onLoadMemberManage LEAVE MEMBER ${_itemMember[0].LEAVE_MEMBER}");
           if (_itemMember[0].ORG_SUB_ID != '' && _itemMember[0].TIME_ID != '') {
             onLoadGetDepartment(_itemMember[0].ORG_SUB_ID);
             onLoadGetTime(_itemMember[0].TIME_ID);
@@ -323,6 +326,8 @@ class _FrontScreenState extends State<FrontScreen> {
       drawer: MenuDrawer(
           images: _itemMember.length > 0 ? _itemMember[0].AVATAR : '',
           leave: _itemMember.length > 0 ? _itemMember[0].LEAVE : '0',
+          leave_member:
+              _itemMember.length > 0 ? _itemMember[0].LEAVE_MEMBER : '0',
           updateBadge: onLoadBadgeLeaveManage,
           // badge: badge,
           fullname: _itemMember.length > 0
@@ -545,7 +550,7 @@ class _FrontScreenState extends State<FrontScreen> {
                             ),
                             if (_itemMember != null)
                               if (_itemMember.length > 0)
-                                if (_itemMember[0].LEAVE == 1)
+                                if (_itemMember[0].LEAVE == "1")
                                   GestureDetector(
                                     onTap: () {
                                       //noti
@@ -602,8 +607,6 @@ class _FrontScreenState extends State<FrontScreen> {
                             GestureDetector(
                               onTap: () {
                                 _scaffoldKey.currentState.openDrawer();
-                                // Scaffold.of(context).openDrawer();
-                                // alert_signout(context);
                               },
                               child: Container(
                                 padding: EdgeInsets.only(right: 20, top: 7),
