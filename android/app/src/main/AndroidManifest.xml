@@ -5,17 +5,42 @@
   <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
   <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
   <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-  <application android:name="io.flutter.app.FlutterApplication" android:label="iSmartLogin" android:icon="@mipmap/launcher_icon" android:usesCleartextTraffic="true" android:requestLegacyExternalStorage="true">
+  <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+  <application android:name="io.flutter.app.FlutterApplication" android:label="iSmartLogin" android:icon="@mipmap/launcher_icon" android:usesCleartextTraffic="true" android:requestLegacyExternalStorage="true" android:exported="true">
+
     <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyC_toS4JYdMubnqCRVg7mbJk4t6nvkRUlY" />
-<!--    <meta-data android:name="com.google.firebase.messaging.default_notification_channel_id" android:value="high_importance_channel" />-->
-    <activity android:name=".MainActivity" android:launchMode="singleTop" android:theme="@style/LaunchTheme" android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode" android:hardwareAccelerated="true" android:windowSoftInputMode="adjustResize" android:showWhenLocked="true" android:turnScreenOn="true">
+    <meta-data android:name="firebase_messaging_auto_init_enabled" android:value="false" />
+    <meta-data android:name="firebase_analytics_collection_enabled" android:value="false" />
+    <meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@mipmap/launcher_icon" />
+
+
+    <!--    <meta-data android:name="com.google.firebase.messaging.default_notification_channel_id" android:value="high_importance_channel" />-->
+    <activity android:name=".MainActivity" android:launchMode="singleTop" android:theme="@style/LaunchTheme" android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode" android:hardwareAccelerated="true" android:windowSoftInputMode="adjustResize" android:showWhenLocked="true" android:turnScreenOn="true"
+        android:exported="true">
+
       <meta-data android:name="io.flutter.embedding.android.NormalTheme" android:resource="@style/NormalTheme" />
-      <meta-data android:name="io.flutter.embedding.android.SplashScreenDrawable" android:resource="@drawable/launch_background" />
+      <meta-data android:name="io.flutter.embedding.android.SplashScreenDrawable" android:resource="@mipmap/launcher_icon" />
+
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
+
+      <intent-filter>
+        <action android:name="FLUTTER_NOTIFICATION_CLICK" />
+        <category android:name="android.intent.category.DEFAULT" />
+      </intent-filter>
+
     </activity>
+
+    <receiver android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver" />
+    <receiver android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver" android:exported="false">
+      <intent-filter>
+        <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+      </intent-filter>
+    </receiver>
     <meta-data android:name="flutterEmbedding" android:value="2" />
+
   </application>
 </manifest>

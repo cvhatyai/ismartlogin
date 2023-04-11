@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:ismart_login/page/sign/model/memberlist.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -52,16 +54,48 @@ class SharedCashe {
 
   static clearShaeredAll() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    var uid = await SharedCashe.getItemsWay(name: 'id');
+    var orgSubId = await SharedCashe.getItemsWay(name: 'org_sub_id');
+    //unsubscribe
+    FirebaseMessaging.instance.unsubscribeFromTopic("org_" + orgSubId);
+    FirebaseMessaging.instance.unsubscribeFromTopic("users_" + uid);
+
+    if (Platform.isIOS) {
+      FirebaseMessaging.instance
+          .unsubscribeFromTopic("com.cityvariety.ismartlogin");
+    } else {
+      FirebaseMessaging.instance
+          .unsubscribeFromTopic("com.cityvariety.ismart_login");
+    }
+    FirebaseMessaging.instance.unsubscribeFromTopic("news");
+
     await prefs.clear();
   }
 
   static clearShaeredForLogout() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    var uid = await SharedCashe.getItemsWay(name: 'id');
+    var orgSubId = await SharedCashe.getItemsWay(name: 'org_sub_id');
+
+    //unsubscribe
+    FirebaseMessaging.instance.unsubscribeFromTopic("org_" + orgSubId);
+    FirebaseMessaging.instance.unsubscribeFromTopic("users_" + uid);
+
     prefs.getKeys();
     for (String key in prefs.getKeys()) {
       if (key != "setProtect" && key != "keyInvite") {
         prefs.remove(key);
       }
     }
+
+    if (Platform.isIOS) {
+      FirebaseMessaging.instance
+          .unsubscribeFromTopic("com.cityvariety.ismartlogin");
+    } else {
+      FirebaseMessaging.instance
+          .unsubscribeFromTopic("com.cityvariety.ismart_login");
+    }
+    FirebaseMessaging.instance.unsubscribeFromTopic("news");
   }
 }

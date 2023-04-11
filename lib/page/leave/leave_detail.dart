@@ -620,7 +620,9 @@ class _LeaveDetailScreenState extends State<LeaveDetailScreen> {
                                                                           (leaveStatus !=
                                                                               "3") &&
                                                                           (leaveStatus !=
-                                                                              "4"))
+                                                                              "4") &&
+                                                                          (leaveStatus !=
+                                                                              "2"))
                                                                         Container(
                                                                           width:
                                                                               200,
@@ -648,7 +650,7 @@ class _LeaveDetailScreenState extends State<LeaveDetailScreen> {
                                                                             ),
                                                                           ),
                                                                         ),
-                                                                      if ((createBy !=
+                                                                      if ((createBy ==
                                                                               uid) &&
                                                                           (leaveStatus ==
                                                                               "2"))

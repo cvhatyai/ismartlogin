@@ -41,7 +41,9 @@ class OrganizationCreateScreen extends StatefulWidget {
   final String id;
   final String invite;
   final String history;
+  final String noti;
   final bool action;
+  final Function refresh;
   OrganizationCreateScreen(
       {Key key,
       @required this.type,
@@ -49,7 +51,8 @@ class OrganizationCreateScreen extends StatefulWidget {
       this.id,
       this.invite,
       this.action,
-      this.history})
+      this.history,
+      this.noti, this.refresh})
       : super(key: key);
   _OrganizationCreateScreenState createState() =>
       _OrganizationCreateScreenState();
@@ -61,6 +64,7 @@ class _OrganizationCreateScreenState extends State<OrganizationCreateScreen> {
   String _presetOrgId = "";
   FToast fToast;
   bool _switchHistory = true;
+  bool _switchNoti = true;
   TimeOfDay _timeOfDay = TimeOfDay.now();
   //
   TextEditingController _inputSubject = TextEditingController();
@@ -83,6 +87,15 @@ class _OrganizationCreateScreenState extends State<OrganizationCreateScreen> {
         _switchHistory = false;
       } else {
         _switchHistory = true;
+      }
+    }
+
+    //noti
+    if (widget.noti != null) {
+      if (widget.noti == "0") {
+        _switchNoti = false;
+      } else {
+        _switchNoti = true;
       }
     }
   }
@@ -110,6 +123,23 @@ class _OrganizationCreateScreenState extends State<OrganizationCreateScreen> {
     var body = json.encode(_map);
     final response = await http.Client().post(
       Uri.parse(Server().updateHistoryStatus),
+      headers: {"Content-Type": "application/json"},
+      body: body,
+    );
+    var data = json.decode(response.body);
+    print('insertSeq : $data');
+  }
+
+  _updateNotiStatus(String status, String id) async {
+    Map _map = {};
+    _map.addAll({
+      "id": id,
+      "noti_status": status,
+    });
+    print("_map : $_map");
+    var body = json.encode(_map);
+    final response = await http.Client().post(
+      Uri.parse(Server().updateNotiStatus),
       headers: {"Content-Type": "application/json"},
       body: body,
     );
@@ -248,6 +278,8 @@ class _OrganizationCreateScreenState extends State<OrganizationCreateScreen> {
                     size: 26,
                   ),
                   onPressed: () {
+                    print('Back to list');
+                    widget.refresh();
                     Navigator.of(context).pop();
                   },
                 ),
@@ -289,7 +321,7 @@ class _OrganizationCreateScreenState extends State<OrganizationCreateScreen> {
                 child: SingleChildScrollView(
                   child: Container(
                     padding: EdgeInsets.only(
-                        left: 10, right: 10, top: 20, bottom: 20),
+                        left: 10, right: 10, top: 20, bottom: 10),
                     width: WidhtDevice().widht(context),
                     decoration: StylePage().boxWhite,
                     child: Form(
@@ -368,10 +400,10 @@ class _OrganizationCreateScreenState extends State<OrganizationCreateScreen> {
                 child: Visibility(
                   visible: widget.type == "insert" ? false : true,
                   child: Container(
-                    padding: EdgeInsets.only(left: 20, right: 20, bottom: 20),
+                    padding: EdgeInsets.only(left: 20, right: 20, bottom: 5),
                     child: Container(
                       padding: EdgeInsets.only(
-                          left: 10, right: 10, top: 20, bottom: 20),
+                          left: 10, right: 10, top: 20, bottom: 10),
                       width: WidhtDevice().widht(context),
                       decoration: StylePage().boxWhite,
                       child: Column(
@@ -392,16 +424,16 @@ class _OrganizationCreateScreenState extends State<OrganizationCreateScreen> {
                                   )),
                                   FlutterSwitch(
                                     value: _switchHistory ? true : false,
-                                    width: 94.0,
+                                    width: 60.0,
                                     height: 30.0,
-                                    valueFontSize: 12.0,
+                                    valueFontSize: 13.0,
                                     toggleSize: 30.0,
                                     borderRadius: 20.0,
-                                    padding: 5.0,
+                                    padding: 2.0,
                                     showOnOff: true,
-                                    activeText: 'แสดง',
+                                    activeText: '',
                                     activeColor: Colors.green,
-                                    inactiveText: 'ไม่แสดง',
+                                    inactiveText: '',
                                     inactiveColor: Colors.grey,
                                     onToggle: (state) {
                                       setState(() {
@@ -415,6 +447,53 @@ class _OrganizationCreateScreenState extends State<OrganizationCreateScreen> {
                                           var status = "0";
                                           _updateHistoryStatus(
                                               status.toString(),
+                                              widget.id.toString());
+                                        }
+                                      });
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Divider(),
+                          Container(
+                            height: 40,
+                            child: Container(
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                      child: Container(
+                                    child: Text(
+                                      'การแจ้งเตือนก่อนเข้างาน 5 นาที',
+                                      style: TextStyle(
+                                          fontFamily: FontStyles().FontFamily,
+                                          fontSize: 22),
+                                    ),
+                                  )),
+                                  FlutterSwitch(
+                                    value: _switchNoti ? true : false,
+                                    width: 60.0,
+                                    height: 30.0,
+                                    valueFontSize: 13.0,
+                                    toggleSize: 30.0,
+                                    borderRadius: 20.0,
+                                    padding: 2.0,
+                                    showOnOff: true,
+                                    activeText: '',
+                                    activeColor: Colors.green,
+                                    inactiveText: '',
+                                    inactiveColor: Colors.grey,
+                                    onToggle: (state) {
+                                      setState(() {
+                                        _switchNoti = state;
+                                        if (_switchNoti) {
+                                          var status = "1";
+                                          _updateNotiStatus(status.toString(),
+                                              widget.id.toString());
+                                        } else {
+                                          var status = "0";
+                                          _updateNotiStatus(status.toString(),
                                               widget.id.toString());
                                         }
                                       });
@@ -581,7 +660,7 @@ class _OrganizationCreateScreenState extends State<OrganizationCreateScreen> {
                   ),
                 ),
               ),
-              Padding(padding: EdgeInsets.all(10)),
+              // Padding(padding: EdgeInsets.all(10)),
               Visibility(
                 visible: widget.type == "insert"
                     ? false
@@ -596,7 +675,7 @@ class _OrganizationCreateScreenState extends State<OrganizationCreateScreen> {
                     padding: EdgeInsets.only(left: 20, right: 20, bottom: 20),
                     child: Container(
                       padding: EdgeInsets.only(
-                          left: 10, right: 10, top: 20, bottom: 20),
+                          left: 10, right: 10, top: 10, bottom: 10),
                       width: WidhtDevice().widht(context),
                       decoration: StylePage().boxWhite,
                       child: GestureDetector(

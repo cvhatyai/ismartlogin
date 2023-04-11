@@ -2,11 +2,15 @@
   <library name="Gradle: com.google.android.material:material:1.2.0@aar">
     <ANNOTATIONS>
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/65a6d31d9be1f6183d5ce0803c780662/material-1.2.0/annotations.zip!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/db670f1e3a50e5624f8ad361ee092ae7/material-1.2.0/annotations.zip!/" />
     </ANNOTATIONS>
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/65a6d31d9be1f6183d5ce0803c780662/material-1.2.0/jars/classes.jar!/" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/65a6d31d9be1f6183d5ce0803c780662/material-1.2.0/res" />
       <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/65a6d31d9be1f6183d5ce0803c780662/material-1.2.0/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/db670f1e3a50e5624f8ad361ee092ae7/material-1.2.0/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/db670f1e3a50e5624f8ad361ee092ae7/material-1.2.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/db670f1e3a50e5624f8ad361ee092ae7/material-1.2.0/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

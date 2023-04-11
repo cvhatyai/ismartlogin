@@ -1,0 +1,143 @@
+{
+  "project_info": {
+    "project_number": "515296253333",
+    "firebase_url": "https://lib-flutter.firebaseio.com",
+    "project_id": "lib-flutter",
+    "storage_bucket": "lib-flutter.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:515296253333:android:f31a43d758cfe938de129c",
+        "android_client_info": {
+          "package_name": "com.cityvariety.ismart_login"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "515296253333-praer6okr1lials7ohi75sbjdc73esn4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDRlygEvFaSzKCiGFlrK5w7EqLTxDE0l48"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "515296253333-praer6okr1lials7ohi75sbjdc73esn4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "515296253333-1vr88gv3p8hvsj42ut2eqo3assu40cgn.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "th.go.cherngtalaymuni.app"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:515296253333:android:3f41c315830bbdacde129c",
+        "android_client_info": {
+          "package_name": "th.go.bangrakpattana"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "515296253333-1a38uql12kfn20lnnmbq4ct7q11ufgve.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "th.go.bangrakpattana",
+            "certificate_hash": "a1a17f38a303a7d0ba109418aceb09c816d7f143"
+          }
+        },
+        {
+          "client_id": "515296253333-praer6okr1lials7ohi75sbjdc73esn4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDRlygEvFaSzKCiGFlrK5w7EqLTxDE0l48"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "515296253333-praer6okr1lials7ohi75sbjdc73esn4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "515296253333-1vr88gv3p8hvsj42ut2eqo3assu40cgn.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "th.go.cherngtalaymuni.app"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:515296253333:android:7b20d8c2f456ba80de129c",
+        "android_client_info": {
+          "package_name": "th.go.nakhonphanom.ar.arnakhonphanom"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "515296253333-dv7n8jpdc1s00b76obofggou341jkmph.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "th.go.nakhonphanom.ar.arnakhonphanom",
+            "certificate_hash": "cb1ebd1d2b2eadc48646cf277ce078ed6f6351fc"
+          }
+        },
+        {
+          "client_id": "515296253333-oh0shuap59a4iefkqiehee1c9u2mgtvc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "th.go.nakhonphanom.ar.arnakhonphanom",
+            "certificate_hash": "7734d40cd416ea6a48a364e1ac85531ff6628d94"
+          }
+        },
+        {
+          "client_id": "515296253333-praer6okr1lials7ohi75sbjdc73esn4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDRlygEvFaSzKCiGFlrK5w7EqLTxDE0l48"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "515296253333-praer6okr1lials7ohi75sbjdc73esn4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "515296253333-1vr88gv3p8hvsj42ut2eqo3assu40cgn.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "th.go.cherngtalaymuni.app"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

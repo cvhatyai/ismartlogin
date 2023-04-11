@@ -36,10 +36,10 @@ class _OrgDepartmentManageState extends State<OrgDepartmentManage> {
     locationSubscription =
         _location.onLocationChanged.listen((LocationData currentLocation) {
       // if (latMain != 0.0 && logMain != 0.0) {
-        setState(() {
-          latMain = currentLocation.latitude.toDouble();
-          logMain = currentLocation.longitude.toDouble();
-        });
+      setState(() {
+        latMain = currentLocation.latitude.toDouble();
+        logMain = currentLocation.longitude.toDouble();
+      });
       // }
     });
   }
@@ -150,6 +150,8 @@ class _OrgDepartmentManageState extends State<OrgDepartmentManage> {
                                       type: 'insert',
                                       lat: latMain,
                                       lng: logMain,
+                                      noti: '1',
+                                      refresh: onLoadGetAllDepartment,
                                     ),
                                   ),
                                 ).then((value) {
@@ -193,12 +195,14 @@ class _OrgDepartmentManageState extends State<OrgDepartmentManage> {
                                             OrgDepartmentDetailManage(
                                           id: _resultItem[index].ID,
                                           seq: _resultItem[index].SEQ,
+                                          noti: _resultItem[index].NOTI,
                                           org_id: widget.org_id,
                                           type: 'update',
                                           lat: double.parse(
                                               _resultItem[index].LATITUDE),
                                           lng: double.parse(
                                               _resultItem[index].LONGTITUDE),
+                                          refresh: onLoadGetAllDepartment,
                                         ),
                                       ),
                                     ).then((value) {
@@ -299,7 +303,6 @@ class _OrgDepartmentManageState extends State<OrgDepartmentManage> {
                                             //     },
                                             //   ),
                                             // ),
-                                          
                                           ],
                                         ),
                                         Padding(padding: EdgeInsets.all(4)),

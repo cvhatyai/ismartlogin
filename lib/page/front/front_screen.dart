@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
@@ -197,14 +198,31 @@ class _FrontScreenState extends State<FrontScreen> {
       "org_id": await SharedCashe.getItemsWay(name: 'org_id'),
       "uid": await SharedCashe.getItemsWay(name: 'id'),
     };
+    var uid = await SharedCashe.getItemsWay(name: 'id');
+
+    print("onLoadMemberManage map ${map}");
     await MemberManageFuture().apiGetMemberManageList(map).then((onValue) {
       setState(() {
         if (onValue[0].STATUS) {
           _itemMember = onValue[0].RESULT;
           _time_id = _itemMember[0].TIME_ID;
-          print("onLoadMemberManage ${_itemMember[0].ORG_SUB_ID}");
+          print("onLoadMemberManage ORG_SUB_ID ${_itemMember[0].ORG_SUB_ID}");
           print("onLoadMemberManage ${_itemMember[0].TIME_ID}");
-          print("onLoadMemberManage LEAVE MEMBER ${_itemMember[0].LEAVE_MEMBER}");
+          print(
+              "onLoadMemberManage LEAVE MEMBER ${_itemMember[0].LEAVE_MEMBER}");
+          if (_itemMember[0].ORG_SUB_ID != '') {
+            SharedCashe.savaItemsString(
+                key: 'org_sub_id',
+                valString: _itemMember[0].ORG_SUB_ID.toString());
+            FirebaseMessaging.instance.subscribeToTopic(
+                "org_" + _itemMember[0].ORG_SUB_ID.toString());
+            print("FirebaseMessaging ORG_SUB_ID ${_itemMember[0].ORG_SUB_ID}");
+          }
+
+          FirebaseMessaging.instance.subscribeToTopic("users_" + uid);
+
+          print("onLoadMemberManage UID : $uid");
+
           if (_itemMember[0].ORG_SUB_ID != '' && _itemMember[0].TIME_ID != '') {
             onLoadGetDepartment(_itemMember[0].ORG_SUB_ID);
             onLoadGetTime(_itemMember[0].TIME_ID);
@@ -216,6 +234,7 @@ class _FrontScreenState extends State<FrontScreen> {
         }
       });
     });
+    print("getItemsWay ORG_SUB_ID ${await SharedCashe.getItemsWay(name: 'id')}");
     setState(() {});
     return true;
   }

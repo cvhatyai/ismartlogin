@@ -175,25 +175,25 @@ class _LeaveStatisticsScreenState extends State<LeaveStatisticsScreen> {
 
     if (monthStart != null && monthStart != "") {
       dropdownValueStartMonth = monthStart;
-    }else{
+    } else {
       dropdownValueStartMonth = "เลือกเดือน";
     }
 
     if (yearStart != null && yearStart != "") {
       dropdownValueStartYear = yearStart;
-    }else{
+    } else {
       dropdownValueStartYear = "เลือกปี";
     }
 
     if (monthEnd != null && monthEnd != "") {
       dropdownValueEndMonth = monthEnd;
-    }else{
+    } else {
       dropdownValueEndMonth = "เลือกเดือน";
     }
 
     if (yearEnd != null && yearEnd != "") {
       dropdownValueEndYear = yearEnd;
-    }else{
+    } else {
       dropdownValueEndYear = "เลือกปี";
     }
 
@@ -700,7 +700,7 @@ class _LeaveStatisticsScreenState extends State<LeaveStatisticsScreen> {
                                                 alignment: WrapAlignment.center,
                                                 children: <Widget>[
                                                   Container(
-                                                  height: 390,
+                                                    height: 390,
                                                     child: LeaveFilterScreen(
                                                       statusDataTmp: statusData,
                                                       typesDataTmp: typesData,

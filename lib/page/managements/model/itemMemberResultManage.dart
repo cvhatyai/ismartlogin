@@ -13,6 +13,7 @@ class ItemsMemberResultManage {
   final String STAT;
   final String MEMBER_TYPE;
   final String HISTORY;
+  final String NOTI;
   final String LEAVE;
   final String LEAVE_MEMBER;
 
@@ -31,6 +32,7 @@ class ItemsMemberResultManage {
     this.STAT,
     this.MEMBER_TYPE,
     this.HISTORY,
+    this.NOTI,
     this.LEAVE,
     this.LEAVE_MEMBER,
   });
@@ -51,6 +53,7 @@ class ItemsMemberResultManage {
       STATUS: json['status'],
       STAT: json['stat'],
       HISTORY: json['history'],
+      NOTI: json['noti'],
       LEAVE: json['leave'],
       LEAVE_MEMBER: json['leave_member'],
     );

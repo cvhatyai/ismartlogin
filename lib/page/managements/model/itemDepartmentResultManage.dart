@@ -9,6 +9,7 @@ class ItemsDepartmentResultManage {
   final String CREATE_DATE;
   final String UPDATE_DATE;
   final String STATUS;
+  final String NOTI;
   final String SEQ;
   final String TIME_ID;
 
@@ -22,6 +23,7 @@ class ItemsDepartmentResultManage {
     this.RADIUS,
     this.CREATE_DATE,
     this.UPDATE_DATE,
+    this.NOTI,
     this.STATUS,
     this.SEQ,
     this.TIME_ID,
@@ -39,6 +41,7 @@ class ItemsDepartmentResultManage {
       CREATE_DATE: json['create_date'],
       UPDATE_DATE: json['update_date'],
       STATUS: json['status'],
+      NOTI: json['noti'],
       SEQ: json['seq'],
       TIME_ID: json['time_id'],
     );

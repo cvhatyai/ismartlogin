@@ -3,23 +3,23 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>381652871944-iqgq5jdc991e1hqo2hni9p9ktvfgl61m.apps.googleusercontent.com</string>
+	<string>515296253333-i1g3peuq928uo9cbkhdfvp1tgfpl6l1e.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.381652871944-iqgq5jdc991e1hqo2hni9p9ktvfgl61m</string>
+	<string>com.googleusercontent.apps.515296253333-i1g3peuq928uo9cbkhdfvp1tgfpl6l1e</string>
 	<key>ANDROID_CLIENT_ID</key>
-	<string>381652871944-0ppd72unihhol104ptaecu7r96ois7fe.apps.googleusercontent.com</string>
+	<string>515296253333-1a38uql12kfn20lnnmbq4ct7q11ufgve.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
-	<string>AIzaSyASB1DHVPOQPBkteN8ew9J1zHWbbXnTvvU</string>
+	<string>AIzaSyDkwlSUTcOvet1UG_taDN4dbGwFRi3YHjY</string>
 	<key>GCM_SENDER_ID</key>
-	<string>381652871944</string>
+	<string>515296253333</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.cityvariety.ismartlogin</string>
 	<key>PROJECT_ID</key>
-	<string>abt1-9841c</string>
+	<string>lib-flutter</string>
 	<key>STORAGE_BUCKET</key>
-	<string>abt1-9841c.appspot.com</string>
+	<string>lib-flutter.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -31,6 +31,8 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:381652871944:ios:676bb785bed67897bf9abd</string>
+	<string>1:515296253333:ios:b9a2bda8297b5634de129c</string>
+	<key>DATABASE_URL</key>
+	<string>https://lib-flutter.firebaseio.com</string>
 </dict>
 </plist>

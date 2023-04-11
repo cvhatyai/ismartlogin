@@ -159,6 +159,8 @@ class _OrgManageScreenState extends State<OrgManageScreen> {
                                         invite: _item[index].INVITE,
                                         action: _item[index].ACTIVE,
                                         history: _item[index].HISTORY,
+                                        noti: _item[index].NOTI,
+                                        refresh: onLoadOrgManage,
                                       ),
                                     ),
                                   );

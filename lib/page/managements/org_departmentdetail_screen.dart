@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:ui';
+import 'package:flutter_switch/flutter_switch.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -28,6 +29,8 @@ class OrgDepartmentDetailManage extends StatefulWidget {
   final String type;
   final double lat;
   final double lng;
+  final String noti;
+  final Function refresh;
 
   OrgDepartmentDetailManage(
       {Key key,
@@ -36,7 +39,9 @@ class OrgDepartmentDetailManage extends StatefulWidget {
       this.type,
       this.lat,
       this.lng,
-      this.seq})
+      this.seq,
+      this.refresh,
+      this.noti})
       : super(key: key);
 
   @override
@@ -138,7 +143,7 @@ class _OrgDepartmentDetailManageState extends State<OrgDepartmentDetailManage> {
   List<ItemsDepartmentResultManage> _resultItem = [];
   Future<bool> onLoadGetDepartment() async {
     Map map = {"org_id": widget.org_id, "id": widget.id};
-    print(map);
+    print("onLoadGetDepartment ${map}");
     await DepartManageFuture().apiGetDepartmentManageList(map).then((onValue) {
       if (onValue[0].STATUS == true) {
         setState(() {
@@ -254,8 +259,36 @@ class _OrgDepartmentDetailManageState extends State<OrgDepartmentDetailManage> {
     } else {
       // _getLocation();
     }
+    //noti
+    if (widget.noti != null) {
+      if (widget.noti == "0") {
+        _switchNoti = false;
+      } else {
+        _switchNoti = true;
+      }
+    }
     onLoadGetAllTime();
   }
+
+  bool _switchNoti = true;
+
+  _updateNotiStatus(String status, String id) async {
+    Map _map = {};
+    _map.addAll({
+      "id": id,
+      "noti_status": status,
+    });
+    print("_map : $_map");
+    var body = json.encode(_map);
+    final response = await http.Client().post(
+      Uri.parse(Server().updateNotiStatus),
+      headers: {"Content-Type": "application/json"},
+      body: body,
+    );
+    var data = json.decode(response.body);
+    print('insertSeq : $data');
+  }
+
 
   @override
   void dispose() {
@@ -508,8 +541,10 @@ class _OrgDepartmentDetailManageState extends State<OrgDepartmentDetailManage> {
                                               }).toList()
                                             : _itemTime.map((map) {
                                                 return DropdownMenuItem(
-                                                  child: Text(map.SUBJECT,overflow: TextOverflow.ellipsis),
-                                                  value: map.ID,                                                  
+                                                  child: Text(map.SUBJECT,
+                                                      overflow: TextOverflow
+                                                          .ellipsis),
+                                                  value: map.ID,
                                                 );
                                               }).toList(),
                                       ),
@@ -553,6 +588,53 @@ class _OrgDepartmentDetailManageState extends State<OrgDepartmentDetailManage> {
                                     ),
                                   ],
                                 ),
+
+                                Padding(
+                                  padding: EdgeInsets.all(5),
+                                ),
+
+                                Row(children: [
+                                  Container(
+                                    child: Text(
+                                      'การแจ้งเตือนก่อนเข้างาน 5 นาที : ',
+                                      style: TextStyle(
+                                        fontFamily: FontStyles().FontFamily,
+                                        fontSize: 24,
+                                        height: 1,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ),
+                                  FlutterSwitch(
+                                    value: _switchNoti ? true : false,
+                                    width: 60.0,
+                                    height: 30.0,
+                                    valueFontSize: 13.0,
+                                    toggleSize: 30.0,
+                                    borderRadius: 20.0,
+                                    padding: 2.0,
+                                    showOnOff: true,
+                                    activeText: '',
+                                    activeColor: Colors.green,
+                                    inactiveText: '',
+                                    inactiveColor: Colors.grey,
+                                    onToggle: (state) {
+                                      setState(() {
+                                        _switchNoti = state;
+                                        if (_switchNoti) {
+                                          var status = "1";
+                                          _updateNotiStatus(status.toString(),
+                                              widget.id.toString());
+                                        } else {
+                                          var status = "0";
+                                          _updateNotiStatus(status.toString(),
+                                              widget.id.toString());
+                                        }
+                                      });
+                                    },
+                                  ),
+                                
+                                ]),
 
                                 Padding(
                                   padding: EdgeInsets.all(5),

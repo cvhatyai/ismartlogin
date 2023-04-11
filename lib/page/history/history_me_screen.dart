@@ -456,42 +456,49 @@ class _HistoryMeScreenState extends State<HistoryMeScreen> {
               width: WidhtDevice().widht(context) / 2,
               fit: BoxFit.cover,
             ),
-            // child: FadeInImage.assetNetwork(
-            //   placeholder: cupertinoActivityIndicatorSmall,
-            //   placeholderScale: 5,
-            //   width: WidhtDevice().widht(context) / 2,
-            //   image: Server.url + _result[index].START_IMAGE_SMALL,
-            //   fit: BoxFit.cover,
-            // ),
           ),
         ),
-        Container(
-          child: Text(
-            _result[index].START_TIME,
-            style: TextStyle(
-              fontFamily: FontStyles().FontFamily,
-              fontSize: 18,
-              color: (_result[index].START_STATUS == '0' ||
-                      _result[index].START_STATUS == ''
-                  ? Colors.black
-                  : Colors.redAccent),
+        if (_result[index].ORG_SUB_NAME != '')
+          Container(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              'สาขา : ' + _result[index].ORG_SUB_NAME,
+              style: TextStyle(
+                  fontFamily: FontStyles().FontFamily,
+                  fontSize: 18,
+                  color: Colors.black),
             ),
           ),
-        ),
-        _result[index].START_STATUS != '0' && _result[index].START_STATUS != ''
-            ? Container(
-                // child: Text('dd ' + _result[index].START_STATUS),
-                child: Text(
-                  statusTimeIn[int.parse(_result[index].START_STATUS) - 1],
-                  style: TextStyle(
-                      fontFamily: FontStyles().FontFamily,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold),
-                ),
-              )
-            : Container(
-                height: 0,
+        Container(
+          child: Row(
+            children: [
+              Text(
+                _result[index].START_TIME + ' น. ',
+                style: TextStyle(
+                    fontFamily: FontStyles().FontFamily,
+                    fontSize: 18,
+                    color: Colors.black),
               ),
+              _result[index].START_STATUS != '0' &&
+                      _result[index].START_STATUS != ''
+                  ? Container(
+                      child: Text(
+                        '(' +
+                            statusTimeIn[
+                                int.parse(_result[index].START_STATUS) - 1] +
+                            ')',
+                        style: TextStyle(
+                            fontFamily: FontStyles().FontFamily,
+                            fontSize: 18,
+                            color: Colors.red),
+                      ),
+                    )
+                  : Container(
+                      height: 0,
+                    ),
+            ],
+          ),
+        ),
         _result[index].START_LOCATION_STATUS == '1'
             ? Container(
                 child: Text(

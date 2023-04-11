@@ -57,6 +57,7 @@ class Server {
   String postDepartmentManage = _baseUrl + 'manage/postDepartment';
   String updateSeqOrg = _baseUrl + 'manage/updateSeqOrg';
   String updateHistoryStatus = _baseUrl + 'manage/updateHistoryStatus';
+  String updateNotiStatus = _baseUrl + 'manage/updateNotiStatus';
   // -- * องค์กร -------
   String postOrg = _baseUrl + 'manage/postOrg';
   String getOrgAdmin = _baseUrl + 'manage/getOrg';
@@ -75,6 +76,9 @@ class Server {
   String insertCateLeave = _baseUrl + 'manage/insertCateLeave';
   String updateCateLeave = _baseUrl + 'manage/updateCateLeave';
   String getListNotiLeave = _baseUrl + 'manage/getListNotiLeave';
+  String checkAppVersion = _baseUrl + 'manage/checkAppVersion';
+
+  
 
   //---- *switch protect
   String getProtectSwitch = _baseUrl + 'protectapp/protectSwitch';

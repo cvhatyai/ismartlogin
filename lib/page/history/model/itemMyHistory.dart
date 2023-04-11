@@ -17,6 +17,7 @@ class ItemsMyHistory {
   final String END_IMAGE_SMALL;
   final String END_NOTE;
   final String END_STATUS;
+  final String ORG_SUB_NAME;
 
   ItemsMyHistory(
       {this.ID,
@@ -36,7 +37,8 @@ class ItemsMyHistory {
       this.END_IMAGE,
       this.END_IMAGE_SMALL,
       this.END_NOTE,
-      this.END_STATUS});
+      this.END_STATUS,
+      this.ORG_SUB_NAME});
 
   factory ItemsMyHistory.fromJson(Map<String, dynamic> json) {
     return ItemsMyHistory(
@@ -58,6 +60,7 @@ class ItemsMyHistory {
       END_IMAGE_SMALL: json['end_image_small'],
       END_NOTE: json['end_note'],
       END_STATUS: json['end_status'],
+      ORG_SUB_NAME: json['org_sub_name'],
     );
   }
 }
