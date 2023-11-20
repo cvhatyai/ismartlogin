@@ -24,6 +24,7 @@ class OutsideDialog extends StatefulWidget {
   final String mainLat;
   final String mainLng;
   final String time;
+  final String time_server;
   OutsideDialog({
     Key key,
     @required this.uid,
@@ -32,7 +33,7 @@ class OutsideDialog extends StatefulWidget {
     this.long,
     this.time,
     this.mainLat,
-    this.mainLng,
+    this.mainLng, this.time_server,
   }) : super(key: key);
   @override
   _OutsideDialogState createState() => _OutsideDialogState();
@@ -153,7 +154,8 @@ class _OutsideDialogState extends State<OutsideDialog> {
                 child: Column(
                   children: [
                     Text(
-                      Clock().getTime(),
+                      // Clock().getTime(),
+                      widget.time_server.toString(),
                       style: TextStyle(
                         fontFamily: FontStyles().FontFamily,
                         height: 1,

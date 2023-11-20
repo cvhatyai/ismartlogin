@@ -48,21 +48,26 @@ class Server {
   String getMemberManage = _baseUrl + 'member/getAllMember';
   String updateMemberStatusManage = _baseUrl + 'member/updateMemberStatus';
   String getMemberRelationship = _baseUrl + 'member/getMemberRelationship';
+
   String userDelete = _baseUrl + 'member/userDelete';
   // -- * เวลาทำงาน --------
   String getTimeManage = _baseUrl + 'manage/getTime';
   String postTimeManage = _baseUrl + 'manage/postTime';
+
   // -- * สาขา --------
   String getDepartmentManage = _baseUrl + 'manage/getDepartment';
   String postDepartmentManage = _baseUrl + 'manage/postDepartment';
   String updateSeqOrg = _baseUrl + 'manage/updateSeqOrg';
   String updateHistoryStatus = _baseUrl + 'manage/updateHistoryStatus';
   String updateNotiStatus = _baseUrl + 'manage/updateNotiStatus';
+
   // -- * องค์กร -------
   String postOrg = _baseUrl + 'manage/postOrg';
   String getOrgAdmin = _baseUrl + 'manage/getOrg';
   String updateOrgSwitch = _baseUrl + 'manage/updateSwitchOrg';
   String updateOrgSuspend = _baseUrl + 'manage/updateSuspendOrg'; // ระงับบริษัท
+
+  // -- * ลางาน -------
   String insertInfoLeave = _baseUrl + 'manage/insertInfoLeave';
   String getCateLeave = _baseUrl + 'manage/getCateLeave';
   String getListLeave = _baseUrl + 'manage/getListLeave';
@@ -76,9 +81,10 @@ class Server {
   String insertCateLeave = _baseUrl + 'manage/insertCateLeave';
   String updateCateLeave = _baseUrl + 'manage/updateCateLeave';
   String getListNotiLeave = _baseUrl + 'manage/getListNotiLeave';
-  String checkAppVersion = _baseUrl + 'manage/checkAppVersion';
 
-  
+  // -- * ตั้งค่า -------
+  String checkAppVersion = _baseUrl + 'manage/checkAppVersion';
+  String getTimeInServer = _baseUrl + 'manage/getTimeInServer';
 
   //---- *switch protect
   String getProtectSwitch = _baseUrl + 'protectapp/protectSwitch';

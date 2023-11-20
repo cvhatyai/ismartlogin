@@ -132,6 +132,7 @@ class _OrgDepartmentDetailManageState extends State<OrgDepartmentDetailManage> {
       print(onValue[0].MSG);
       if (onValue[0].STATUS == true) {
         EasyLoading.showSuccess('บันทึกแล้ว');
+        Navigator.pop(context, true);
       } else {
         EasyLoading.showError('ล้มเหลว');
       }
@@ -289,7 +290,6 @@ class _OrgDepartmentDetailManageState extends State<OrgDepartmentDetailManage> {
     print('insertSeq : $data');
   }
 
-
   @override
   void dispose() {
     // TODO: implement dispose
@@ -314,7 +314,7 @@ class _OrgDepartmentDetailManageState extends State<OrgDepartmentDetailManage> {
               }
             },
             child: SingleChildScrollView(
-              physics: const NeverScrollableScrollPhysics(),
+              // physics: const NeverScrollableScrollPhysics(),
               child: Container(
                 width: MediaQuery.of(context).size.width,
                 child: Column(
@@ -577,7 +577,7 @@ class _OrgDepartmentDetailManageState extends State<OrgDepartmentDetailManage> {
                                               BorderRadius.circular(30),
                                         ),
                                         child: Text(
-                                          'เพิ่มใหม่',
+                                          'เพิ่ม',
                                           style: TextStyle(
                                               fontFamily:
                                                   FontStyles().FontFamily,
@@ -633,7 +633,6 @@ class _OrgDepartmentDetailManageState extends State<OrgDepartmentDetailManage> {
                                       });
                                     },
                                   ),
-                                
                                 ]),
 
                                 Padding(

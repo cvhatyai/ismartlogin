@@ -35,6 +35,7 @@ class _FrontCountWidgetState extends State<FrontCountWidget> {
       "org_id": await SharedCashe.getItemsWay(name: 'org_id'),
       "create_date": newFormat.format(DateTime.now())
     };
+    print("_function : $_map");
     onLoadGetSummaryToDay(_map);
   }
 
@@ -53,7 +54,7 @@ class _FrontCountWidgetState extends State<FrontCountWidget> {
   Future<bool> onLoadGetSummaryToDay(Map map) async {
     await SummaryFuture().apiGetSummaryToDay(map).then((onValue) {
       _result = onValue;
-      print(_result.length);
+      print("length : ${_result.length}");
       setState(() {
         _result_ontime = _result[0].ONTIME;
         _result_late = _result[0].LATE;

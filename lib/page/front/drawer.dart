@@ -267,6 +267,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
                                 alignment: Alignment.center,
                                 child: Text(
                                   widget.org,
+                                       overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
                                     fontFamily: FontStyles().FontFamily,
                                     fontSize: 24,
@@ -285,9 +286,10 @@ class _MenuDrawerState extends State<MenuDrawer> {
                                 alignment: Alignment.center,
                                 child: Text(
                                   widget.org_sub,
+                                  overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
                                     fontFamily: FontStyles().FontFamily,
-                                    fontSize: 12,
+                                    fontSize: 18,
                                     color: Colors.black54,
                                     height: 1,
                                   ),

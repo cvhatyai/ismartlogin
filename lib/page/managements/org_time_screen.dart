@@ -85,6 +85,7 @@ class _OrgTimeManageState extends State<OrgTimeManage> {
                                     id: '0',
                                     org_id: widget.org_id,
                                     type: 'insert',
+                                    updateLoadTime: onLoadGetAllTime,
                                   ),
                                 ),
                               ).then((value) {
@@ -117,6 +118,7 @@ class _OrgTimeManageState extends State<OrgTimeManage> {
                                         id: _resultItem[index].ID,
                                         org_id: _resultItem[index].ORG_ID,
                                         type: 'update',
+                                        updateLoadTime: onLoadGetAllTime,
                                       ),
                                     ),
                                   ).then((value) {

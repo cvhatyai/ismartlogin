@@ -20,7 +20,7 @@ class MemberManageFuture {
   Future<List<ItemsMemberManage>> apiGetMemberManageList(Map jsonMap) async {
     //encode Map to JSON
     var body = json.encode(jsonMap);
-    print("body ${body}");
+    // print("body ${body}");
     final response = await http.post(
       Uri.parse(Server().getMemberManage),
       headers: header,
@@ -28,7 +28,7 @@ class MemberManageFuture {
     );
     if (response.statusCode == 200) {
       List responseJson = json.decode(response.body);
-      print(responseJson);
+      // print(responseJson);
       return responseJson
           .map((m) => new ItemsMemberManage.fromJson(m))
           .toList();

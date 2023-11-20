@@ -35,8 +35,11 @@ class _LeaveTypesScreenState extends State<LeaveTypesScreen> {
       body: body,
     );
     data = json.decode(response.body);
-    data = data[0]['result'];
-    setState(() {});
+
+    setState(() {
+      print('onLoadCateLeaveOrgManage');
+      data = data[0]['result'];
+    });
   }
 
   @override

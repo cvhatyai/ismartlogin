@@ -58,10 +58,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     };
     await TimeManageFuture().apiGetTimeManageList(map).then((onValue) {
       if (onValue[0].STATUS == true) {
-        setState(() {
-          _itemTime = onValue[0].RESULT;
-          dropdownValueTime = _itemTime[0].ID;
-        });
+        _itemTime.addAll(onValue[0].RESULT);
+        setState(() {});
       }
     });
     return true;
@@ -74,10 +72,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     };
     await DepartManageFuture().apiGetDepartmentManageList(map).then((onValue) {
       if (onValue[0].STATUS == true) {
-        setState(() {
-          _resultDepartment = onValue[0].RESULT;
-          dropdownValueDepartment = _resultDepartment[0].ID;
-        });
+        _resultDepartment.addAll(onValue[0].RESULT);
+        setState(() {});
       }
     });
     EasyLoading.dismiss();
@@ -89,34 +85,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
   ///-----member
   List<ItemsMemberResultManage> _item = [];
   Future<bool> onLoadMemberManage() async {
+    EasyLoading.show();
     Map map = {
       "org_id": await SharedCashe.getItemsWay(name: 'org_id'),
       "uid": await SharedCashe.getItemsWay(name: 'id'),
     };
-    String timeId = await SharedCashe.getItemsWay(name: 'time_id');
+
     await MemberManageFuture().apiGetMemberManageList(map).then((onValue) {
       setState(() {
         if (onValue[0].STATUS) {
           _item = onValue[0].RESULT;
           print("status : " + _item[0].STATUS.toString());
-          if (_item.length > 0) {
-            if (_item[0].ORG_SUB_ID.toString() != '') {
-              setState(() {
-                dropdownValueDepartment = _item[0].ORG_SUB_ID;
-              });
-            }
-            if (_item[0].TIME_ID.toString() != '') {
-              setState(() {
-                dropdownValueTime =
-                    _item[0].TIME_ID != "" ? _item[0].TIME_ID : timeId;
-              });
-            }
-          }
           _getData();
         }
       });
     });
     EasyLoading.dismiss();
+
     setState(() {});
 
     return true;
@@ -126,17 +111,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
     String fullname = _item[0].FULLNAME;
     String _nickname = _item[0].NICKNAME;
     String _uid = await SharedCashe.getItemsWay(name: 'id');
+    String timeId = await SharedCashe.getItemsWay(name: 'time_id');
     String _avatar = _item[0].AVATAR == null ? '' : _item[0].AVATAR;
-    setState(() {
-      List name = fullname.split(",");
-      _inputName.text = name[0];
-      if (name.length > 1) {
-        _inputLastname.text = name[1];
-      }
-      _inputNickname.text = _nickname;
-      uid = _uid;
-      avatar = _avatar;
-    });
+    List name = fullname.split(",");
+    _inputName.text = name[0];
+    if (name.length > 1) {
+      _inputLastname.text = name[1];
+    }
+    _inputNickname.text = _nickname;
+    uid = _uid;
+    avatar = _avatar;
+    if (_item[0].ORG_SUB_ID.toString() != '') {
+      dropdownValueDepartment = _item[0].ORG_SUB_ID;
+    }
+    if (_item[0].TIME_ID.toString() != '') {
+      dropdownValueTime = _item[0].TIME_ID != "" ? _item[0].TIME_ID : timeId;
+    }
+    print("dropdownValueTime : $dropdownValueTime");
+    print("dropdownValueDepartment : $dropdownValueDepartment");
+    setState(() {});
   }
 
   Future<dynamic> onUpdateProfile() async {
@@ -157,10 +150,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-
-    onLoadGetAllTime();
-    onLoadGetAllDepartment();
+    _resultDepartment.add(ItemsDepartmentResultManage(
+      ID: '0',
+      SUBJECT: '- เลือก -',
+    ));
+    _itemTime.add(ItemsTimeResultManage(
+      ID: '0',
+      SUBJECT: '- เลือก -',
+    ));
     onLoadMemberManage();
+    onLoadGetAllDepartment();
+    onLoadGetAllTime();
   }
 
   @override
@@ -441,130 +441,160 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         ),
                                       ),
                                       Padding(padding: EdgeInsets.all(2)),
-                                      Row(
-                                        children: [
-                                          Expanded(
-                                              flex: 1,
-                                              child: Container(
-                                                  child: Text(
-                                                'สาขา',
-                                                style: TextStyle(
-                                                    fontFamily:
-                                                        FontStyles().FontFamily,
-                                                    fontSize: 22),
-                                              ))),
-                                          Expanded(
-                                            flex: 2,
-                                            child: _edit
-                                                ? Container(
-                                                    child:
-                                                        DropdownButton<String>(
-                                                      value:
-                                                          dropdownValueDepartment,
-                                                      icon: Icon(
-                                                        Icons.arrow_drop_down,
-                                                        color: Colors.grey,
+                                      if (dropdownValueDepartment != '')
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                                flex: 1,
+                                                child: Container(
+                                                    child: Text(
+                                                  'สาขา',
+                                                  style: TextStyle(
+                                                      fontFamily: FontStyles()
+                                                          .FontFamily,
+                                                      fontSize: 22),
+                                                ))),
+                                            Expanded(
+                                              flex: 2,
+                                              child: _edit
+                                                  ? Container(
+                                                      child: DropdownButton<
+                                                          String>(
+                                                        value:
+                                                            dropdownValueDepartment,
+                                                        icon: Icon(
+                                                            Icons
+                                                                .arrow_drop_down,
+                                                            color: Colors.grey),
+                                                        iconSize: 24,
+                                                        elevation: 16,
+                                                        style: TextStyle(
+                                                            color: Colors.black,
+                                                            fontSize: 20,
+                                                            fontFamily:
+                                                                FontStyles()
+                                                                    .FontFamily),
+                                                        underline: Container(
+                                                            height: 2,
+                                                            color: Colors.blue),
+                                                        onChanged:
+                                                            (String newValue) {
+                                                          setState(() {
+                                                            dropdownValueDepartment =
+                                                                newValue;
+                                                            print('สาขา' +
+                                                                dropdownValueDepartment);
+                                                          });
+                                                        },
+                                                        items: _resultDepartment
+                                                            .map((map) {
+                                                          return DropdownMenuItem(
+                                                            child: Text(
+                                                                map.SUBJECT),
+                                                            value: map.ID,
+                                                          );
+                                                        }).toList(),
+                                                        // items: _resultDepartment
+                                                        //             .length ==
+                                                        //         0
+                                                        //     ? <String>['0'].map<
+                                                        //         DropdownMenuItem<
+                                                        //             String>>((String
+                                                        //         value) {
+                                                        //         return DropdownMenuItem(
+                                                        //           child: Text(
+                                                        //               '- เลือก -'),
+                                                        //           value: value,
+                                                        //         );
+                                                        //       }).toList()
+                                                        //     : _resultDepartment
+                                                        //         .map((map) {
+                                                        //         return DropdownMenuItem(
+                                                        //           child: Text(map
+                                                        //               .SUBJECT),
+                                                        //           value: map.ID,
+                                                        //         );
+                                                        //       }).toList(),
                                                       ),
-                                                      iconSize: 24,
-                                                      elevation: 16,
-                                                      style: TextStyle(
-                                                          color: Colors.black,
-                                                          fontSize: 20,
-                                                          fontFamily:
-                                                              FontStyles()
-                                                                  .FontFamily),
-                                                      underline: Container(
-                                                        height: 2,
-                                                        color: Colors.blue,
-                                                      ),
-                                                      onChanged:
-                                                          (String newValue) {
-                                                        setState(() {
-                                                          dropdownValueDepartment =
-                                                              newValue;
-                                                          print('สาขา' +
-                                                              dropdownValueDepartment);
-                                                        });
-                                                      },
-                                                      items: _resultDepartment
-                                                                  .length ==
-                                                              0
-                                                          ? <String>['0'].map<
-                                                              DropdownMenuItem<
-                                                                  String>>((String
-                                                              value) {
-                                                              return DropdownMenuItem(
-                                                                child: Text(
-                                                                    '- เลือก -'),
-                                                                value: value,
-                                                              );
-                                                            }).toList()
-                                                          : _resultDepartment
-                                                              .map((map) {
-                                                              return DropdownMenuItem(
-                                                                child: Text(map
-                                                                    .SUBJECT),
-                                                                value: map.ID,
-                                                              );
-                                                            }).toList(),
-                                                    ),
-                                                  )
-                                                : IgnorePointer(
-                                                    child: Container(
-                                                    child:
-                                                        DropdownButton<String>(
-                                                      value:
-                                                          dropdownValueDepartment,
-                                                      icon: Icon(
-                                                        Icons.arrow_drop_down,
-                                                        color: Colors.grey,
-                                                      ),
-                                                      iconSize: 24,
-                                                      elevation: 16,
-                                                      style: TextStyle(
-                                                          color: Colors.black,
-                                                          fontSize: 20,
-                                                          fontFamily:
-                                                              FontStyles()
-                                                                  .FontFamily),
-                                                      underline: Container(
-                                                        height: 1,
-                                                        color: Colors.grey[400],
-                                                      ),
-                                                      onChanged:
-                                                          (String newValue) {
-                                                        setState(() {
-                                                          dropdownValueDepartment =
-                                                              newValue;
-                                                        });
-                                                      },
-                                                      items: _resultDepartment
-                                                                  .length ==
-                                                              0
-                                                          ? <String>['0'].map<
-                                                              DropdownMenuItem<
-                                                                  String>>((String
-                                                              value) {
-                                                              return DropdownMenuItem(
-                                                                child: Text(
-                                                                    '- เลือก -'),
-                                                                value: value,
-                                                              );
-                                                            }).toList()
-                                                          : _resultDepartment
-                                                              .map((map) {
-                                                              return DropdownMenuItem(
-                                                                child: Text(map
-                                                                    .SUBJECT),
-                                                                value: map.ID,
-                                                              );
-                                                            }).toList(),
-                                                    ),
-                                                  )),
-                                          )
-                                        ],
-                                      ),
+                                                    )
+                                                  : dropdownValueDepartment !=
+                                                          ''
+                                                      ? IgnorePointer(
+                                                          child: Container(
+                                                          child: DropdownButton<
+                                                              String>(
+                                                            value:
+                                                                dropdownValueDepartment,
+                                                            icon: Icon(
+                                                              Icons
+                                                                  .arrow_drop_down,
+                                                              color:
+                                                                  Colors.grey,
+                                                            ),
+                                                            iconSize: 24,
+                                                            elevation: 16,
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .black,
+                                                                fontSize: 20,
+                                                                fontFamily:
+                                                                    FontStyles()
+                                                                        .FontFamily),
+                                                            underline:
+                                                                Container(
+                                                              height: 1,
+                                                              color: Colors
+                                                                  .grey[400],
+                                                            ),
+                                                            onChanged: (String
+                                                                newValue) {
+                                                              setState(() {
+                                                                dropdownValueDepartment =
+                                                                    newValue;
+                                                              });
+                                                            },
+                                                            // items:
+                                                            //     _resultDepartment
+                                                            //         .map((map) {
+                                                            //   return DropdownMenuItem(
+                                                            //     child: Text(map
+                                                            //         .SUBJECT),
+                                                            //     value: map.ID,
+                                                            //   );
+                                                            // }).toList(),
+                                                            items: _resultDepartment
+                                                                        .length ==
+                                                                    0
+                                                                ? <String>[
+                                                                    '0'
+                                                                  ].map<
+                                                                    DropdownMenuItem<
+                                                                        String>>((String
+                                                                    value) {
+                                                                    return DropdownMenuItem(
+                                                                      child: Text(
+                                                                          '- เลือก -'),
+                                                                      value:
+                                                                          value,
+                                                                    );
+                                                                  }).toList()
+                                                                : _resultDepartment
+                                                                    .map((map) {
+                                                                    return DropdownMenuItem(
+                                                                      child: Text(
+                                                                          map.SUBJECT),
+                                                                      value: map
+                                                                          .ID,
+                                                                    );
+                                                                  }).toList(),
+                                                          ),
+                                                        ))
+                                                      : Container(),
+                                            )
+                                          ],
+                                        ),
                                       Padding(padding: EdgeInsets.all(1)),
+                                      // if (dropdownValueTime != '')
                                       Row(
                                         children: [
                                           Expanded(
@@ -630,63 +660,69 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                                 );
                                                               }).toList(),
                                                       )
-                                                    : IgnorePointer(
-                                                        child: DropdownButton(
-                                                          value:
-                                                              dropdownValueTime,
-                                                          icon: Icon(
-                                                            Icons
-                                                                .arrow_drop_down,
-                                                            color: Colors.grey,
-                                                          ),
-                                                          iconSize: 24,
-                                                          elevation: 16,
-                                                          style: TextStyle(
-                                                              color:
-                                                                  Colors.black,
-                                                              fontSize: 20,
-                                                              fontFamily:
-                                                                  FontStyles()
-                                                                      .FontFamily),
-                                                          underline: Container(
-                                                            height: 1,
-                                                            color: Colors
-                                                                .grey[400],
-                                                          ),
-                                                          onChanged:
-                                                              (newValue) {
-                                                            setState(() {
-                                                              dropdownValueTime =
-                                                                  newValue;
-                                                            });
-                                                          },
-                                                          items: _itemTime
-                                                                      .length ==
-                                                                  0
-                                                              ? <String>[
-                                                                  '0'
-                                                                ].map<
-                                                                  DropdownMenuItem<
-                                                                      String>>((String
-                                                                  value) {
-                                                                  return DropdownMenuItem(
-                                                                    child: Text(
-                                                                        '- เลือก -'),
-                                                                    value:
-                                                                        value,
-                                                                  );
-                                                                }).toList()
-                                                              : _itemTime
-                                                                  .map((map) {
-                                                                  return DropdownMenuItem(
-                                                                    child: Text(
-                                                                        map.SUBJECT),
-                                                                    value:
-                                                                        map.ID,
-                                                                  );
-                                                                }).toList(),
-                                                        ),
-                                                      )),
+                                                    : dropdownValueTime != ''
+                                                        ? IgnorePointer(
+                                                            child:
+                                                                DropdownButton(
+                                                              value:
+                                                                  dropdownValueTime,
+                                                              icon: Icon(
+                                                                Icons
+                                                                    .arrow_drop_down,
+                                                                color:
+                                                                    Colors.grey,
+                                                              ),
+                                                              iconSize: 24,
+                                                              elevation: 16,
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontSize: 20,
+                                                                  fontFamily:
+                                                                      FontStyles()
+                                                                          .FontFamily),
+                                                              underline:
+                                                                  Container(
+                                                                height: 1,
+                                                                color: Colors
+                                                                    .grey[400],
+                                                              ),
+                                                              onChanged:
+                                                                  (newValue) {
+                                                                setState(() {
+                                                                  dropdownValueTime =
+                                                                      newValue;
+                                                                });
+                                                              },
+                                                              items: _itemTime
+                                                                          .length ==
+                                                                      0
+                                                                  ? <String>[
+                                                                      '0'
+                                                                    ].map<
+                                                                      DropdownMenuItem<
+                                                                          String>>((String
+                                                                      value) {
+                                                                      return DropdownMenuItem(
+                                                                        child: Text(
+                                                                            '- เลือก -'),
+                                                                        value:
+                                                                            value,
+                                                                      );
+                                                                    }).toList()
+                                                                  : _itemTime
+                                                                      .map(
+                                                                          (map) {
+                                                                      return DropdownMenuItem(
+                                                                        child: Text(
+                                                                            map.SUBJECT),
+                                                                        value: map
+                                                                            .ID,
+                                                                      );
+                                                                    }).toList(),
+                                                            ),
+                                                          )
+                                                        : Container()),
                                           )
                                         ],
                                       ),

@@ -29,6 +29,7 @@ class InsiteDialog extends StatefulWidget {
   final double radius;
   final bool holiday;
   final String ot_note;
+  final String time_server;
   InsiteDialog({
     Key key,
     @required this.uid,
@@ -42,11 +43,10 @@ class InsiteDialog extends StatefulWidget {
     this.timeId,
     this.holiday,
     this.ot_note,
-
+    this.time_server,
   }) : super(key: key);
   @override
   _InsiteDialogState createState() => _InsiteDialogState();
-  
 }
 
 class _InsiteDialogState extends State<InsiteDialog> {
@@ -169,7 +169,8 @@ class _InsiteDialogState extends State<InsiteDialog> {
                 child: Column(
                   children: [
                     Text(
-                      Clock().getTime(),
+                      // Clock().getTime(),
+                      widget.time_server.toString(),
                       style: TextStyle(
                         fontFamily: FontStyles().FontFamily,
                         height: 1,
@@ -224,7 +225,8 @@ class _InsiteDialogState extends State<InsiteDialog> {
                         onTap: () {
                           Map _map = {
                             "uid": widget.uid,
-                            "time": Clock().onTime(),
+                            // "time": Clock().onTime(),
+                            "time": widget.time_server.toString(),
                             "image": widget.pathImage,
                             "latitude": widget.myLat.toString(),
                             "longitude": widget.myLng.toString(),
@@ -233,7 +235,9 @@ class _InsiteDialogState extends State<InsiteDialog> {
                                 : checkTimr(widget.time)
                                     ? '0'
                                     : (currentIndex + 1),
-                            "start_note": checkHoliday(widget.holiday) ? widget.ot_note : _inputNote.text,
+                            "start_note": checkHoliday(widget.holiday)
+                                ? widget.ot_note
+                                : _inputNote.text,
                             "start_location_status": distanc() ? '0' : '1',
                             "log": 'timeid_${widget.timeId}',
                           };
@@ -255,7 +259,9 @@ class _InsiteDialogState extends State<InsiteDialog> {
                                       mainLng: widget.long.toString(),
                                       lat: widget.myLat.toString(),
                                       long: widget.myLng.toString(),
-                                      time: widget.time);
+                                      time: widget.time,
+                                      time_server: widget.time_server.toString(),
+                                      );
                                 });
                           } else {
                             Navigator.pop(context);
@@ -299,8 +305,7 @@ class _InsiteDialogState extends State<InsiteDialog> {
   }
 
   _causeNote() {
-    return 
-    Container(
+    return Container(
       padding: EdgeInsets.all(10),
       child: Row(
         children: [

@@ -62,19 +62,19 @@ class _ConfirmDialogState extends State<ConfirmDialog> {
     if (widget.select1) {
       setState(() {
         typeLeave = "ลาป่วย";
-        cidLeave = "1";
+        cidLeave = "2";
       });
     }
     if (widget.select2) {
       setState(() {
         typeLeave = "ลากิจ";
-        cidLeave = "2";
+        cidLeave = "3";
       });
     }
     if (widget.select3) {
       setState(() {
         typeLeave = "ลาอื่นๆ";
-        cidLeave = "3";
+        cidLeave = "4";
       });
     }
   }
@@ -128,6 +128,7 @@ class _ConfirmDialogState extends State<ConfirmDialog> {
   }
 
   insertLeave() async {
+    showLoaderDialog(context);
     var uri = Uri.parse(Server().insertInfoLeave);
     print("inform uri: ${uri.toString()}");
     var request = http.MultipartRequest('POST', uri);
@@ -163,6 +164,7 @@ class _ConfirmDialogState extends State<ConfirmDialog> {
     final streamedResponse = await request.send();
     final response = await http.Response.fromStream(streamedResponse);
     if (response.statusCode == 200) {
+      // EasyLoading.dismiss();
       final data = jsonDecode(response.body);
       if (data['msg'] == 'success') {
         Navigator.pop(context);
@@ -241,6 +243,25 @@ class _ConfirmDialogState extends State<ConfirmDialog> {
             ),
           ),
         );
+      },
+    );
+  }
+
+  showLoaderDialog(BuildContext context) {
+    AlertDialog alert = AlertDialog(
+      content: new Row(
+        children: [
+          CircularProgressIndicator(),
+          Container(
+              margin: EdgeInsets.only(left: 7), child: Text("กำลังโหลด...")),
+        ],
+      ),
+    );
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
       },
     );
   }

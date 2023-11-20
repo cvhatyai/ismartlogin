@@ -30,6 +30,8 @@ class _LeaveDetailScreenState extends State<LeaveDetailScreen> {
   List<ItemsMemberResultManage> _itemMember = [];
   List<File> _files = [];
   String cateName = '';
+  String totalLeave = '';
+  String cate_name = '';
   String subject = '';
   String fullname = '';
   String position = '';
@@ -90,6 +92,27 @@ class _LeaveDetailScreenState extends State<LeaveDetailScreen> {
     }
   }
 
+  showLoaderDialog(BuildContext context) {
+    AlertDialog alert = AlertDialog(
+      content: new Row(
+        children: [
+          CircularProgressIndicator(),
+          Container(
+            margin: EdgeInsets.only(left: 7),
+            child: Text("กำลังโหลด..."),
+          ),
+        ],
+      ),
+    );
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
   updateStatusLeave(String status) async {
     Map map = {
       "org_id": await SharedCashe.getItemsWay(name: 'org_id'),
@@ -105,11 +128,13 @@ class _LeaveDetailScreenState extends State<LeaveDetailScreen> {
     );
     data = json.decode(response.body);
     if (data[0]['status'] == true) {
+      Navigator.of(context, rootNavigator: true).pop('dialog');
       onLoadDetailLeaveManage();
       widget.loadListLeave();
     }
     setState(() {});
   }
+
 
   Future<void> _launchInBrowser(String url) async {
     if (await canLaunch(url)) {
@@ -141,6 +166,8 @@ class _LeaveDetailScreenState extends State<LeaveDetailScreen> {
     // print(data);
     if (data[0]['status'] == true) {
       cateName = data[0]['cateName'].toString();
+      totalLeave = data[0]['totalLeave'].toString();
+      cate_name = data[0]['cate_name'].toString();
       cid = data[0]['cid'].toString();
       leaveStatus = data[0]['leaveStatus'].toString();
       fullname = data[0]['fullname'].toString();
@@ -233,6 +260,7 @@ class _LeaveDetailScreenState extends State<LeaveDetailScreen> {
                         child: InkWell(
                           onTap: () {
                             Navigator.pop(context);
+                            showLoaderDialog(context);
                             updateStatusLeave(status);
                           },
                           child: Container(
@@ -281,7 +309,7 @@ class _LeaveDetailScreenState extends State<LeaveDetailScreen> {
               }
             },
             child: SingleChildScrollView(
-              physics: const NeverScrollableScrollPhysics(),
+              // physics: const NeverScrollableScrollPhysics(),
               child: Container(
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height,
@@ -387,7 +415,26 @@ class _LeaveDetailScreenState extends State<LeaveDetailScreen> {
                                                                 ),
                                                                 Expanded(
                                                                   child:
-                                                                      Container(),
+                                                                      Container(
+                                                                    margin:
+                                                                        EdgeInsets
+                                                                            .only(
+                                                                      right: 15,
+                                                                    ),
+                                                                    alignment:
+                                                                        Alignment
+                                                                            .centerRight,
+                                                                    child: totalLeave !=
+                                                                            ''
+                                                                        ? Text(
+                                                                            'ยอดลาสะสม $totalLeave',
+                                                                            style: TextStyle(
+                                                                                fontWeight: FontWeight.bold,
+                                                                                color: Colors.red,
+                                                                                fontSize: 20),
+                                                                          )
+                                                                        : Container(),
+                                                                  ),
                                                                 ),
                                                               ],
                                                             ),
@@ -417,7 +464,10 @@ class _LeaveDetailScreenState extends State<LeaveDetailScreen> {
                                                                               child: Text("ชื่อ – สกุล", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF8E8E8E))),
                                                                             ),
                                                                             Expanded(
-                                                                              child: Text(fullname, style: TextStyle(fontSize: 20, color: Color(0xFF8E8E8E))),
+                                                                              child: Padding(
+                                                                                padding: const EdgeInsets.only(top: 3.0),
+                                                                                child: Text(fullname, style: TextStyle(fontSize: 20, color: Color(0xFF8E8E8E))),
+                                                                              ),
                                                                             )
                                                                           ],
                                                                         )),
@@ -439,24 +489,22 @@ class _LeaveDetailScreenState extends State<LeaveDetailScreen> {
                                                                           ],
                                                                         )),
                                                                     Container(
+                                                                        padding: EdgeInsets.only(
+                                                                            bottom:
+                                                                                10),
                                                                         child:
                                                                             Row(
-                                                                      crossAxisAlignment:
-                                                                          CrossAxisAlignment
-                                                                              .start,
-                                                                      children: [
-                                                                        Expanded(
-                                                                          child: Text(
-                                                                              "เนื่องจาก",
-                                                                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF8E8E8E))),
-                                                                        ),
-                                                                        Expanded(
-                                                                          child: Text(
-                                                                              subject,
-                                                                              style: TextStyle(fontSize: 20, color: Color(0xFF8E8E8E))),
-                                                                        )
-                                                                      ],
-                                                                    )),
+                                                                          crossAxisAlignment:
+                                                                              CrossAxisAlignment.start,
+                                                                          children: [
+                                                                            Expanded(
+                                                                              child: Text("ขอนุมัติการลา", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF8E8E8E))),
+                                                                            ),
+                                                                            Expanded(
+                                                                              child: Text(cate_name, style: TextStyle(fontSize: 20, color: Color(0xFF8E8E8E))),
+                                                                            )
+                                                                          ],
+                                                                        )),
                                                                     Container(
                                                                         padding: EdgeInsets.only(
                                                                             bottom:
@@ -467,7 +515,41 @@ class _LeaveDetailScreenState extends State<LeaveDetailScreen> {
                                                                               CrossAxisAlignment.start,
                                                                           children: [
                                                                             Expanded(
-                                                                              child: Text("ลาวันที่", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF8E8E8E))),
+                                                                              child: Text("เนื่องจาก", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF8E8E8E))),
+                                                                            ),
+                                                                            Expanded(
+                                                                              child: Text(subject, style: TextStyle(fontSize: 20, color: Color(0xFF8E8E8E))),
+                                                                            )
+                                                                          ],
+                                                                        )),
+                                                                    Container(
+                                                                        padding: EdgeInsets.only(
+                                                                            bottom:
+                                                                                10),
+                                                                        child:
+                                                                            Row(
+                                                                          crossAxisAlignment:
+                                                                              CrossAxisAlignment.start,
+                                                                          children: [
+                                                                            Expanded(
+                                                                              child: Text("ลาตั้งแต่วันที่", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF8E8E8E))),
+                                                                            ),
+                                                                            Expanded(
+                                                                              child: Text(leaveDate, style: TextStyle(fontSize: 20, color: Color(0xFF8E8E8E))),
+                                                                            )
+                                                                          ],
+                                                                        )),
+                                                                    Container(
+                                                                        padding: EdgeInsets.only(
+                                                                            bottom:
+                                                                                10),
+                                                                        child:
+                                                                            Row(
+                                                                          crossAxisAlignment:
+                                                                              CrossAxisAlignment.start,
+                                                                          children: [
+                                                                            Expanded(
+                                                                              child: Text("ลาถึงวันที่", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF8E8E8E))),
                                                                             ),
                                                                             Expanded(
                                                                               child: Text(leaveDate, style: TextStyle(fontSize: 20, color: Color(0xFF8E8E8E))),
@@ -521,7 +603,10 @@ class _LeaveDetailScreenState extends State<LeaveDetailScreen> {
                                                                               child: Text("เบอร์ที่ติดต่อได้", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF8E8E8E))),
                                                                             ),
                                                                             Expanded(
-                                                                              child: Text(phone, style: TextStyle(fontSize: 20, color: Color(0xFF8E8E8E))),
+                                                                              child: Padding(
+                                                                                padding: const EdgeInsets.only(top: 3.0),
+                                                                                child: Text(phone, style: TextStyle(fontSize: 20, color: Color(0xFF8E8E8E))),
+                                                                              ),
                                                                             )
                                                                           ],
                                                                         )),
@@ -599,159 +684,159 @@ class _LeaveDetailScreenState extends State<LeaveDetailScreen> {
                                                               ),
                                                             ),
                                                           ),
-
                                                           //button
-                                                          Container(
-                                                            height: dataFiles !=
-                                                                        null &&
-                                                                    dataFiles
-                                                                            .length >
-                                                                        0
-                                                                ? 65
-                                                                : 120,
-                                                            child: (data !=
-                                                                        null &&
-                                                                    data.length >
-                                                                        0)
-                                                                ? Column(
-                                                                    children: [
-                                                                      //ยกเลิก
-                                                                      if ((createBy == uid) &&
-                                                                          (leaveStatus !=
-                                                                              "3") &&
-                                                                          (leaveStatus !=
-                                                                              "4") &&
-                                                                          (leaveStatus !=
-                                                                              "2"))
-                                                                        Container(
-                                                                          width:
-                                                                              200,
-                                                                          child:
-                                                                              GestureDetector(
-                                                                            onTap:
-                                                                                () {
-                                                                              alert_confirm(context, "คุณต้องการ “ยกเลิก” การลาหรือไม่", "4");
-                                                                            },
+                                                          Align(
+                                                            alignment: Alignment
+                                                                .bottomCenter,
+                                                            child: Container(
+                                                              margin: EdgeInsets
+                                                                  .only(
+                                                                      bottom:
+                                                                          40),
+                                                              // height: dataFiles !=
+                                                              //             null &&
+                                                              //         dataFiles.length >
+                                                              //             0
+                                                              //     ? 40
+                                                              //     : 90,
+                                                              child: (data !=
+                                                                          null &&
+                                                                      data.length >
+                                                                          0)
+                                                                  ? Column(
+                                                                      children: [
+                                                                        //ยกเลิก
+                                                                        if ((createBy == uid) &&
+                                                                            (leaveStatus !=
+                                                                                "3") &&
+                                                                            (leaveStatus !=
+                                                                                "4") &&
+                                                                            (leaveStatus !=
+                                                                                "2"))
+                                                                          Container(
+                                                                            width:
+                                                                                200,
                                                                             child:
-                                                                                Container(
-                                                                              decoration: BoxDecoration(
-                                                                                color: Color(0xFFBBBBBB),
-                                                                                borderRadius: BorderRadius.circular(26),
-                                                                              ),
-                                                                              child: Padding(
-                                                                                padding: const EdgeInsets.all(8.0),
-                                                                                child: Center(
-                                                                                  child: Text(
-                                                                                    'ยกเลิก',
-                                                                                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
+                                                                                GestureDetector(
+                                                                              onTap: () {
+                                                                                alert_confirm(context, "คุณต้องการ “ยกเลิก” การลาหรือไม่", "4");
+                                                                              },
+                                                                              child: Container(
+                                                                                decoration: BoxDecoration(
+                                                                                  color: Color(0xFFBBBBBB),
+                                                                                  borderRadius: BorderRadius.circular(26),
+                                                                                ),
+                                                                                child: Padding(
+                                                                                  padding: const EdgeInsets.all(8.0),
+                                                                                  child: Center(
+                                                                                    child: Text(
+                                                                                      'ยกเลิก',
+                                                                                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
+                                                                                    ),
                                                                                   ),
                                                                                 ),
                                                                               ),
                                                                             ),
                                                                           ),
-                                                                        ),
-                                                                      if ((createBy ==
-                                                                              uid) &&
-                                                                          (leaveStatus ==
-                                                                              "2"))
-                                                                        Container(
-                                                                          width:
-                                                                              200,
-                                                                          child:
-                                                                              GestureDetector(
-                                                                            onTap:
-                                                                                () {
-                                                                              alert_confirm(context, "คุณต้องการ “ยกเลิก” การลาหรือไม่", "4");
-                                                                            },
+                                                                        if ((createBy ==
+                                                                                uid) &&
+                                                                            (leaveStatus ==
+                                                                                "2"))
+                                                                          Container(
+                                                                            width:
+                                                                                200,
                                                                             child:
-                                                                                Container(
-                                                                              decoration: BoxDecoration(
-                                                                                color: Color(0xFFBBBBBB),
-                                                                                borderRadius: BorderRadius.circular(26),
-                                                                              ),
-                                                                              child: Padding(
-                                                                                padding: const EdgeInsets.all(8.0),
-                                                                                child: Center(
-                                                                                  child: Text(
-                                                                                    'ยกเลิก',
-                                                                                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
+                                                                                GestureDetector(
+                                                                              onTap: () {
+                                                                                alert_confirm(context, "คุณต้องการ “ยกเลิก” การลาหรือไม่", "4");
+                                                                              },
+                                                                              child: Container(
+                                                                                decoration: BoxDecoration(
+                                                                                  color: Color(0xFFBBBBBB),
+                                                                                  borderRadius: BorderRadius.circular(26),
+                                                                                ),
+                                                                                child: Padding(
+                                                                                  padding: const EdgeInsets.all(8.0),
+                                                                                  child: Center(
+                                                                                    child: Text(
+                                                                                      'ยกเลิก',
+                                                                                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
+                                                                                    ),
                                                                                   ),
                                                                                 ),
                                                                               ),
                                                                             ),
                                                                           ),
-                                                                        ),
-                                                                      // อนุมัติ //ไม่อนุมัติิ
-                                                                      if ((createBy != uid) &&
-                                                                          (leaveStatus !=
-                                                                              "3") &&
-                                                                          (leaveStatus !=
-                                                                              "2") &&
-                                                                          (leaveStatus !=
-                                                                              "4") &&
-                                                                          (userclass == "admin" ||
-                                                                              leave_member == "1"))
-                                                                        Padding(
-                                                                          padding: const EdgeInsets.only(
-                                                                              left: 16.0,
-                                                                              right: 16.0),
-                                                                          child:
-                                                                              Container(
+                                                                        // อนุมัติ //ไม่อนุมัติิ
+                                                                        if ((createBy != uid) &&
+                                                                            (leaveStatus !=
+                                                                                "3") &&
+                                                                            (leaveStatus !=
+                                                                                "2") &&
+                                                                            (leaveStatus !=
+                                                                                "4") &&
+                                                                            (userclass == "admin" ||
+                                                                                leave_member == "1"))
+                                                                          Padding(
+                                                                            padding:
+                                                                                const EdgeInsets.only(left: 16.0, right: 16.0),
                                                                             child:
-                                                                                Row(
-                                                                              children: [
-                                                                                Expanded(
-                                                                                  child: GestureDetector(
-                                                                                    onTap: () {
-                                                                                      alert_confirm(context, "คุณต้องการ “ไม่อนุมัติ” การลาหรือไม่", "3");
-                                                                                    },
-                                                                                    child: Container(
-                                                                                      decoration: BoxDecoration(
-                                                                                        color: Color(0xFFBBBBBB),
-                                                                                        borderRadius: BorderRadius.circular(26),
-                                                                                      ),
-                                                                                      child: Padding(
-                                                                                        padding: const EdgeInsets.all(8.0),
-                                                                                        child: Center(
-                                                                                          child: Text(
-                                                                                            'ไม่อนุมัติ',
-                                                                                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
+                                                                                Container(
+                                                                              child: Row(
+                                                                                children: [
+                                                                                  Expanded(
+                                                                                    child: GestureDetector(
+                                                                                      onTap: () {
+                                                                                        alert_confirm(context, "คุณต้องการ “ไม่อนุมัติ” การลาหรือไม่", "3");
+                                                                                      },
+                                                                                      child: Container(
+                                                                                        decoration: BoxDecoration(
+                                                                                          color: Color(0xFFBBBBBB),
+                                                                                          borderRadius: BorderRadius.circular(26),
+                                                                                        ),
+                                                                                        child: Padding(
+                                                                                          padding: const EdgeInsets.all(8.0),
+                                                                                          child: Center(
+                                                                                            child: Text(
+                                                                                              'ไม่อนุมัติ',
+                                                                                              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
+                                                                                            ),
                                                                                           ),
                                                                                         ),
                                                                                       ),
                                                                                     ),
                                                                                   ),
-                                                                                ),
-                                                                                SizedBox(width: 8),
-                                                                                Expanded(
-                                                                                  child: GestureDetector(
-                                                                                    onTap: () {
-                                                                                      alert_confirm(context, "คุณต้องการ “อนุมัติ” การลาหรือไม่", "2");
-                                                                                    },
-                                                                                    child: Container(
-                                                                                      decoration: BoxDecoration(
-                                                                                        color: Color(0xFF00B9FF),
-                                                                                        borderRadius: BorderRadius.circular(26),
-                                                                                      ),
-                                                                                      child: Padding(
-                                                                                        padding: const EdgeInsets.all(8.0),
-                                                                                        child: Center(
-                                                                                          child: Text(
-                                                                                            'อนุมัติ',
-                                                                                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
+                                                                                  SizedBox(width: 8),
+                                                                                  Expanded(
+                                                                                    child: GestureDetector(
+                                                                                      onTap: () {
+                                                                                        alert_confirm(context, "คุณต้องการ “อนุมัติ” การลาหรือไม่", "2");
+                                                                                      },
+                                                                                      child: Container(
+                                                                                        decoration: BoxDecoration(
+                                                                                          color: Color(0xFF00B9FF),
+                                                                                          borderRadius: BorderRadius.circular(26),
+                                                                                        ),
+                                                                                        child: Padding(
+                                                                                          padding: const EdgeInsets.all(8.0),
+                                                                                          child: Center(
+                                                                                            child: Text(
+                                                                                              'อนุมัติ',
+                                                                                              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
+                                                                                            ),
                                                                                           ),
                                                                                         ),
                                                                                       ),
                                                                                     ),
                                                                                   ),
-                                                                                ),
-                                                                              ],
+                                                                                ],
+                                                                              ),
                                                                             ),
                                                                           ),
-                                                                        ),
-                                                                    ],
-                                                                  )
-                                                                : null,
+                                                                      ],
+                                                                    )
+                                                                  : null,
+                                                            ),
                                                           ),
                                                         ],
                                                       )

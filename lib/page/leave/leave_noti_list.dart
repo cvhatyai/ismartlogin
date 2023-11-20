@@ -33,13 +33,14 @@ class _LeaveNotiListScreenState extends State<LeaveNotiListScreen> {
       "uid": await SharedCashe.getItemsWay(name: 'id'),
     };
     var body = json.encode(map);
+    print('onLoadListNotiLeaveManage : ${body}');
     final response = await http.Client().post(
       Uri.parse(Server().getListNotiLeave),
       headers: {"Content-Type": "application/json"},
       body: body,
     );
     data = json.decode(response.body);
-    print(data);
+    print("onLoadListNotiLeaveManage : ${data}");
     if (data[0]['status'] == true) {
       len = data[0]['result'].length.toString();
     } else {
@@ -170,15 +171,15 @@ class _LeaveNotiListScreenState extends State<LeaveNotiListScreen> {
                                                           height: 1.5,
                                                           color: rs[index][
                                                                       'status_leave'] ==
-                                                                  "1"
+                                                                  "1" && rs[index]['status_noti'] == "0"
                                                               ? Color(
                                                                   0xFFFF7700)
                                                               : rs[index]['status_leave'] ==
-                                                                      "2"
+                                                                      "2" && rs[index]['status_noti'] == "0"
                                                                   ? Color(
                                                                       0xFF01BB50)
                                                                   : rs[index]['status_leave'] ==
-                                                                          "3"
+                                                                          "3" && rs[index]['status_noti'] == "0"
                                                                       ? Color(
                                                                           0xFFFF0000)
                                                                       : Color(

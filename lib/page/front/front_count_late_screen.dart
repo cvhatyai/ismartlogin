@@ -288,8 +288,9 @@ class _FrontCountLateScreenState extends State<FrontCountLateScreen> {
 
   _getEndStatus(String _status) {
     String _txt = '';
+    print("getEndStatus : ${int.parse(_status) - 1}");
     if (_status != '' && _status != '0') {
-      List _checkboxListTile = ['ออกงานก่อนเวลา'];
+      List _checkboxListTile = ['ออกงานก่อนเวลา','ออกงานก่อนเวลา','ออกงานก่อนเวลา'];
       _txt = _checkboxListTile[int.parse(_status) - 1];
     }
     return _txt;

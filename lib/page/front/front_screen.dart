@@ -15,7 +15,6 @@ import 'package:ismart_login/page/front/model/attendToDay.dart';
 import 'package:ismart_login/page/front/model/orglist.dart';
 import 'package:ismart_login/page/front/offside_popup.dart';
 import 'package:ismart_login/page/leave/leave_noti_list.dart';
-import 'package:ismart_login/page/main.dart';
 import 'package:ismart_login/page/managements/future/department_manage_future.dart';
 import 'package:ismart_login/page/managements/future/member_manage_future.dart';
 import 'package:ismart_login/page/managements/future/time_manage_future.dart';
@@ -97,8 +96,8 @@ class _FrontScreenState extends State<FrontScreen> {
     _getMyLocation();
     _getShaerd();
     _timeString = _formatTime(DateTime.now());
-    _timer = Timer.periodic(Duration(seconds: 1), (Timer t) => _getTime());
     _dateString = _formatDate(DateTime.now());
+    _timer = Timer.periodic(Duration(seconds: 1), (Timer t) => _getTime());
     _date = Timer.periodic(Duration(seconds: 1), (Timer t) => _getDate());
     super.initState();
   }
@@ -234,7 +233,8 @@ class _FrontScreenState extends State<FrontScreen> {
         }
       });
     });
-    print("getItemsWay ORG_SUB_ID ${await SharedCashe.getItemsWay(name: 'id')}");
+    print(
+        "getItemsWay ORG_SUB_ID ${await SharedCashe.getItemsWay(name: 'id')}");
     setState(() {});
     return true;
   }
@@ -282,7 +282,7 @@ class _FrontScreenState extends State<FrontScreen> {
       "org_id": await SharedCashe.getItemsWay(name: 'org_id'),
       "id": org_sub_id
     };
-    print(map);
+    // print(map);
     await DepartManageFuture().apiGetDepartmentManageList(map).then((onValue) {
       if (onValue[0].STATUS == true) {
         setState(() {
@@ -296,11 +296,33 @@ class _FrontScreenState extends State<FrontScreen> {
   ///------
 
   void _getTime() {
-    final DateTime now = DateTime.now();
-    final String formattedDateTime = _formatTime(now);
-    setState(() {
-      _timeString = formattedDateTime;
-    });
+    _timeString = _formatTime(DateTime.now());
+    // Map map = {
+    //   "org_id": await SharedCashe.getItemsWay(name: 'org_id'),
+    //   "uid": await SharedCashe.getItemsWay(name: 'id'),
+    // };
+    // var body = json.encode(map);
+    // final response = await http.Client().post(
+    //   Uri.parse(Server().getTimeInServer),
+    //   headers: {"Content-Type": "application/json"},
+    //   body: body,
+    // );
+    // var data = json.decode(response.body);
+    // // print(data['time'].toString());
+    // setState(() {
+    //   _timeString = data['time'].toString();
+    // });
+    // debugPrint("formattedDateTime = " + formattedDateTime);
+    // var dateValue = DateTime.now();
+    // String formattedDate =
+    //     DateFormat("dd MMM yyyy hh:mm:ssZ").format(dateValue);
+    // debugPrint("formattedDate = " + formattedDate);
+    // final DateTime now = DateTime.now();
+    // final String formattedDateTime = _formatTime(now);
+    // // print(formattedDateTime);
+    // setState(() {
+    //   _timeString = formattedDateTime;
+    // });
   }
 
   String _formatTime(DateTime dateTime) {
@@ -528,6 +550,8 @@ class _FrontScreenState extends State<FrontScreen> {
                                                   _itemMember.length > 0
                                                       ? _itemMember[0].ORG_NAME
                                                       : '',
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                   style: TextStyle(
                                                       fontFamily: FontStyles()
                                                           .FontFamily,
@@ -549,10 +573,12 @@ class _FrontScreenState extends State<FrontScreen> {
                                                               _itemMember[0]
                                                                   .ORG_SUB_NAME
                                                       : '',
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                   style: TextStyle(
                                                       fontFamily: FontStyles()
                                                           .FontFamily,
-                                                      fontSize: 22,
+                                                      fontSize: 20,
                                                       color: Colors.grey,
                                                       fontWeight:
                                                           FontWeight.normal),
@@ -767,6 +793,7 @@ class _FrontScreenState extends State<FrontScreen> {
                                         onTap: () {
                                           if (_login) {
                                             // popupOT_in(context);
+                                            print("dayWorking : $dayWorking");
                                             if (dayWorking) {
                                               _imgFromCamera_in(context, false);
                                             } else {
@@ -1086,23 +1113,24 @@ class _FrontScreenState extends State<FrontScreen> {
         "myLng": _myLng,
       };
       print("map" + _map.toString());
+      // return false;
       if (_imageFile != null) {
         showDialog(
             context: context,
             builder: (_) {
               return InsiteDialog(
-                uid: _items[0].ID,
-                pathImage: pickedFile.path,
-                lat: _resultItemDepartment[0].LATITUDE,
-                long: _resultItemDepartment[0].LONGTITUDE,
-                time: timeIn,
-                myLat: _myLat,
-                myLng: _myLng,
-                timeId: _time_id,
-                radius: double.parse(_resultItemDepartment[0].RADIUS),
-                holiday: holiday,
-                ot_note: OT_note,
-              );
+                  uid: _items[0].ID,
+                  pathImage: pickedFile.path,
+                  lat: _resultItemDepartment[0].LATITUDE,
+                  long: _resultItemDepartment[0].LONGTITUDE,
+                  time: timeIn,
+                  myLat: _myLat,
+                  myLng: _myLng,
+                  timeId: _time_id,
+                  radius: double.parse(_resultItemDepartment[0].RADIUS),
+                  holiday: holiday,
+                  ot_note: OT_note,
+                  time_server: _timeString);
             });
       }
     } catch (e) {
@@ -1153,6 +1181,7 @@ class _FrontScreenState extends State<FrontScreen> {
                 timeId: _time_id,
                 radius: double.parse(_resultItemDepartment[0].RADIUS),
                 holiday: holiday,
+                time_server: _timeString,
               );
             });
       }

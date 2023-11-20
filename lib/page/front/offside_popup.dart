@@ -29,6 +29,7 @@ class OffsideDialog extends StatefulWidget {
   final double myLng;
   final double radius;
   final bool holiday;
+  final String time_server;
   OffsideDialog({
     Key key,
     @required this.uid,
@@ -41,6 +42,7 @@ class OffsideDialog extends StatefulWidget {
     this.holiday,
     this.radius,
     this.timeId,
+    this.time_server,
   }) : super(key: key);
   @override
   _OffsideDialogState createState() => _OffsideDialogState();
@@ -164,7 +166,8 @@ class _OffsideDialogState extends State<OffsideDialog> {
                 child: Column(
                   children: [
                     Text(
-                      Clock().getTime(),
+                      // Clock().getTime(),
+                      widget.time_server.toString(),
                       style: TextStyle(
                         fontFamily: FontStyles().FontFamily,
                         height: 1,
@@ -219,7 +222,8 @@ class _OffsideDialogState extends State<OffsideDialog> {
                         onTap: () {
                           Map _map = {
                             "uid": widget.uid,
-                            "time": Clock().onTime(),
+                            // "time": Clock().onTime(),
+                            "time": widget.time_server.toString(),
                             "image": widget.pathImage,
                             "latitude": widget.myLat.toString(),
                             "longitude": widget.myLng.toString(),
@@ -241,14 +245,15 @@ class _OffsideDialogState extends State<OffsideDialog> {
                                 context: context,
                                 builder: (_) {
                                   return OutsideDialog(
-                                      status: 2,
-                                      uid: widget.uid,
-                                      mainLat: widget.lat.toString(),
-                                      mainLng: widget.long.toString(),
-                                      lat: widget.myLat.toString(),
-                                      long: widget.myLng.toString(),
-                                      time: widget.time
-                                      );
+                                    status: 2,
+                                    uid: widget.uid,
+                                    mainLat: widget.lat.toString(),
+                                    mainLng: widget.long.toString(),
+                                    lat: widget.myLat.toString(),
+                                    long: widget.myLng.toString(),
+                                    time: widget.time,
+                                    time_server: widget.time_server.toString(),
+                                  );
                                 });
                           } else {
                             EasyLoading.show();

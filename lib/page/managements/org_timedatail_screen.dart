@@ -116,8 +116,12 @@ class _OrgTimeDetailManageState extends State<OrgTimeDetailManage> {
       print(onValue[0].MSG);
       if (onValue[0].STATUS == true) {
         EasyLoading.showSuccess('บันทึกแล้ว');
+        print("updateLoadTime : ${widget.updateLoadTime}");
         if (widget.updateLoadTime != null) {
           widget.updateLoadTime();
+        }
+        if (widget.type == 'insert') {
+          Navigator.pop(context);
         }
       } else {
         EasyLoading.showError('ล้มเหลว');

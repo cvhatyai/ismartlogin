@@ -41,6 +41,7 @@ class OutsideScreen extends StatefulWidget {
 class _OutsideScreenState extends State<OutsideScreen> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController _inputTopic = TextEditingController();
+  TextEditingController _inputTime = TextEditingController();
   TextEditingController _inputDescription = TextEditingController();
   //Setup
   PickedFile _imageFile_login;
@@ -99,7 +100,11 @@ class _OutsideScreenState extends State<OutsideScreen> {
   Future<bool> onLoadAttandOutside() async {
     String dateNow = DateFormat("HH:mm:ss").format(timeNow);
     List note = [
-      {"topic": _inputTopic.text, "description": _inputDescription.text}
+      {
+        "topic": _inputTopic.text,
+        "description": _inputDescription.text,
+        "times": _inputTime.text
+      }
     ];
     Map map = {
       "uid": widget.uid,
@@ -152,222 +157,251 @@ class _OutsideScreenState extends State<OutsideScreen> {
         height: MediaQuery.of(context).size.height,
         decoration: StylePage().background,
         child: SafeArea(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                AppBar(
-                  centerTitle: true,
-                  leading: IconButton(
-                    icon: Icon(
-                      Icons.arrow_back_ios,
-                      color: Colors.white,
-                      size: 26,
+          child: GestureDetector(
+            onTap: () {
+              FocusScopeNode currentFocus = FocusScope.of(context);
+              if (!currentFocus.hasPrimaryFocus) {
+                currentFocus.unfocus();
+              }
+            },
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  AppBar(
+                    centerTitle: true,
+                    leading: IconButton(
+                      icon: Icon(
+                        Icons.arrow_back_ios,
+                        color: Colors.white,
+                        size: 26,
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MainPage(),
+                          ),
+                        );
+                      },
                     ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MainPage(),
-                        ),
-                      );
-                    },
+                    title:
+                        Text('ทำงานนอกสถานที่', style: StylesText.titleAppBar),
+                    backgroundColor: Colors.white.withOpacity(0),
+                    elevation: 0,
                   ),
-                  title: Text('ทำงานนอกสถานที่', style: StylesText.titleAppBar),
-                  backgroundColor: Colors.white.withOpacity(0),
-                  elevation: 0,
-                ),
-                SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: Container(
-                    padding: EdgeInsets.only(left: 20, right: 20, top: 10),
-                    child: Column(
-                      children: [
-                        Container(
-                          margin: EdgeInsets.only(bottom: 20),
-                          padding: EdgeInsets.only(
-                              left: 10, right: 10, top: 10, bottom: 20),
-                          width: WidhtDevice().widht(context),
-                          decoration: StylePage().boxWhite,
-                          child: Form(
-                            key: _formKey,
-                            child: Column(
-                              children: [
-                                Container(
-                                  child: Text(
-                                    'ตำแหน่งที่คุณล็อกอิน',
+                  SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: Container(
+                      padding: EdgeInsets.only(left: 20, right: 20, top: 10),
+                      child: Column(
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(bottom: 20),
+                            padding: EdgeInsets.only(
+                                left: 10, right: 10, top: 10, bottom: 20),
+                            width: WidhtDevice().widht(context),
+                            decoration: StylePage().boxWhite,
+                            child: Form(
+                              key: _formKey,
+                              child: Column(
+                                children: [
+                                  Container(
+                                    child: Text(
+                                      'ตำแหน่งที่คุณล็อกอิน',
+                                      style: TextStyle(
+                                          fontFamily: FontStyles().FontFamily,
+                                          fontSize: 20,
+                                          color: Color(0xFF089AE5)),
+                                    ),
+                                  ),
+                                  Container(
+                                    alignment: Alignment.center,
+                                    height: 200,
+                                    child: GoogleMap(
+                                      mapType: MapType.normal,
+                                      markers: addMarker(context),
+                                      initialCameraPosition: mapMark(),
+                                      onMapCreated:
+                                          (GoogleMapController controller) {
+                                        _controller.complete(controller);
+                                      },
+                                    ),
+                                  ),
+                                  TextFormField(
+                                    controller: _inputTopic,
+                                    keyboardType: TextInputType.text,
                                     style: TextStyle(
                                         fontFamily: FontStyles().FontFamily,
-                                        fontSize: 20,
-                                        color: Color(0xFF089AE5)),
-                                  ),
-                                ),
-                                Container(
-                                  alignment: Alignment.center,
-                                  height: 200,
-                                  child: GoogleMap(
-                                    mapType: MapType.normal,
-                                    markers: addMarker(context),
-                                    initialCameraPosition: mapMark(),
-                                    onMapCreated:
-                                        (GoogleMapController controller) {
-                                      _controller.complete(controller);
+                                        fontSize: 22),
+                                    decoration: InputDecoration(
+                                      hintText: 'เรื่อง',
+                                      prefixIcon: Padding(
+                                        padding: EdgeInsets.all(
+                                            0), // add padding to adjust icon
+                                        child: Icon(
+                                          Icons.topic_outlined,
+                                          size: 22,
+                                        ),
+                                      ),
+                                    ),
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'กรุณากรอกข้อมูล';
+                                      }
+                                      return null;
                                     },
                                   ),
-                                ),
-                                TextFormField(
-                                  controller: _inputTopic,
-                                  keyboardType: TextInputType.text,
-                                  style: TextStyle(
-                                      fontFamily: FontStyles().FontFamily,
-                                      fontSize: 22),
-                                  decoration: InputDecoration(
-                                    hintText: 'เรื่อง',
-                                    prefixIcon: Padding(
-                                      padding: EdgeInsets.all(
-                                          0), // add padding to adjust icon
-                                      child: Icon(
-                                        Icons.topic_outlined,
-                                        size: 22,
+                                  TextFormField(
+                                    controller: _inputDescription,
+                                    maxLines: 3,
+                                    keyboardType: TextInputType.text,
+                                    style: TextStyle(
+                                        fontFamily: FontStyles().FontFamily,
+                                        fontSize: 22),
+                                    decoration: InputDecoration(
+                                      hintText: 'รายละเอียด',
+                                      prefixIcon: Padding(
+                                        padding: EdgeInsets.only(
+                                            bottom:
+                                                60), // add padding to adjust icon
+                                        child: Icon(
+                                          Icons.description_outlined,
+                                          size: 22,
+                                        ),
                                       ),
                                     ),
                                   ),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'กรุณาป้อนข้อความบางอย่าง';
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                TextFormField(
-                                  controller: _inputDescription,
-                                  maxLines: 3,
-                                  keyboardType: TextInputType.text,
-                                  style: TextStyle(
-                                      fontFamily: FontStyles().FontFamily,
-                                      fontSize: 22),
-                                  decoration: InputDecoration(
-                                    hintText: 'รายละเอียด',
-                                    prefixIcon: Padding(
-                                      padding: EdgeInsets.only(
-                                          bottom:
-                                              60), // add padding to adjust icon
-                                      child: Icon(
-                                        Icons.description_outlined,
-                                        size: 22,
+                                  TextFormField(
+                                    controller: _inputTime,
+                                    keyboardType:
+                                        TextInputType.numberWithOptions(
+                                            decimal: true),
+                                    style: TextStyle(
+                                        fontFamily: FontStyles().FontFamily,
+                                        fontSize: 22),
+                                    decoration: InputDecoration(
+                                      hintText: 'ใช้เวลากี่ชั่วโมง',
+                                      prefixIcon: Padding(
+                                        padding: EdgeInsets.all(
+                                            0), // add padding to adjust icon
+                                        child: Icon(
+                                          Icons.timer_outlined,
+                                          size: 22,
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                                Container(
-                                  padding: EdgeInsets.only(top: 10),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: _imageFile_login != null
-                                            ? Container(
-                                                child: Center(
+                                  Container(
+                                    padding: EdgeInsets.only(top: 10),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: _imageFile_login != null
+                                              ? Container(
+                                                  child: Center(
+                                                    child: Container(
+                                                      height: 150,
+                                                      padding: EdgeInsets.only(
+                                                          top: 5),
+                                                      child: Image.file(
+                                                        File(_imageFile_login
+                                                            .path),
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                )
+                                              : GestureDetector(
+                                                  onTap: () {
+                                                    _imgFromCamera_in(context);
+                                                  },
                                                   child: Container(
-                                                    height: 150,
-                                                    padding:
-                                                        EdgeInsets.only(top: 5),
-                                                    child: Image.file(
-                                                      File(_imageFile_login
-                                                          .path),
-                                                      fit: BoxFit.cover,
+                                                    padding: EdgeInsets.all(5),
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.grey[200],
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              12),
+                                                      boxShadow: [
+                                                        BoxShadow(
+                                                          color: Colors.grey
+                                                              .withOpacity(0.6),
+                                                          spreadRadius: 0,
+                                                          blurRadius: 7,
+                                                          offset: Offset(0,
+                                                              6), // changes position of shadow
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Icon(Icons.camera_alt),
+                                                        Text(
+                                                          'ถ่ายรูป',
+                                                          style: TextStyle(
+                                                              fontFamily:
+                                                                  FontStyles()
+                                                                      .FontFamily,
+                                                              fontSize: 22),
+                                                        ),
+                                                      ],
                                                     ),
                                                   ),
                                                 ),
-                                              )
-                                            : GestureDetector(
-                                                onTap: () {
-                                                  _imgFromCamera_in(context);
-                                                },
-                                                child: Container(
-                                                  padding: EdgeInsets.all(5),
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.grey[200],
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            12),
-                                                    boxShadow: [
-                                                      BoxShadow(
-                                                        color: Colors.grey
-                                                            .withOpacity(0.6),
-                                                        spreadRadius: 0,
-                                                        blurRadius: 7,
-                                                        offset: Offset(0,
-                                                            6), // changes position of shadow
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Icon(Icons.camera_alt),
-                                                      Text(
-                                                        'ถ่ายรูป',
-                                                        style: TextStyle(
-                                                            fontFamily:
-                                                                FontStyles()
-                                                                    .FontFamily,
-                                                            fontSize: 22),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                      ),
-                                    ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                                Padding(padding: EdgeInsets.all(5)),
-                                Container(
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () {
-                                          if (_formKey.currentState
-                                              .validate()) {
-                                            print('ถัดไป');
-                                            onLoadAttandOutside();
-                                          }
-                                        },
-                                        child: Container(
-                                          alignment: Alignment.center,
-                                          margin: EdgeInsets.only(
-                                              left: 10, right: 10),
-                                          padding: EdgeInsets.only(
-                                              left: 25, right: 25),
-                                          decoration: BoxDecoration(
-                                            color: Color(0xFF079CFD),
-                                            borderRadius:
-                                                BorderRadius.circular(30),
-                                          ),
-                                          child: Text(
-                                            'ตกลง',
-                                            style: TextStyle(
-                                                fontFamily:
-                                                    FontStyles().FontFamily,
-                                                color: Colors.white,
-                                                fontSize: 26),
+                                  Padding(padding: EdgeInsets.all(5)),
+                                  Container(
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        GestureDetector(
+                                          onTap: () {
+                                            if (_formKey.currentState
+                                                .validate()) {
+                                              print('ถัดไป');
+                                              onLoadAttandOutside();
+                                            }
+                                          },
+                                          child: Container(
+                                            alignment: Alignment.center,
+                                            margin: EdgeInsets.only(
+                                                left: 10, right: 10),
+                                            padding: EdgeInsets.only(
+                                                left: 25, right: 25),
+                                            decoration: BoxDecoration(
+                                              color: Color(0xFF079CFD),
+                                              borderRadius:
+                                                  BorderRadius.circular(30),
+                                            ),
+                                            child: Text(
+                                              'ตกลง',
+                                              style: TextStyle(
+                                                  fontFamily:
+                                                      FontStyles().FontFamily,
+                                                  color: Colors.white,
+                                                  fontSize: 26),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
