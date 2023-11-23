@@ -43,4 +43,17 @@
     <meta-data android:name="flutterEmbedding" android:value="2" />
 
   </application>
+
+  <!-- Provide required visibility configuration for API level 30 and above -->
+  <queries>
+    <intent>
+      <action android:name="android.intent.action.VIEW" />
+      <category android:name="android.intent.category.BROWSABLE" />
+      <data android:scheme="https" />
+    </intent>
+    <intent>
+      <action android:name="android.intent.action.VIEW" />
+      <data android:scheme="tel" />
+    </intent>
+  </queries>
 </manifest>

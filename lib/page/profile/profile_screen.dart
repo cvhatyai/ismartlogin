@@ -33,6 +33,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   //Setup
   PickedFile _imageFile;
   dynamic _pickImageError;
+  var org_id = "";
+
 
   ///
   bool _edit = false;
@@ -85,9 +87,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
   ///-----member
   List<ItemsMemberResultManage> _item = [];
   Future<bool> onLoadMemberManage() async {
+    org_id = await SharedCashe.getItemsWay(name: 'org_id');
     EasyLoading.show();
     Map map = {
-      "org_id": await SharedCashe.getItemsWay(name: 'org_id'),
+      "org_id": org_id,
       "uid": await SharedCashe.getItemsWay(name: 'id'),
     };
 
@@ -150,6 +153,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
     _resultDepartment.add(ItemsDepartmentResultManage(
       ID: '0',
       SUBJECT: '- เลือก -',
@@ -844,6 +848,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
+                                      if(org_id != "1564")
                                       Icon(
                                         Icons.vpn_key,
                                         color: Colors.blue,
@@ -851,6 +856,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       Padding(
                                         padding: EdgeInsets.all(3),
                                       ),
+
+                                      if(org_id != "1564")
                                       Text(
                                         'เปลี่ยนรหัสผ่าน',
                                         style: TextStyle(

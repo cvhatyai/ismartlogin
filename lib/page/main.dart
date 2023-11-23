@@ -10,6 +10,7 @@ import 'package:ismart_login/page/leave/leave_screen.dart';
 import 'package:ismart_login/style/font_style.dart';
 import 'package:ismart_login/system/shared_preferences.dart';
 import 'package:ismart_login/system/widht_device.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'leave/leave_free_screen.dart';
 import 'managements/future/member_manage_future.dart';
 import 'managements/model/itemMemberResultManage.dart';
@@ -80,7 +81,24 @@ class _MainPageState extends State<MainPage> {
             unselectedItemTextStyle: TextStyle(fontSize: 14),
           ),
           selectedIndex: selectedIndex,
-          onSelectTab: (index) {
+          onSelectTab: (index) async {
+            if(index == 0){
+              var org_id = await SharedCashe.getItemsWay(name: 'org_id');
+              if(org_id == "1564"){
+                var usr = await SharedCashe.getItemsWay(name: 'username');
+                var pwd = await SharedCashe.getItemsWay(name: 'password');
+
+                /*var bytes = utf8.encode(widget.username); // data being hashed
+                var digest = sha1.convert(bytes);
+                request.fields['key'] = digest.toString();
+                var key = "aaaa";*/
+
+                var url = "https://yalacity.go.th/hr/app_api_v1/authenticationIsmarLogin/"+usr+"/"+pwd;
+                print('wit Go to Leave org_id : '+url);
+                _launchInBrowser(url);
+              }
+              return;
+            }
             setState(() {
               selectedIndex = index;
             });
@@ -197,4 +215,20 @@ class _MainPageState extends State<MainPage> {
       },
     );
   }
+
+
+  Future<void> _launchInBrowser(String url) async {
+    if (await canLaunch(url)) {
+      await launch(
+        url,
+        forceSafariVC: false,
+        forceWebView: false,
+        headers: <String, String>{'my_header_key': 'my_header_value'},
+      );
+      exit(0);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
 }
