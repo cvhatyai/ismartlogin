@@ -22,7 +22,8 @@ import 'package:ismart_login/system/shared_preferences.dart';
 import 'package:ismart_login/system/widht_device.dart';
 import 'package:http/http.dart' as http;
 
-class LeaveScreen extends StatefulWidget {
+class
+LeaveScreen extends StatefulWidget {
   @override
   _LeaveScreenState createState() => _LeaveScreenState();
 }

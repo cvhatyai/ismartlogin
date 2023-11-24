@@ -57,6 +57,8 @@
 	<string>Your location will be displayed on the map and used for directions, show nearby places, and estimated travel times</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Your location will be displayed on the map and used for directions, show nearby places, and estimated travel times</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>Your location will be displayed on the map and used for directions, show nearby places, and estimated travel times</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Explain why your app uses videos library</string>
 	<key>NSPhotoLibraryUsageDescription</key>

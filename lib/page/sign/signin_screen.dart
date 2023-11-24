@@ -49,11 +49,14 @@ class _SignInScreenState extends State<SignInScreen> {
   List<ItemsMemberResult> _result = [];
   Future<bool> onLoadGetMember(Map map) async {
     EasyLoading.show();
-    await new SigninFuture().apiSelectMember(map).then((onValue) {
+    await new SigninFuture().apiSelectMember(map).then((onValue) async {
+
       print(onValue[0]['msg']);
+      print("wittawat rs");
+      print(onValue[0]['result']);
       if (onValue[0]['msg'] == 'success') {
         EasyLoading.dismiss();
-        SharedCashe.saveItemsMemberList(item: onValue[0]['result']);
+        await SharedCashe.saveItemsMemberList(item: onValue[0]['result']);
         if (onValue[0]['result'][0]['org_id'] == '0') {
           Navigator.push(
             context,

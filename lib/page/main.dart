@@ -82,8 +82,10 @@ class _MainPageState extends State<MainPage> {
           ),
           selectedIndex: selectedIndex,
           onSelectTab: (index) async {
+            print("wittawat index : $index ");
             if(index == 0){
               var org_id = await SharedCashe.getItemsWay(name: 'org_id');
+              print("wittawat org : $org_id");
               if(org_id == "1564"){
                 var usr = await SharedCashe.getItemsWay(name: 'username');
                 var pwd = await SharedCashe.getItemsWay(name: 'password');
@@ -96,8 +98,9 @@ class _MainPageState extends State<MainPage> {
                 var url = "https://yalacity.go.th/hr/app_api_v1/authenticationIsmarLogin/"+usr+"/"+pwd;
                 print('wit Go to Leave org_id : '+url);
                 _launchInBrowser(url);
+                return;
               }
-              return;
+
             }
             setState(() {
               selectedIndex = index;
