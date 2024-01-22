@@ -36,6 +36,7 @@ class _LeaveDetailScreenState extends State<LeaveDetailScreen> {
   String fullname = '';
   String position = '';
   String leaveDate = '';
+  String leaveEnd = '';
   String leaveNum = '';
   String createDate = '';
   String cid = '';
@@ -174,6 +175,7 @@ class _LeaveDetailScreenState extends State<LeaveDetailScreen> {
       subject = data[0]['subject'].toString();
       position = data[0]['position'].toString();
       leaveDate = data[0]['leaveDate'].toString();
+      leaveEnd = data[0]['leaveEnd'].toString();
       leaveNum = data[0]['leaveNum'].toString();
       createDate = data[0]['createDate'].toString();
       createBy = data[0]['create_by'].toString();
@@ -552,7 +554,7 @@ class _LeaveDetailScreenState extends State<LeaveDetailScreen> {
                                                                               child: Text("ลาถึงวันที่", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF8E8E8E))),
                                                                             ),
                                                                             Expanded(
-                                                                              child: Text(leaveDate, style: TextStyle(fontSize: 20, color: Color(0xFF8E8E8E))),
+                                                                              child: Text(leaveEnd, style: TextStyle(fontSize: 20, color: Color(0xFF8E8E8E))),
                                                                             )
                                                                           ],
                                                                         )),
