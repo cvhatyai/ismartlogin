@@ -52,7 +52,8 @@ class OrganizationCreateScreen extends StatefulWidget {
       this.invite,
       this.action,
       this.history,
-      this.noti, this.refresh})
+      this.noti,
+      this.refresh})
       : super(key: key);
   _OrganizationCreateScreenState createState() =>
       _OrganizationCreateScreenState();
@@ -102,7 +103,6 @@ class _OrganizationCreateScreenState extends State<OrganizationCreateScreen> {
 
   _releaseData() async {
     String _subject = _inputSubject.text;
-
     Map _map = {
       "subject": _subject,
       "type": widget.type == "insert" ? widget.type : "update",
@@ -110,6 +110,7 @@ class _OrganizationCreateScreenState extends State<OrganizationCreateScreen> {
       "uid": await SharedCashe.getItemsWay(name: 'id'),
     };
     print(_map);
+    Navigator.pop(context);
     onLoadPostUpdateOrg(_map);
   }
 
@@ -367,6 +368,8 @@ class _OrganizationCreateScreenState extends State<OrganizationCreateScreen> {
                                       } else {
                                         _releaseData();
                                       }
+                                      // alert_new_org(context,
+                                      //       'คุณต้องการสร้างทีม/องค์กร\n"${_inputSubject.text}"\nใช่หรือไม่ ?');
                                     }
                                   }
                                 },
