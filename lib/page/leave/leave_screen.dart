@@ -513,7 +513,7 @@ class _LeaveScreenState extends State<LeaveScreen> {
                                         ),
                                       ),
                                       child: Padding(
-                                        padding: const EdgeInsets.all(4.0),
+                                        padding: const EdgeInsets.all(2.0),
                                         child: DropdownButton(
                                           underline: SizedBox(),
                                           value: dropdownValueTime,
@@ -1376,8 +1376,11 @@ class _LeaveScreenState extends State<LeaveScreen> {
             Duration duration = end.difference(start).abs();
             print(duration);
             final hours = duration.inHours;
-            final times = duration.inMinutes - (60 * hours);
+            var times = duration.inMinutes - (60 * hours);
             print(times);
+            if(times == 30){
+              times = 50;
+            }
             _inputTotalTimes.text = "${hours.toString()}.${times.toString()}";
           }
         });

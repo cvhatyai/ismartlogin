@@ -306,7 +306,7 @@ class _ConfirmDialogState extends State<ConfirmDialog> {
                 children: [
                   Expanded(
                     child: Container(
-                      padding: EdgeInsets.only(left: 20, right: 10),
+                      padding: EdgeInsets.only(left: 10, right: 10),
                       child: Text(
                         widget.fullName.toString() +
                             " เนื่องจาก " +
@@ -324,21 +324,40 @@ class _ConfirmDialogState extends State<ConfirmDialog> {
               ),
               Row(
                 children: [
-                  Container(
-                    padding: EdgeInsets.only(left: 20, right: 5),
-                    child: Text(
-                      "ตั้งแต่วันที่" +
-                          " " +
-                          widget.FirstDate +
-                          " ถึง " +
-                          widget.LastDate,
-                      style: TextStyle(
-                        fontFamily: FontStyles().FontFamily,
-                        // height: 1,
-                        fontSize: 20,
+                  if (widget.selectFulltime == "1")
+                    Container(
+                      padding: EdgeInsets.only(left: 10, right: 5),
+                      child: Text(
+                        "ตั้งแต่วันที่" +
+                            " " +
+                            widget.FirstDate +
+                            " ถึง " +
+                            widget.LastDate,
+                        style: TextStyle(
+                          fontFamily: FontStyles().FontFamily,
+                          // height: 1,
+                          fontSize: 20,
+                        ),
                       ),
                     ),
-                  ),
+                  if (widget.selectFulltime == "2")
+                    Container(
+                      padding: EdgeInsets.only(left: 10, right: 5),
+                      child: Text(
+                        "วันที่" +
+                            " " +
+                            widget.FirstDate +
+                            " เวลา " +
+                            widget.firstTime +
+                            " - " +
+                            widget.lastTime,
+                        style: TextStyle(
+                          fontFamily: FontStyles().FontFamily,
+                          // height: 1,
+                          fontSize: 20,
+                        ),
+                      ),
+                    ),
                   Container(
                     // padding: EdgeInsets.only(left: 5),
                     child: Text(
@@ -357,7 +376,7 @@ class _ConfirmDialogState extends State<ConfirmDialog> {
               Row(
                 children: [
                   Container(
-                    padding: EdgeInsets.only(left: 20, right: 10, bottom: 10),
+                    padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
                     child: Text(
                       "เบอร์ติดต่อได้ขณะลา" + " " + widget.phoneNum,
                       style: TextStyle(
