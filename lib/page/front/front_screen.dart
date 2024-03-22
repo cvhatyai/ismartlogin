@@ -165,8 +165,8 @@ class _FrontScreenState extends State<FrontScreen> {
           ? await SharedCashe.getItemsWay(name: 'time_id')
           : _items[0].TIME_ID
     };
-    print("apiGetAttandCheck $_itemMember");
-    print("apiGetAttandCheck : $map");
+    print("apiGetAttandCheck _itemMember $_itemMember");
+    print("apiGetAttandCheck map : $map");
     await AttandFuture().apiGetAttandCheck(map).then((onValue) {
       print("apiGetAttandCheck ${onValue[0].STATUS}");
       if (onValue[0].STATUS != 'success') {
@@ -186,6 +186,7 @@ class _FrontScreenState extends State<FrontScreen> {
       }
       print("apiGetAttandCheck _login : $_login");
       print("apiGetAttandCheck _logout : $_logout");
+      print("apiGetAttandCheck END_TIME : ${_resultAttand[0].END_TIME}");
     });
     setState(() {});
     return true;
