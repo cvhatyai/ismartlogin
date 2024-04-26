@@ -404,8 +404,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
                                 ),
                                 onTap: () {
                                   Navigator.pop(context);
-                                  if (_resultDepartCount.length > 1) {
-                                    Navigator.push(
+                                  Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) =>
@@ -413,34 +412,44 @@ class _MenuDrawerState extends State<MenuDrawer> {
                                                 org_id: widget.org_id),
                                       ),
                                     );
-                                  } else {
-                                    EasyLoading.show();
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            OrgDepartmentDetailManage(
-                                          id: _resultDepartCount.length == 1
-                                              ? _resultDepartCount[0].ID
-                                              : '0',
-                                          org_id: widget.org_id,
-                                          type: _resultDepartCount.length == 1
-                                              ? 'update'
-                                              : 'insert',
-                                          lat: _resultDepartCount.length == 1
-                                              ? double.parse(
-                                                  _resultDepartCount[0]
-                                                      .LATITUDE)
-                                              : latMain,
-                                          lng: _resultDepartCount.length == 1
-                                              ? double.parse(
-                                                  _resultDepartCount[0]
-                                                      .LONGTITUDE)
-                                              : logMain,
-                                        ),
-                                      ),
-                                    );
-                                  }
+                                  // print("_resultDepartCount  : ${_resultDepartCount.length}");
+                                  // if (_resultDepartCount.length > 1) {
+                                  //   Navigator.push(
+                                  //     context,
+                                  //     MaterialPageRoute(
+                                  //       builder: (context) =>
+                                  //           OrgDepartmentManage(
+                                  //               org_id: widget.org_id),
+                                  //     ),
+                                  //   );
+                                  // } else {
+                                  //   EasyLoading.show();
+                                  //   Navigator.push(
+                                  //     context,
+                                  //     MaterialPageRoute(
+                                  //       builder: (context) =>
+                                  //           OrgDepartmentDetailManage(
+                                  //         id: _resultDepartCount.length == 1
+                                  //             ? _resultDepartCount[0].ID
+                                  //             : '0',
+                                  //         org_id: widget.org_id,
+                                  //         type: _resultDepartCount.length == 1
+                                  //             ? 'update'
+                                  //             : 'insert',
+                                  //         lat: _resultDepartCount.length == 1
+                                  //             ? double.parse(
+                                  //                 _resultDepartCount[0]
+                                  //                     .LATITUDE)
+                                  //             : latMain,
+                                  //         lng: _resultDepartCount.length == 1
+                                  //             ? double.parse(
+                                  //                 _resultDepartCount[0]
+                                  //                     .LONGTITUDE)
+                                  //             : logMain,
+                                  //       ),
+                                  //     ),
+                                  //   );
+                                  // }
                                 },
                               ),
                               ListTile(

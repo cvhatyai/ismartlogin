@@ -36,6 +36,7 @@ class _MainPageState extends State<MainPage> {
       "org_id": await SharedCashe.getItemsWay(name: 'org_id'),
       "uid": await SharedCashe.getItemsWay(name: 'id'),
     };
+    print("MainPage : ${map}");
     await MemberManageFuture().apiGetMemberManageList(map).then((onValue) {
       setState(() {
         if (onValue[0].STATUS) {

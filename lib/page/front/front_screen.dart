@@ -161,10 +161,11 @@ class _FrontScreenState extends State<FrontScreen> {
   // --- Post Data Member
   List<ItemsAttandToDay> _resultAttand = [];
   Future<bool> onLoadAttend() async {
+    print("apiGetAttandCheck time_id ${_itemMember[0].TIME_ID}");
     Map map = {
       "uid": _items.length > 0 ? _items[0].ID : '',
-      "time_id": await SharedCashe.getItemsWay(name: 'time_id') != ""
-          ? await SharedCashe.getItemsWay(name: 'time_id')
+      "time_id": _itemMember[0].TIME_ID != ''
+          ? _itemMember[0].TIME_ID
           : _items[0].TIME_ID
     };
     print("apiGetAttandCheck _itemMember $_itemMember");
@@ -220,6 +221,11 @@ class _FrontScreenState extends State<FrontScreen> {
           print("onLoadMemberManage ${_itemMember[0].TIME_ID}");
           print(
               "onLoadMemberManage LEAVE MEMBER ${_itemMember[0].LEAVE_MEMBER}");
+          // SharedCashe.savaItemsString(
+          //     key: 'time_id', valString: _itemMember[0].TIME_ID);
+          // var time_id =  SharedCashe.getItemsWay(name: 'time_id');
+          print(
+              "onLoadMemberManage time_id : ${SharedCashe.getItemsWay(name: 'time_id')}");
           if (_itemMember[0].ORG_SUB_ID != '') {
             SharedCashe.savaItemsString(
                 key: 'org_sub_id',
@@ -241,6 +247,7 @@ class _FrontScreenState extends State<FrontScreen> {
             affiliate = false;
           }
           print("onLoadMemberManage $affiliate");
+          _getShaerd();
         }
       });
     });
@@ -365,6 +372,7 @@ class _FrontScreenState extends State<FrontScreen> {
         org_id = _items[0].ORG_ID;
       });
       Map _map = {"ID": _items[0].ORG_ID != '' ? _items[0].ORG_ID : ''};
+      print("_getShaerd ${_map}");
       onLoadSelectOrganization(_map);
     }
   }
@@ -808,7 +816,8 @@ class _FrontScreenState extends State<FrontScreen> {
                                             // popupOT_in(context);
                                             print("dayWorking : $dayWorking");
                                             if (dayWorking) {
-                                              if (ot_status == '1' && end_time != '') {
+                                              if (ot_status == '1' &&
+                                                  end_time != '') {
                                                 popupOT_in(context);
                                               } else {
                                                 _imgFromCamera_in(
@@ -897,9 +906,16 @@ class _FrontScreenState extends State<FrontScreen> {
                                         onTap: () {
                                           if (_logout) {
                                             if (dayWorking) {
-                                              print("dayWorking logout : $dayWorking");
-                                              _imgFromCamera_out(
-                                                  context, false);
+                                              print(
+                                                  "dayWorking logout : $dayWorking");
+                                              if (ot_status == '1' &&
+                                                  end_time != '') {
+                                                _imgFromCamera_out(
+                                                    context, true);
+                                              } else {
+                                                _imgFromCamera_out(
+                                                    context, false);
+                                              }
                                             } else {
                                               _imgFromCamera_out(context, true);
                                             }

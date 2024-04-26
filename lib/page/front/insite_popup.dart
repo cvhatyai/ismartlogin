@@ -70,6 +70,7 @@ class _InsiteDialogState extends State<InsiteDialog> {
     (widget.holiday == true)
         ? print("holiday, ${widget.holiday}")
         : print("NOT holiday, ${widget.holiday}");
+    print('holiday final : ${widget.holiday}');
   }
 
   @override
@@ -196,7 +197,11 @@ class _InsiteDialogState extends State<InsiteDialog> {
                 child: Column(
                   children: [
                     Text(
-                      checkTimr(widget.time) ? '' : 'คุณเข้างานสาย',
+                      checkTimr(widget.time)
+                          ? ''
+                          : widget.holiday == true
+                              ? ''
+                              : 'คุณเข้างานสาย',
                       style: TextStyle(
                         fontFamily: FontStyles().FontFamily,
                         height: 1,
@@ -253,15 +258,15 @@ class _InsiteDialogState extends State<InsiteDialog> {
                                 context: context,
                                 builder: (_) {
                                   return OutsideDialog(
-                                      status: 1,
-                                      uid: widget.uid,
-                                      mainLat: widget.lat.toString(),
-                                      mainLng: widget.long.toString(),
-                                      lat: widget.myLat.toString(),
-                                      long: widget.myLng.toString(),
-                                      time: widget.time,
-                                      time_server: widget.time_server.toString(),
-                                      );
+                                    status: 1,
+                                    uid: widget.uid,
+                                    mainLat: widget.lat.toString(),
+                                    mainLng: widget.long.toString(),
+                                    lat: widget.myLat.toString(),
+                                    long: widget.myLng.toString(),
+                                    time: widget.time,
+                                    time_server: widget.time_server.toString(),
+                                  );
                                 });
                           } else {
                             Navigator.pop(context);

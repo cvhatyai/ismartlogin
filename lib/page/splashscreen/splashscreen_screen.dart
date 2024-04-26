@@ -47,7 +47,7 @@ class _SplashscreenScreenState extends State<SplashscreenScreen> {
         "STATUS": "auto",
       };
 
-      print("_controllerLoginAuto : ${_map}");
+      print("_controllerLoginAuto RR : ${_map}");
       //-----
       await new SigninFuture().apiSelectMember(_map).then((onValue) {
         print(onValue[0]['msg']);

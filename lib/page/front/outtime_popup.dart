@@ -118,6 +118,7 @@ class _OTDialogState extends State<OTDialog> {
                     Expanded(
                       child: InkWell(
                         onTap: () {
+                          print('show camera');
                           if (_formKey.currentState.validate()) {
                             widget.onConfirmTap?.call(_inputNote.text);
                           }

@@ -193,7 +193,11 @@ class _OffsideDialogState extends State<OffsideDialog> {
                 child: Column(
                   children: [
                     Text(
-                      checkTimr(widget.time) ? '' : 'ออกงานก่อนเวลา',
+                      checkTimr(widget.time)
+                          ? ''
+                          : widget.holiday == true
+                              ? ''
+                              : 'ออกงานก่อนเวลา',
                       style: TextStyle(
                         fontFamily: FontStyles().FontFamily,
                         height: 1,
@@ -210,7 +214,7 @@ class _OffsideDialogState extends State<OffsideDialog> {
                       ? Container()
                       : _radioButton(),
               checkHoliday(widget.holiday)
-                  ? _causeNote()
+                  ? Container() //_causeNote()
                   : checkTimr(widget.time)
                       ? Container()
                       : _causeNote(),

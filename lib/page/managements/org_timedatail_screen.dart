@@ -92,7 +92,7 @@ class _OrgTimeDetailManageState extends State<OrgTimeDetailManage> {
         "time_end": _inputTimeOut[_daySelect[i]].text
       });
     }
-
+    print("_setDetailDayToJson : ");
     Map map = {
       "subject": _inputSubject.text,
       "org_id": widget.org_id != ''
@@ -103,7 +103,7 @@ class _OrgTimeDetailManageState extends State<OrgTimeDetailManage> {
       "id": widget.id,
       "type": widget.type,
     };
-    print(json.encode(map).toString());
+    print("_setDetailDayToJson : ${json.encode(map).toString()}");
     // EasyLoading.showError('ล้มเหลว');
     onLoadPostTime(map);
   }
