@@ -53,6 +53,8 @@ class Server {
   // -- * เวลาทำงาน --------
   String getTimeManage = _baseUrl + 'manage/getTime';
   String postTimeManage = _baseUrl + 'manage/postTime';
+  String getOrgSEDetail = _baseUrl + 'manage/getOrgSEDetail';
+  String postTimeSTManage = _baseUrl + 'manage/postTimeSTManage';
 
   // -- * สาขา --------
   String getDepartmentManage = _baseUrl + 'manage/getDepartment';
@@ -60,6 +62,9 @@ class Server {
   String updateSeqOrg = _baseUrl + 'manage/updateSeqOrg';
   String updateHistoryStatus = _baseUrl + 'manage/updateHistoryStatus';
   String updateNotiStatus = _baseUrl + 'manage/updateNotiStatus';
+  String updateOTStatus = _baseUrl + 'manage/updateOTStatus';
+  String updateLogoutStatus = _baseUrl + 'manage/updateLogoutStatus';
+  
 
   // -- * องค์กร -------
   String postOrg = _baseUrl + 'manage/postOrg';

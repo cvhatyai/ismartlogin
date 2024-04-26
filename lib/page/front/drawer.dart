@@ -19,6 +19,7 @@ import 'package:ismart_login/page/managements/model/itemTimeResultMange.dart';
 import 'package:ismart_login/page/managements/org_department_screen.dart';
 import 'package:ismart_login/page/managements/org_departmentdetail_screen.dart';
 import 'package:ismart_login/page/managements/org_holiday_screen.dart';
+import 'package:ismart_login/page/managements/org_lock_time.dart';
 import 'package:ismart_login/page/managements/org_member_screen.dart';
 import 'package:ismart_login/page/managements/org_screen.dart';
 import 'package:ismart_login/page/managements/org_time_screen.dart';
@@ -267,7 +268,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
                                 alignment: Alignment.center,
                                 child: Text(
                                   widget.org,
-                                       overflow: TextOverflow.ellipsis,
+                                  overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
                                     fontFamily: FontStyles().FontFamily,
                                     fontSize: 24,
@@ -338,7 +339,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
                   Divider(), //here is a divider
                   if (widget.type_member != 'member')
                     Text(
-                      "Administrator",
+                      " Administrator",
                       style: TextStyle(
                           fontFamily: FontStyles().FontFamily,
                           fontSize: 18,
@@ -483,9 +484,32 @@ class _MenuDrawerState extends State<MenuDrawer> {
                                   }
                                 },
                               ),
+                              ListTile(
+                                minLeadingWidth: 0.5,
+                                leading: FaIcon(
+                                  FontAwesomeIcons.lockOpen,
+                                  size: 20,
+                                ),
+                                title: Text(
+                                  'ตั้งเวลาปุ่มเข้า-ออกงาน',
+                                  style: _txt,
+                                ),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => OrgLockTimeScreen()
+                                    ),
+                                  );
+                                },
+                              ),
                             ],
                           ),
-                        if ((widget.leave == "1" && widget.type_member != 'member') || (widget.leave_member == "1" && widget.type_member != 'admin'))
+                        if ((widget.leave == "1" &&
+                                widget.type_member != 'member') ||
+                            (widget.leave_member == "1" &&
+                                widget.type_member != 'admin'))
                           ListTile(
                             minLeadingWidth: 0.5,
                             leading: FaIcon(
@@ -561,7 +585,8 @@ class _MenuDrawerState extends State<MenuDrawer> {
                               );
                             },
                           ),
-                        if (widget.leave == "1" && widget.type_member != 'member')
+                        if (widget.leave == "1" &&
+                            widget.type_member != 'member')
                           ListTile(
                             minLeadingWidth: 0.5,
                             leading: FaIcon(

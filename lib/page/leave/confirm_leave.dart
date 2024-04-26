@@ -73,7 +73,7 @@ class _ConfirmDialogState extends State<ConfirmDialog> {
     }
     if (widget.select3) {
       setState(() {
-        typeLeave = "ลาอื่นๆ";
+        typeLeave = "ลาอื่น ๆ";
         cidLeave = "4";
       });
     }

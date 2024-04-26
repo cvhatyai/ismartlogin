@@ -175,6 +175,9 @@ class _HistoryDayWidgetState extends State<HistoryDayWidget> {
         case 4:
           return 'ทำงานนอกสถานที่';
           break;
+        case 5:
+          return 'ทำงานล่วงเวลา';
+          break;
         default:
           return '';
           break;
@@ -186,6 +189,9 @@ class _HistoryDayWidgetState extends State<HistoryDayWidget> {
           break;
         case 2:
           return 'ทำงานนอกสถานที่';
+          break;
+        case 5:
+          return 'ทำงานล่วงเวลา';
           break;
         default:
           return '';

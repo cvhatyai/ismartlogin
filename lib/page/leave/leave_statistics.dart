@@ -587,7 +587,7 @@ class _LeaveStatisticsScreenState extends State<LeaveStatisticsScreen> {
                                                                           30,
                                                                       child:
                                                                           Text(
-                                                                        "อื่นๆ",
+                                                                        "อื่น ๆ",
                                                                         style: TextStyle(
                                                                             color: Colors
                                                                                 .white,

@@ -8,6 +8,8 @@ class ItemsOrgResultManage {
   final String INVITE;
   final String HISTORY;
   final String NOTI;
+  final String OT;
+  final String LOGUT_STATUS;
 
   ItemsOrgResultManage({
     this.ID,
@@ -19,6 +21,8 @@ class ItemsOrgResultManage {
     this.INVITE,
     this.HISTORY,
     this.NOTI,
+    this.OT,
+    this.LOGUT_STATUS,
   });
 
   factory ItemsOrgResultManage.fromJson(Map<String, dynamic> json) {
@@ -32,6 +36,8 @@ class ItemsOrgResultManage {
       INVITE: json['invite'],
       HISTORY: json['history'],
       NOTI: json['noti'],
+      OT: json['ot'],
+      LOGUT_STATUS: json['logout'],
     );
   }
 }

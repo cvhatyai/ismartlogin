@@ -506,7 +506,7 @@ class _LeaveStatisticsDetailScreenState
                                                                 alignment: Alignment
                                                                     .bottomLeft,
                                                                 child: Text(
-                                                                  "อื่นๆ",
+                                                                  "อื่น ๆ",
                                                                   style:
                                                                       TextStyle(
                                                                     color: Colors

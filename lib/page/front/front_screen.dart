@@ -67,6 +67,8 @@ class _FrontScreenState extends State<FrontScreen> {
   bool affiliate = false;
   String timeIn = '';
   String timeOut = '';
+  String ot_status = '0';
+  String end_time = '';
   //Setup
   PickedFile _imageFile;
   dynamic _pickImageError;
@@ -170,22 +172,30 @@ class _FrontScreenState extends State<FrontScreen> {
     await AttandFuture().apiGetAttandCheck(map).then((onValue) {
       print("apiGetAttandCheck ${onValue[0].STATUS}");
       if (onValue[0].STATUS != 'success') {
+        print('apiGetAttandCheck ยังไม่ login');
+        _resultAttand = onValue;
         setState(() {
           _login = true;
           _logout = false;
+          if (_resultAttand[0].END_TIME != null) {
+            end_time = _resultAttand[0].END_TIME;
+          }
         });
       } else {
         setState(() {
+          print('apiGetAttandCheck ได้ login แล้ว');
           _resultAttand = onValue;
           if (_resultAttand[0].END_TIME == null && !_login) {
             _logout = true;
           } else {
             _logout = false;
           }
+          end_time = _resultAttand[0].END_TIME;
         });
       }
       print("apiGetAttandCheck _login : $_login");
       print("apiGetAttandCheck _logout : $_logout");
+      print("apiGetAttandCheck end_time : $end_time");
       print("apiGetAttandCheck END_TIME : ${_resultAttand[0].END_TIME}");
     });
     setState(() {});
@@ -254,6 +264,7 @@ class _FrontScreenState extends State<FrontScreen> {
     await TimeManageFuture().apiGetTimeManageList(map).then((onValue) {
       if (onValue[0].STATUS == true) {
         _resultItem = onValue[0].RESULT;
+        ot_status = onValue[0].OT_STATUS;
         print(_resultItem.length);
         _resultItemDay = List.from(json
             .decode(_resultItem[0].DESCRIPTION)
@@ -272,7 +283,8 @@ class _FrontScreenState extends State<FrontScreen> {
           });
         }
       }
-      print("apiGetTimeManageList :$dayWorking");
+      print("apiGetTimeManageList : $dayWorking");
+      print("apiGetTimeManageList ot_status : $ot_status");
     });
     return true;
   }
@@ -796,7 +808,12 @@ class _FrontScreenState extends State<FrontScreen> {
                                             // popupOT_in(context);
                                             print("dayWorking : $dayWorking");
                                             if (dayWorking) {
-                                              _imgFromCamera_in(context, false);
+                                              if (ot_status == '1' && end_time != '') {
+                                                popupOT_in(context);
+                                              } else {
+                                                _imgFromCamera_in(
+                                                    context, false);
+                                              }
                                             } else {
                                               popupOT_in(context);
                                             }
@@ -880,6 +897,7 @@ class _FrontScreenState extends State<FrontScreen> {
                                         onTap: () {
                                           if (_logout) {
                                             if (dayWorking) {
+                                              print("dayWorking logout : $dayWorking");
                                               _imgFromCamera_out(
                                                   context, false);
                                             } else {

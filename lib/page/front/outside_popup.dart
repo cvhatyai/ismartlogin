@@ -33,7 +33,8 @@ class OutsideDialog extends StatefulWidget {
     this.long,
     this.time,
     this.mainLat,
-    this.mainLng, this.time_server,
+    this.mainLng,
+    this.time_server,
   }) : super(key: key);
   @override
   _OutsideDialogState createState() => _OutsideDialogState();
@@ -53,8 +54,12 @@ class _OutsideDialogState extends State<OutsideDialog> {
   double totalDistance = 0;
 
   ///----
-  List _checkboxListTile = ['โปรแกรมระบุตำแหน่งผิดพลาด', 'ทำงานนอกสถานที่','อื่นๆ'];
-  List<bool> _checkbox = [false, false,false];
+  List _checkboxListTile = [
+    'โปรแกรมระบุตำแหน่งผิดพลาด',
+    'ทำงานนอกสถานที่',
+    'อื่น ๆ'
+  ];
+  List<bool> _checkbox = [false, false, false];
   List<String> _select = [];
 
   //------
@@ -215,117 +220,118 @@ class _OutsideDialogState extends State<OutsideDialog> {
               _radioButton(),
               Form(
                   key: _formKey,
-                  child: 
-                  _checkbox[1] == true || _checkbox[2] == true
-                  ?
-                  Column(
-                    
-                    children: [
-                      Container(
-                        padding: EdgeInsets.fromLTRB(27.0, 0.0, 0.0, 10.0),
-                        child: Row(
+                  child: _checkbox[1] == true || _checkbox[2] == true
+                      ? Column(
                           children: [
-                            Text(
-                              'ระบุ',
-                              style: TextStyle(
-                                  fontFamily: FontStyles().FontFamily,
-                                  fontSize: 22),
-                            ),
-                            Expanded(
-                              child: TextFormField(
-                                controller: _inputNote,
-                                keyboardType: TextInputType.text,
-                                style: TextStyle(
-                                    fontFamily: FontStyles().FontFamily,
-                                    fontSize: 22),
-                                decoration: InputDecoration(
-                                  prefixIcon: Padding(
-                                    padding: EdgeInsets.all(
-                                        0), // add padding to adjust icon
-                                    child: Icon(
-                                      Icons.edit,
-                                      size: 22,
-                                    ),
-                                  ),
-                                ),
-                                validator: (value) {
-                                  print("value $value");
-                                  if (value == null || value.isEmpty) {
-                                    return 'กรุณาป้อนข้อมูล';
-                                  }
-                                  return null;
-                                },
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                      Container(
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: InkWell(
-                                onTap: () {
-                                  if (_formKey.currentState.validate()) {
-                                    if (widget.status == 1) {
-                                      Map _map = {
-                                        "status": "1", //เข้างาน
-                                        "uid": widget.uid,
-                                        "start_location_note":
-                                            json.encode(_select),
-                                        "start_location_sub_status":
-                                            _inputNote.text,
-                                      };
-                                      print(_map);
-                                      onLoadUpdateLocationAttandStart(_map);
-                                    } else {
-                                      Map _map = {
-                                        "status": "2", //ออกงาน
-                                        "uid": widget.uid,
-                                        "end_location_note":
-                                            json.encode(_select),
-                                        "end_location_sub_status":
-                                            _inputNote.text,
-                                      };
-                                      print(_map);
-                                      onLoadUpdateLocationAttandStart(_map);
-                                    }
-
-                                    Navigator.pop(context);
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => MainPage()),
-                                    );
-                                  }
-                                },
-                                child: Container(
-            
-                                  decoration: BoxDecoration(
-                                    color: Colors.green[100],
-                                    borderRadius: BorderRadius.only(
-                                      bottomLeft: Radius.circular(20.0),
-                                      bottomRight: Radius.circular(20.0),
-                                    ),
-                                  ),
-                                  height: 50,
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    'ตกลง',
+                            Container(
+                              padding:
+                                  EdgeInsets.fromLTRB(27.0, 0.0, 0.0, 10.0),
+                              child: Row(
+                                children: [
+                                  Text(
+                                    'ระบุ',
                                     style: TextStyle(
                                         fontFamily: FontStyles().FontFamily,
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.bold),
+                                        fontSize: 22),
                                   ),
-                                ),
+                                  Expanded(
+                                    child: TextFormField(
+                                      controller: _inputNote,
+                                      keyboardType: TextInputType.text,
+                                      style: TextStyle(
+                                          fontFamily: FontStyles().FontFamily,
+                                          fontSize: 22),
+                                      decoration: InputDecoration(
+                                        prefixIcon: Padding(
+                                          padding: EdgeInsets.all(
+                                              0), // add padding to adjust icon
+                                          child: Icon(
+                                            Icons.edit,
+                                            size: 22,
+                                          ),
+                                        ),
+                                      ),
+                                      validator: (value) {
+                                        print("value $value");
+                                        if (value == null || value.isEmpty) {
+                                          return 'กรุณาป้อนข้อมูล';
+                                        }
+                                        return null;
+                                      },
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                            Container(
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: InkWell(
+                                      onTap: () {
+                                        if (_formKey.currentState.validate()) {
+                                          if (widget.status == 1) {
+                                            Map _map = {
+                                              "status": "1", //เข้างาน
+                                              "uid": widget.uid,
+                                              "start_location_note":
+                                                  json.encode(_select),
+                                              "start_location_sub_status":
+                                                  _inputNote.text,
+                                            };
+                                            print(_map);
+                                            onLoadUpdateLocationAttandStart(
+                                                _map);
+                                          } else {
+                                            Map _map = {
+                                              "status": "2", //ออกงาน
+                                              "uid": widget.uid,
+                                              "end_location_note":
+                                                  json.encode(_select),
+                                              "end_location_sub_status":
+                                                  _inputNote.text,
+                                            };
+                                            print(_map);
+                                            onLoadUpdateLocationAttandStart(
+                                                _map);
+                                          }
+
+                                          Navigator.pop(context);
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    MainPage()),
+                                          );
+                                        }
+                                      },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.green[100],
+                                          borderRadius: BorderRadius.only(
+                                            bottomLeft: Radius.circular(20.0),
+                                            bottomRight: Radius.circular(20.0),
+                                          ),
+                                        ),
+                                        height: 50,
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          'ตกลง',
+                                          style: TextStyle(
+                                              fontFamily:
+                                                  FontStyles().FontFamily,
+                                              fontSize: 22,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ],
-                        ),
-                      ),
-                    ],
-                  )
-                  :Column()),
+                        )
+                      : Column()),
             ],
           ),
         ),
@@ -397,7 +403,6 @@ class _OutsideDialogState extends State<OutsideDialog> {
                       _select.remove(index.toString());
                     }
                     print("_select $_select");
-                  
                   },
                 );
               },

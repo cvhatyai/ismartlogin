@@ -160,6 +160,8 @@ class _OrgManageScreenState extends State<OrgManageScreen> {
                                         action: _item[index].ACTIVE,
                                         history: _item[index].HISTORY,
                                         noti: _item[index].NOTI,
+                                        ot: _item[index].OT,
+                                        logout: _item[index].LOGUT_STATUS,
                                         refresh: onLoadOrgManage,
                                       ),
                                     ),

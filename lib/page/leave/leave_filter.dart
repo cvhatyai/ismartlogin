@@ -386,7 +386,7 @@ class _LeaveFilterScreenState extends State<LeaveFilterScreen> {
                           ),
                           child: Center(
                             child: Text(
-                              "ลาอื่นๆ",
+                              "ลาอื่น ๆ",
                               style: TextStyle(
                                   color: typesData.contains("3")
                                       ? colorTxtActive

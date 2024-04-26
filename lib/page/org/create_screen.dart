@@ -42,6 +42,8 @@ class OrganizationCreateScreen extends StatefulWidget {
   final String invite;
   final String history;
   final String noti;
+  final String logout;
+  final String ot;
   final bool action;
   final Function refresh;
   OrganizationCreateScreen(
@@ -53,7 +55,9 @@ class OrganizationCreateScreen extends StatefulWidget {
       this.action,
       this.history,
       this.noti,
-      this.refresh})
+      this.refresh,
+      this.logout,
+      this.ot})
       : super(key: key);
   _OrganizationCreateScreenState createState() =>
       _OrganizationCreateScreenState();
@@ -66,6 +70,8 @@ class _OrganizationCreateScreenState extends State<OrganizationCreateScreen> {
   FToast fToast;
   bool _switchHistory = true;
   bool _switchNoti = true;
+  bool _switchOT = true;
+  bool _switchLogout = true;
   TimeOfDay _timeOfDay = TimeOfDay.now();
   //
   TextEditingController _inputSubject = TextEditingController();
@@ -97,6 +103,24 @@ class _OrganizationCreateScreenState extends State<OrganizationCreateScreen> {
         _switchNoti = false;
       } else {
         _switchNoti = true;
+      }
+    }
+
+    //ot
+    if (widget.ot != null) {
+      if (widget.ot == "0") {
+        _switchOT = false;
+      } else {
+        _switchOT = true;
+      }
+    }
+
+    //logout
+    if (widget.logout != null) {
+      if (widget.logout == "0") {
+        _switchLogout = false;
+      } else {
+        _switchLogout = true;
       }
     }
   }
@@ -141,6 +165,40 @@ class _OrganizationCreateScreenState extends State<OrganizationCreateScreen> {
     var body = json.encode(_map);
     final response = await http.Client().post(
       Uri.parse(Server().updateNotiStatus),
+      headers: {"Content-Type": "application/json"},
+      body: body,
+    );
+    var data = json.decode(response.body);
+    print('insertSeq : $data');
+  }
+
+  _updateOTStatus(String status, String id) async {
+    Map _map = {};
+    _map.addAll({
+      "id": id,
+      "ot_status": status,
+    });
+    print("_map : $_map");
+    var body = json.encode(_map);
+    final response = await http.Client().post(
+      Uri.parse(Server().updateOTStatus),
+      headers: {"Content-Type": "application/json"},
+      body: body,
+    );
+    var data = json.decode(response.body);
+    print('insertSeq : $data');
+  }
+
+  _updateLogoutStatus(String status, String id) async {
+    Map _map = {};
+    _map.addAll({
+      "id": id,
+      "logout_status": status,
+    });
+    print("_map : $_map");
+    var body = json.encode(_map);
+    final response = await http.Client().post(
+      Uri.parse(Server().updateLogoutStatus),
       headers: {"Content-Type": "application/json"},
       body: body,
     );
@@ -497,6 +555,100 @@ class _OrganizationCreateScreenState extends State<OrganizationCreateScreen> {
                                         } else {
                                           var status = "0";
                                           _updateNotiStatus(status.toString(),
+                                              widget.id.toString());
+                                        }
+                                      });
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Divider(),
+                          Container(
+                            height: 40,
+                            child: Container(
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                      child: Container(
+                                    child: Text(
+                                      'ทำงานนอกเวลา (OT)',
+                                      style: TextStyle(
+                                          fontFamily: FontStyles().FontFamily,
+                                          fontSize: 22),
+                                    ),
+                                  )),
+                                  FlutterSwitch(
+                                    value: _switchOT ? true : false,
+                                    width: 60.0,
+                                    height: 30.0,
+                                    valueFontSize: 13.0,
+                                    toggleSize: 30.0,
+                                    borderRadius: 20.0,
+                                    padding: 2.0,
+                                    showOnOff: true,
+                                    activeText: '',
+                                    activeColor: Colors.green,
+                                    inactiveText: '',
+                                    inactiveColor: Colors.grey,
+                                    onToggle: (state) {
+                                      setState(() {
+                                        _switchOT = state;
+                                        if (_switchOT) {
+                                          var status = "1";
+                                          _updateOTStatus(status.toString(),
+                                              widget.id.toString());
+                                        } else {
+                                          var status = "0";
+                                          _updateOTStatus(status.toString(),
+                                              widget.id.toString());
+                                        }
+                                      });
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Divider(),
+                          Container(
+                            height: 40,
+                            child: Container(
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                      child: Container(
+                                    child: Text(
+                                      'ออกจากงานอัตโนมัติ',
+                                      style: TextStyle(
+                                          fontFamily: FontStyles().FontFamily,
+                                          fontSize: 22),
+                                    ),
+                                  )),
+                                  FlutterSwitch(
+                                    value: _switchLogout ? true : false,
+                                    width: 60.0,
+                                    height: 30.0,
+                                    valueFontSize: 13.0,
+                                    toggleSize: 30.0,
+                                    borderRadius: 20.0,
+                                    padding: 2.0,
+                                    showOnOff: true,
+                                    activeText: '',
+                                    activeColor: Colors.green,
+                                    inactiveText: '',
+                                    inactiveColor: Colors.grey,
+                                    onToggle: (state) {
+                                      setState(() {
+                                        _switchLogout = state;
+                                        if (_switchLogout) {
+                                          var status = "1";
+                                          _updateLogoutStatus(status.toString(),
+                                              widget.id.toString());
+                                        } else {
+                                          var status = "0";
+                                          _updateLogoutStatus(status.toString(),
                                               widget.id.toString());
                                         }
                                       });

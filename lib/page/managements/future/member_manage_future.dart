@@ -28,7 +28,7 @@ class MemberManageFuture {
     );
     if (response.statusCode == 200) {
       List responseJson = json.decode(response.body);
-      // print(responseJson);
+      print(responseJson);
       return responseJson
           .map((m) => new ItemsMemberManage.fromJson(m))
           .toList();

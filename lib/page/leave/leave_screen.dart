@@ -22,8 +22,7 @@ import 'package:ismart_login/system/shared_preferences.dart';
 import 'package:ismart_login/system/widht_device.dart';
 import 'package:http/http.dart' as http;
 
-class
-LeaveScreen extends StatefulWidget {
+class LeaveScreen extends StatefulWidget {
   @override
   _LeaveScreenState createState() => _LeaveScreenState();
 }
@@ -65,6 +64,9 @@ class _LeaveScreenState extends State<LeaveScreen> {
   String selectItemTime = '1';
   String timeError;
   int _selectFullTime = 1;
+  String sick_leave = '0';
+  String personal_leave = '0';
+  String other_leave = '0';
 
   TextEditingController _inputCause = TextEditingController();
   TextEditingController inputPhone = TextEditingController();
@@ -159,10 +161,16 @@ class _LeaveScreenState extends State<LeaveScreen> {
       "org_id": await SharedCashe.getItemsWay(name: 'org_id'),
       "uid": await SharedCashe.getItemsWay(name: 'id'),
     };
+    print("map : ${map}");
     await MemberManageFuture().apiGetMemberManageList(map).then((onValue) {
+      print("check tab ${onValue[0].STATUS}");
+      print("check tab ${onValue[0].SICK_LEAVE}");
       setState(() {
         if (onValue[0].STATUS) {
           _itemMember = onValue[0].RESULT;
+          sick_leave = onValue[0].SICK_LEAVE;
+          personal_leave = onValue[0].PERSONAL_LEAVE;
+          other_leave = onValue[0].OTHER_LEAVE;
         }
       });
     });
@@ -473,7 +481,7 @@ class _LeaveScreenState extends State<LeaveScreen> {
                                               )),
                                           Container(
                                             child: Text(
-                                              "อื่น",
+                                              "อื่น ๆ",
                                               style: TextStyle(
                                                   fontFamily:
                                                       FontStyles().FontFamily,
@@ -728,10 +736,10 @@ class _LeaveScreenState extends State<LeaveScreen> {
                                   ),
                                 ),
                                 Align(
-                                  alignment: Alignment.topLeft,
+                                  alignment: Alignment.topRight,
                                   child: Padding(
                                     padding: const EdgeInsets.only(
-                                        left: 20, bottom: 10),
+                                        right: 12, bottom: 10),
                                     child: Text(
                                       'หากต้องการลาครึ่งวัน ให้ระบุ 0.5',
                                       style: TextStyle(
@@ -740,31 +748,31 @@ class _LeaveScreenState extends State<LeaveScreen> {
                                   ),
                                 ),
                                 if (select3)
-                                Container(
-                                  padding: EdgeInsets.only(left: 10),
-                                  child: Row(
-                                    children: [
-                                      Radio(
-                                          value: 1,
-                                          groupValue: _selectFullTime,
-                                          onChanged: (value) {
-                                            setState(() {
-                                              _selectFullTime = value;
-                                            });
-                                          }),
-                                      Text("ลาทั้งวัน"),
-                                      Radio(
-                                          value: 2,
-                                          groupValue: _selectFullTime,
-                                          onChanged: (value) {
-                                            setState(() {
-                                              _selectFullTime = value;
-                                            });
-                                          }),
-                                      Text("ลาย่อยระหว่างวัน"),
-                                    ],
+                                  Container(
+                                    padding: EdgeInsets.only(left: 10),
+                                    child: Row(
+                                      children: [
+                                        Radio(
+                                            value: 1,
+                                            groupValue: _selectFullTime,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                _selectFullTime = value;
+                                              });
+                                            }),
+                                        Text("ลาทั้งวัน"),
+                                        Radio(
+                                            value: 2,
+                                            groupValue: _selectFullTime,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                _selectFullTime = value;
+                                              });
+                                            }),
+                                        Text("ลาย่อยระหว่างวัน"),
+                                      ],
+                                    ),
                                   ),
-                                ),
                                 _selectFullTime == 2
                                     ? Container(
                                         padding: EdgeInsets.only(bottom: 20),
@@ -981,7 +989,6 @@ class _LeaveScreenState extends State<LeaveScreen> {
                                         ),
                                       )
                                     : Container(),
-
                                 Container(
                                   padding: EdgeInsets.only(
                                       left: 20, right: 20, top: 0, bottom: 0),
@@ -1059,6 +1066,175 @@ class _LeaveScreenState extends State<LeaveScreen> {
                                     child: _fileView(),
                                   ),
                                 Container(
+                                  child: Align(
+                                    alignment: Alignment.topLeft,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(left: 20),
+                                      child: Text(
+                                        'สถิติการลา',
+                                        style: TextStyle(
+                                            fontFamily: FontStyles().FontFamily,
+                                            fontSize: 20,
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  height: 40,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 20, right: 20),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                            child: Container(
+                                          decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  color: Color(0xFF9bd4e2),
+                                                  width: 1.0),
+                                              borderRadius: BorderRadius.only(
+                                                  topLeft:
+                                                      Radius.circular(8.0)),
+                                              color: Color(0xFF49c9e6)),
+                                          child: Center(
+                                            child: Text(
+                                              'ลาป่วย',
+                                              style: TextStyle(
+                                                  fontFamily:
+                                                      FontStyles().FontFamily,
+                                                  fontSize: 20,
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ),
+                                        )),
+                                        Expanded(
+                                            child: Container(
+                                          decoration: BoxDecoration(
+                                              border: Border(
+                                                bottom: BorderSide(
+                                                  color: Color(0xFF9bd4e2),
+                                                ),
+                                              ),
+                                              color: Color(0xFF49c9e6)),
+                                          child: Center(
+                                            child: Text(
+                                              'ลากิจ',
+                                              style: TextStyle(
+                                                  fontFamily:
+                                                      FontStyles().FontFamily,
+                                                  fontSize: 20,
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ),
+                                        )),
+                                        Expanded(
+                                            child: Container(
+                                          decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  color: Color(0xFF9bd4e2),
+                                                  width: 1.0),
+                                              borderRadius: BorderRadius.only(
+                                                  topRight:
+                                                      Radius.circular(8.0)),
+                                              color: Color(0xFF49c9e6)),
+                                          child: Center(
+                                            child: Text(
+                                              'ลาอื่น ๆ',
+                                              style: TextStyle(
+                                                  fontFamily:
+                                                      FontStyles().FontFamily,
+                                                  fontSize: 20,
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ),
+                                        )),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  height: 60,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 20, right: 20),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                            child: Container(
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                                color: Color(0xFF9bd4e2),
+                                                width: 1.0),
+                                            borderRadius: BorderRadius.only(
+                                                bottomLeft: Radius.circular(8.0)),
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              '${sick_leave} วัน',
+                                              style: TextStyle(
+                                                  fontFamily:
+                                                      FontStyles().FontFamily,
+                                                  fontSize: 25,
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ),
+                                        )),
+                                        Expanded(
+                                            child: Container(
+                                          decoration: BoxDecoration(
+                                            border: Border(
+                                              bottom: BorderSide(
+                                                color: Color(0xFF9bd4e2),
+                                              ),
+                                            ),
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              '${personal_leave} วัน',
+                                              style: TextStyle(
+                                                  fontFamily:
+                                                      FontStyles().FontFamily,
+                                                  fontSize: 25,
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ),
+                                        )),
+                                        Expanded(
+                                            child: Container(
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                                color: Color(0xFF9bd4e2),
+                                                width: 1.0),
+                                                borderRadius: BorderRadius.only(
+                                                bottomRight: Radius.circular(8.0)),
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              '${other_leave} ครั้ง',
+                                              style: TextStyle(
+                                                  fontFamily:
+                                                      FontStyles().FontFamily,
+                                                  fontSize: 25,
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ),
+                                        )),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Container(
                                   width: 200,
                                   padding: EdgeInsets.only(
                                       left: 20, right: 25, bottom: 50),
@@ -1128,7 +1304,7 @@ class _LeaveScreenState extends State<LeaveScreen> {
                                       // } else {
                                       //   inputTotalTimes = false;
                                       // }
-                                     
+
                                       popup_comfirm(context);
                                     },
                                     child: Container(
@@ -1378,7 +1554,7 @@ class _LeaveScreenState extends State<LeaveScreen> {
             final hours = duration.inHours;
             var times = duration.inMinutes - (60 * hours);
             print(times);
-            if(times == 30){
+            if (times == 30) {
               times = 50;
             }
             _inputTotalTimes.text = "${hours.toString()}.${times.toString()}";
