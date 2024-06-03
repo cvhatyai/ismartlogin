@@ -2,24 +2,22 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:ismart_login/page/front/model/sumaryToDay_late.dart';
+import 'package:ismart_login/page/front/model/sumaryToDay_ot.dart';
 import 'package:ismart_login/server/server.dart';
 import 'package:ismart_login/style/font_style.dart';
 import 'package:ismart_login/style/page_style.dart';
 import 'package:ismart_login/system/widht_device.dart';
 import 'package:loading_gifs/loading_gifs.dart';
-import 'package:url_launcher/url_launcher.dart';
 
-class FrontCountLateScreen extends StatefulWidget {
-  final List<ItemsSummaryToDay_Late> items;
-  FrontCountLateScreen({Key key, @required this.items}) : super(key: key);
+class FrontCountOtScreen extends StatefulWidget {
+  final List<ItemsSummaryToDay_OT> items;
+  FrontCountOtScreen({Key key, @required this.items}) : super(key: key);
   @override
-  _FrontCountLateScreenState createState() => _FrontCountLateScreenState();
+  _FrontCountOtScreenState createState() => _FrontCountOtScreenState();
 }
 
-class _FrontCountLateScreenState extends State<FrontCountLateScreen> {
-  List<ItemsSummaryToDay_Late> _items;
+class _FrontCountOtScreenState extends State<FrontCountOtScreen> {
+  List<ItemsSummaryToDay_OT> _items;
   @override
   void initState() {
     EasyLoading.dismiss();
@@ -40,7 +38,7 @@ class _FrontCountLateScreenState extends State<FrontCountLateScreen> {
               AppBar(
                 centerTitle: true,
                 title: Text(
-                  'สาย',
+                  'งานล่วงเวลา',
                   style: TextStyle(
                       fontFamily: FontStyles().FontFamily,
                       fontSize: 30,
@@ -215,14 +213,6 @@ class _FrontCountLateScreenState extends State<FrontCountLateScreen> {
                                       borderRadius: BorderRadius.circular(10),
                                       color: Colors.white,
                                     ),
-                                    // child: FadeInImage.assetNetwork(
-                                    //   placeholder: cupertinoActivityIndicatorSmall,
-                                    //   placeholderScale: 5,
-                                    //   width: WidhtDevice().widht(context) / 2,
-                                    //   image: Server.url +
-                                    //       _items[index].END_IMAGE_SMALL,
-                                    //   fit: BoxFit.cover,
-                                    // ),
                                     child: Image.network(
                                       Server.url +
                                           _items[index].END_IMAGE_SMALL,
@@ -245,8 +235,7 @@ class _FrontCountLateScreenState extends State<FrontCountLateScreen> {
                                             children: [
                                               Container(
                                                 child: Text(
-                                                  _getEndStatus(
-                                                      _items[index].END_STATUS),
+                                                  "",
                                                   style: TextStyle(
                                                       fontFamily: FontStyles()
                                                           .FontFamily,
@@ -351,73 +340,19 @@ class _FrontCountLateScreenState extends State<FrontCountLateScreen> {
                   ),
                 ),
                 _status == 1
-                    ? Column(
-                        children: [
-                          Container(
-                            child: Container(
-                              child: Text(
-                                'วันที่ ' +
-                                    _items[index].CREATE_DATE_TH +
-                                    ' เวลา ' +
-                                    _items[index].START_TIME,
-                                style: TextStyle(
-                                    fontFamily: FontStyles().FontFamily,
-                                    fontSize: 24,
-                                    color: Colors.black),
-                              ),
-                            ),
+                    ? Container(
+                        child: Container(
+                          child: Text(
+                            'วันที่ ' +
+                                _items[index].CREATE_DATE_TH +
+                                ' เวลา ' +
+                                _items[index].START_TIME,
+                            style: TextStyle(
+                                fontFamily: FontStyles().FontFamily,
+                                fontSize: 24,
+                                color: Colors.black),
                           ),
-                          _items[index].START_LOCATION_STATUS == '1'
-                              ? Container(
-                                  margin: EdgeInsets.only(
-                                      bottom: 10, left: 10, right: 10),
-                                  alignment: Alignment.center,
-                                  child: GestureDetector(
-                                      onTap: () async {
-                                        String url =
-                                            'https://www.google.com/maps/search/?api=1&query=' +
-                                                _items[index].START_LATITUDE +
-                                                ',' +
-                                                _items[index].START_LONGITUDE +
-                                                '';
-                                        if (await canLaunch(url)) {
-                                          await launch(url);
-                                        } else {
-                                          throw 'Could not launch $url';
-                                        }
-                                      },
-                                      child: Container(
-                                        padding:
-                                            EdgeInsets.only(top: 2, bottom: 2),
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(12),
-                                            color: Colors.grey[100]),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            FaIcon(
-                                              FontAwesomeIcons.mapMarkedAlt,
-                                              size: 18,
-                                              color: Colors.grey[600],
-                                            ),
-                                            Padding(padding: EdgeInsets.all(2)),
-                                            Text(
-                                              'สถานที่',
-                                              style: TextStyle(
-                                                color: Colors.grey[600],
-                                                fontFamily:
-                                                    FontStyles().FontFamily,
-                                                fontSize: 18,
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      )),
-                                )
-                              : SizedBox()
-                        ],
+                        ),
                       )
                     : Container(
                         child: Container(

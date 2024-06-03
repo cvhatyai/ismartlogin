@@ -120,6 +120,7 @@ class _OTDialogState extends State<OTDialog> {
                         onTap: () {
                           print('show camera');
                           if (_formKey.currentState.validate()) {
+                            Navigator.pop(context);
                             widget.onConfirmTap?.call(_inputNote.text);
                           }
                         },

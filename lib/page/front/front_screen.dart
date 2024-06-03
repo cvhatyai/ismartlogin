@@ -813,7 +813,6 @@ class _FrontScreenState extends State<FrontScreen> {
                                       child: GestureDetector(
                                         onTap: () {
                                           if (_login) {
-                                            // popupOT_in(context);
                                             print("dayWorking : $dayWorking");
                                             if (dayWorking) {
                                               if (ot_status == '1' &&
@@ -1169,10 +1168,10 @@ class _FrontScreenState extends State<FrontScreen> {
             });
       }
     } catch (e) {
-      setState(() {
-        _pickImageError = e;
-        print(_pickImageError.toString());
-      });
+      // setState(() {
+      //   _pickImageError = e;
+      //   print(_pickImageError.toString());
+      // });
     }
   }
 
@@ -1182,8 +1181,8 @@ class _FrontScreenState extends State<FrontScreen> {
         builder: (_) {
           return OTDialog(
             onConfirmTap: (String otNote) {
-              Navigator.pop(context);
-              print("otnote $otNote");
+              // Navigator.pop(context);
+              // print("otnote $otNote");
               OT_note = otNote;
               _imgFromCamera_in(context, true);
             },

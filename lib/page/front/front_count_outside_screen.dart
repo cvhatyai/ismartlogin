@@ -76,10 +76,12 @@ class _FrontCountOutsideScreenState extends State<FrontCountOutsideScreen> {
               ),
               Padding(padding: EdgeInsets.all(10)),
             ],
+          
           ),
         ),
       ),
     );
+  
   }
 
   Widget _list() {
@@ -89,12 +91,12 @@ class _FrontCountOutsideScreenState extends State<FrontCountOutsideScreen> {
         padding: EdgeInsets.all(8),
         itemCount: _items.length,
         itemBuilder: (BuildContext context, int index) {
-          List<ItemsAttendOutsideDetailPop> _resultItemDetail = [];
-          _resultItemDetail = List.from(
-            json.decode(_items[index].START_NOTE).map(
-                  (m) => ItemsAttendOutsideDetailPop.fromJson(m),
-                ),
-          );
+          // List<ItemsAttendOutsideDetailPop> _resultItemDetail = [];
+          // _resultItemDetail = List.from(
+          //   json.decode(_items[index].START_NOTE).map(
+          //         (m) => ItemsAttendOutsideDetailPop.fromJson(m),
+          //       ),
+          // );
           return Container(
             padding: EdgeInsets.only(top: 5, bottom: 5),
             child: Column(
@@ -145,7 +147,7 @@ class _FrontCountOutsideScreenState extends State<FrontCountOutsideScreen> {
                                   // mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Expanded(
+                                     Expanded(
                                       flex: 2,
                                       child: Container(
                                         child: Column(
@@ -154,10 +156,9 @@ class _FrontCountOutsideScreenState extends State<FrontCountOutsideScreen> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            Text(
-                                              _resultItemDetail[0].TOPIC != ''
-                                                  ? _resultItemDetail[0].TOPIC
-                                                  : '-',
+                                            Text('ไม่อยู่ในพื้นที่ : ' +
+                                            _items[index]
+                                                .START_LOCATION_SUB_STATUS,
                                               style: TextStyle(
                                                 fontFamily:
                                                     FontStyles().FontFamily,
@@ -167,25 +168,51 @@ class _FrontCountOutsideScreenState extends State<FrontCountOutsideScreen> {
                                                 height: 1,
                                               ),
                                             ),
-                                            Text(
-                                              _resultItemDetail[0]
-                                                          .DESCRIPTION !=
-                                                      ''
-                                                  ? _resultItemDetail[0]
-                                                      .DESCRIPTION
-                                                  : '',
-                                              style: TextStyle(
-                                                fontFamily:
-                                                    FontStyles().FontFamily,
-                                                fontSize: 19,
-                                                color: Colors.black,
-                                                height: 1,
-                                              ),
-                                            )
                                           ],
                                         ),
                                       ),
                                     ),
+                                    // Expanded(
+                                    //   flex: 2,
+                                    //   child: Container(
+                                    //     child: Column(
+                                    //       mainAxisAlignment:
+                                    //           MainAxisAlignment.start,
+                                    //       crossAxisAlignment:
+                                    //           CrossAxisAlignment.start,
+                                    //       children: [
+                                    //         Text(
+                                    //           _resultItemDetail[0].TOPIC != ''
+                                    //               ? _resultItemDetail[0].TOPIC
+                                    //               : '-',
+                                    //           style: TextStyle(
+                                    //             fontFamily:
+                                    //                 FontStyles().FontFamily,
+                                    //             fontSize: 20,
+                                    //             color: Colors.blue,
+                                    //             fontWeight: FontWeight.bold,
+                                    //             height: 1,
+                                    //           ),
+                                    //         ),
+                                    //         Text(
+                                    //           _resultItemDetail[0]
+                                    //                       .DESCRIPTION !=
+                                    //                   ''
+                                    //               ? _resultItemDetail[0]
+                                    //                   .DESCRIPTION
+                                    //               : '',
+                                    //           style: TextStyle(
+                                    //             fontFamily:
+                                    //                 FontStyles().FontFamily,
+                                    //             fontSize: 19,
+                                    //             color: Colors.black,
+                                    //             height: 1,
+                                    //           ),
+                                    //         )
+                                    //       ],
+                                    //     ),
+                                    //   ),
+                                    // ),
                                     _items[index].START_IMAGE_SMALL != ''
                                         ? Expanded(
                                             flex: 1,
@@ -304,7 +331,9 @@ class _FrontCountOutsideScreenState extends State<FrontCountOutsideScreen> {
                     ),
                   ],
                 ),
+              
               ],
+            
             ),
           );
         },

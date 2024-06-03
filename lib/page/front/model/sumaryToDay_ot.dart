@@ -1,4 +1,4 @@
-class ItemsSummaryToDay_Late {
+class ItemsSummaryToDay_OT {
   final String ID;
   final String CID;
   final String FULLNAME;
@@ -22,10 +22,8 @@ class ItemsSummaryToDay_Late {
   final String END_NOTE;
   final String END_LOCATION_NOT;
   final String END_STATUS;
-  final String START_LATITUDE;
-  final String START_LONGITUDE;
 
-  ItemsSummaryToDay_Late({
+  ItemsSummaryToDay_OT({
     this.ID,
     this.CID,
     this.FULLNAME,
@@ -49,12 +47,10 @@ class ItemsSummaryToDay_Late {
     this.END_NOTE,
     this.END_LOCATION_NOT,
     this.END_STATUS,
-    this.START_LATITUDE,
-    this.START_LONGITUDE,
   });
 
-  factory ItemsSummaryToDay_Late.fromJson(Map<String, dynamic> json) {
-    return ItemsSummaryToDay_Late(
+  factory ItemsSummaryToDay_OT.fromJson(Map<String, dynamic> json) {
+    return ItemsSummaryToDay_OT(
       ID: json['id'],
       CID: json['cid'],
       FULLNAME: json['fullname'],
@@ -78,8 +74,6 @@ class ItemsSummaryToDay_Late {
       END_NOTE: json['end_note'],
       END_LOCATION_NOT: json['end_location_note'],
       END_STATUS: json['end_status'],
-      START_LATITUDE: json['start_latitude'],
-      START_LONGITUDE: json['start_longitude'],
     );
   }
 }
