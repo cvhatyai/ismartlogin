@@ -16,6 +16,7 @@ import 'package:ismart_login/page/managements/future/department_manage_future.da
 import 'package:ismart_login/page/managements/future/time_manage_future.dart';
 import 'package:ismart_login/page/managements/model/itemDepartmentResultManage.dart';
 import 'package:ismart_login/page/managements/model/itemTimeResultMange.dart';
+import 'package:ismart_login/page/managements/model/org_map.dart';
 import 'package:ismart_login/page/managements/org_department_screen.dart';
 import 'package:ismart_login/page/managements/org_departmentdetail_screen.dart';
 import 'package:ismart_login/page/managements/org_holiday_screen.dart';
@@ -319,7 +320,7 @@ class _MenuDrawerState extends State<MenuDrawer> {
               style: _txt,
             ),
             onTap: () {
-              Navigator.pop(context);
+              // Navigator.pop(context);
               Navigator.push(
                 context,
                 MaterialPageRoute(

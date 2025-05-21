@@ -1,5 +1,6 @@
+import 'dart:convert';
 import 'dart:io';
-
+import 'package:http/http.dart' as http;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -47,6 +48,8 @@ class _OrgMemberDetailScreenState extends State<OrgMemberDetailScreen> {
   String avatar = '';
   bool _switchStatus = false;
   bool _switchStat = false;
+  bool _switchSuperAdmin = false;
+  bool _switchAdminBranch = false;
   bool _switchAdmin = false;
   List _listTime = [];
 
@@ -58,6 +61,7 @@ class _OrgMemberDetailScreenState extends State<OrgMemberDetailScreen> {
   ///
   String dropdownValueTime = '0';
   String dropdownValueDepartment = '0';
+  String dropdownValueAdminBranch = '0';
 //---
   _getMyUid() async {
     uid_my = await SharedCashe.getItemsWay(name: 'id');
@@ -124,7 +128,6 @@ class _OrgMemberDetailScreenState extends State<OrgMemberDetailScreen> {
               });
             }
           }
-
           _getData();
         }
       });
@@ -150,6 +153,30 @@ class _OrgMemberDetailScreenState extends State<OrgMemberDetailScreen> {
     return true;
   }
 
+  _updateStatusSuperAdmin(Map map) async {
+    var body = json.encode(map);
+    print('body : ' + body);
+    final response = await http.Client().post(
+      Uri.parse(Server().updateStatusSuperAdmin),
+      headers: {"Content-Type": "application/json"},
+      body: body,
+    );
+    var data = json.decode(response.body);
+    print('insertSeq : $data');
+  }
+
+  _updateStatusBranchID(Map map) async {
+    var body = json.encode(map);
+    print('body : ' + body);
+    final response = await http.Client().post(
+      Uri.parse(Server().updateStatusBranchID),
+      headers: {"Content-Type": "application/json"},
+      body: body,
+    );
+    var data = json.decode(response.body);
+    print('insertSeq : $data');
+  }
+
   _getData() async {
     String fullname = _item[0].FULLNAME;
     String _uid = widget.id_member;
@@ -167,6 +194,8 @@ class _OrgMemberDetailScreenState extends State<OrgMemberDetailScreen> {
       _switchStatus = _item[0].STATUS == '1' ? true : false;
       _switchStat = _item[0].STAT == '1' ? true : false;
       _switchAdmin = _item[0].MEMBER_TYPE == 'admin' ? true : false;
+      _switchSuperAdmin = _item[0].SUPER_STATUS == '1' ? true : false;
+      _switchAdminBranch = _item[0].ADMIN_BRANCH_ID != '0' ? true : false;
     });
   }
 
@@ -730,6 +759,105 @@ class _OrgMemberDetailScreenState extends State<OrgMemberDetailScreen> {
                           decoration: StylePage().boxWhite,
                           child: Column(
                             children: [
+                              Padding(padding: EdgeInsets.all(2)),
+                              Container(
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                        child: Container(
+                                      child: Text(
+                                        'SUPER ADMIN',
+                                        style: TextStyle(
+                                            fontFamily: FontStyles().FontFamily,
+                                            fontSize: 22),
+                                      ),
+                                    )),
+                                    FlutterSwitch(
+                                      value: _switchSuperAdmin ? true : false,
+                                      width: 100.0,
+                                      height: 40.0,
+                                      valueFontSize: 16.0,
+                                      toggleSize: 30.0,
+                                      borderRadius: 20.0,
+                                      padding: 5.0,
+                                      showOnOff: true,
+                                      activeText: 'ใช่',
+                                      activeColor: Colors.green,
+                                      inactiveText: 'ไม่',
+                                      inactiveColor: Colors.grey,
+                                      onToggle: (state) {
+                                        setState(() {
+                                          _switchSuperAdmin = state;
+                                          var status = 0;
+                                          if (state) {
+                                            status = 1;
+                                          } else {
+                                            status = 0;
+                                          }
+                                          Map _map = {
+                                            "id": widget.id_member,
+                                            "status": status.toString(),
+                                          };
+                                          print(_map);
+                                          _updateStatusSuperAdmin(_map);
+                                        });
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Padding(padding: EdgeInsets.all(2)),
+                              Container(
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                        child: Container(
+                                      child: Text(
+                                        'แอดมินสาขา',
+                                        style: TextStyle(
+                                            fontFamily: FontStyles().FontFamily,
+                                            fontSize: 22),
+                                      ),
+                                    )),
+                                    FlutterSwitch(
+                                      value: _switchAdminBranch ? true : false,
+                                      width: 100.0,
+                                      height: 40.0,
+                                      valueFontSize: 16.0,
+                                      toggleSize: 30.0,
+                                      borderRadius: 20.0,
+                                      padding: 5.0,
+                                      showOnOff: true,
+                                      activeText: 'ใช่',
+                                      activeColor: Colors.green,
+                                      inactiveText: 'ไม่',
+                                      inactiveColor: Colors.grey,
+                                      onToggle: (state) {
+                                        setState(() {
+                                          _switchAdminBranch = state;
+                                          if (state) {
+                                            Map _map = {
+                                              "id": widget.id_member,
+                                              "admin_branch_id":
+                                                  dropdownValueDepartment,
+                                            };
+                                            print(_map);
+                                            _updateStatusBranchID(_map);
+                                          } else {
+                                            Map _map = {
+                                              "id": widget.id_member,
+                                              "admin_branch_id": "0",
+                                            };
+                                            print(_map);
+                                            _updateStatusBranchID(_map);
+                                          }
+                                        });
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Padding(padding: EdgeInsets.all(2)),
                               Visibility(
                                 visible:
                                     widget.id_member == uid_my ? false : true,
@@ -782,7 +910,6 @@ class _OrgMemberDetailScreenState extends State<OrgMemberDetailScreen> {
                                         ),
                                       ),
                                       Padding(padding: EdgeInsets.all(2)),
-                                      Divider(),
                                     ],
                                   ),
                                 ),

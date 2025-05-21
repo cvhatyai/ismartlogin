@@ -139,13 +139,6 @@ class _FrontCountLateScreenState extends State<FrontCountLateScreen> {
                                 fit: BoxFit.cover,
                                 width: WidhtDevice().widht(context) / 2,
                               ),
-                              // child: FadeInImage.assetNetwork(
-                              //   placeholder: cupertinoActivityIndicatorSmall,
-                              //   placeholderScale: 5,
-                              //   width: WidhtDevice().widht(context) / 2,
-                              //   image: Server.url + _items[index].START_IMAGE_SMALL,
-                              //   fit: BoxFit.cover,
-                              // ),
                             ),
                             Container(
                               child: Text(
@@ -205,6 +198,7 @@ class _FrontCountLateScreenState extends State<FrontCountLateScreen> {
                           ? Container()
                           : GestureDetector(
                               onTap: () {
+                                print("logout");
                                 alert_show_images(context, 2, index);
                               },
                               child: Column(
@@ -215,14 +209,6 @@ class _FrontCountLateScreenState extends State<FrontCountLateScreen> {
                                       borderRadius: BorderRadius.circular(10),
                                       color: Colors.white,
                                     ),
-                                    // child: FadeInImage.assetNetwork(
-                                    //   placeholder: cupertinoActivityIndicatorSmall,
-                                    //   placeholderScale: 5,
-                                    //   width: WidhtDevice().widht(context) / 2,
-                                    //   image: Server.url +
-                                    //       _items[index].END_IMAGE_SMALL,
-                                    //   fit: BoxFit.cover,
-                                    // ),
                                     child: Image.network(
                                       Server.url +
                                           _items[index].END_IMAGE_SMALL,
@@ -358,7 +344,7 @@ class _FrontCountLateScreenState extends State<FrontCountLateScreen> {
                               child: Text(
                                 'วันที่ ' +
                                     _items[index].CREATE_DATE_TH +
-                                    ' เวลา ' +
+                                    ' เวลา' +
                                     _items[index].START_TIME,
                                 style: TextStyle(
                                     fontFamily: FontStyles().FontFamily,
@@ -419,22 +405,76 @@ class _FrontCountLateScreenState extends State<FrontCountLateScreen> {
                               : SizedBox()
                         ],
                       )
-                    : Container(
-                        child: Container(
-                          child: Text(
-                            'วันที่ ' +
-                                _items[index].CREATE_DATE_TH +
-                                ' เวลา ' +
-                                _items[index].END_TIME,
-                            style: TextStyle(
-                              fontFamily: FontStyles().FontFamily,
-                              fontSize: 24,
-                              color: (_items[index].END_STATUS == '0'
-                                  ? Colors.black
-                                  : Colors.redAccent),
+                    : Column(
+                        children: [
+                          Container(
+                            child: Container(
+                              child: Text(
+                                'วันที่ ' +
+                                    _items[index].CREATE_DATE_TH +
+                                    ' เวลา ' +
+                                    _items[index].END_TIME,
+                                style: TextStyle(
+                                  fontFamily: FontStyles().FontFamily,
+                                  fontSize: 24,
+                                  color: (_items[index].END_STATUS == '0'
+                                      ? Colors.black
+                                      : Colors.redAccent),
+                                ),
+                              ),
                             ),
                           ),
-                        ),
+                          _items[index].START_LOCATION_STATUS == '1'
+                              ? Container(
+                                  margin: EdgeInsets.only(
+                                      bottom: 10, left: 10, right: 10),
+                                  alignment: Alignment.center,
+                                  child: GestureDetector(
+                                      onTap: () async {
+                                        String url =
+                                            'https://www.google.com/maps/search/?api=1&query=' +
+                                                _items[index].END_LATITUDE +
+                                                ',' +
+                                                _items[index].END_LONGITUDE +
+                                                '';
+                                        if (await canLaunch(url)) {
+                                          await launch(url);
+                                        } else {
+                                          throw 'Could not launch $url';
+                                        }
+                                      },
+                                      child: Container(
+                                        padding:
+                                            EdgeInsets.only(top: 2, bottom: 2),
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                            color: Colors.grey[100]),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            FaIcon(
+                                              FontAwesomeIcons.mapMarkedAlt,
+                                              size: 18,
+                                              color: Colors.grey[600],
+                                            ),
+                                            Padding(padding: EdgeInsets.all(2)),
+                                            Text(
+                                              'สถานที่',
+                                              style: TextStyle(
+                                                color: Colors.grey[600],
+                                                fontFamily:
+                                                    FontStyles().FontFamily,
+                                                fontSize: 18,
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      )),
+                                )
+                              : SizedBox()
+                        ],
                       ),
                 Container(
                   child: Row(

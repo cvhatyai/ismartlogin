@@ -58,12 +58,17 @@ class Server {
 
   // -- * สาขา --------
   String getDepartmentManage = _baseUrl + 'manage/getDepartment';
+  String getDepartmentManage2 = _baseUrl + 'manage/getDepartment2';
   String postDepartmentManage = _baseUrl + 'manage/postDepartment';
   String updateSeqOrg = _baseUrl + 'manage/updateSeqOrg';
   String updateHistoryStatus = _baseUrl + 'manage/updateHistoryStatus';
   String updateNotiStatus = _baseUrl + 'manage/updateNotiStatus';
   String updateOTStatus = _baseUrl + 'manage/updateOTStatus';
   String updateLogoutStatus = _baseUrl + 'manage/updateLogoutStatus';
+  String updateTimeStatus = _baseUrl + 'manage/updateTimeStatus';
+  String updateLeaveCancelStatus = _baseUrl + 'manage/updateLeaveCancelStatus';
+  String updateStatusSuperAdmin = _baseUrl + 'manage/updateStatusSuperAdmin';
+  String updateStatusBranchID = _baseUrl + 'manage/updateStatusBranchID';
   
 
   // -- * องค์กร -------
@@ -78,6 +83,7 @@ class Server {
   String getListLeave = _baseUrl + 'manage/getListLeave';
   String getDetailLeave = _baseUrl + 'manage/getDetailLeave';
   String postupdateStatusLeave = _baseUrl + 'manage/updateStatusLeave';
+  String postupdateCancelStatusLeave = _baseUrl + 'manage/updateCancelStatusLeave';
   String getListLeaveWait = _baseUrl + 'manage/getListLeaveWait';
   String getBadgeLeave = _baseUrl + 'manage/getBadgeLeave';
   String getListHistoryLeave = _baseUrl + 'manage/getListHistoryLeave';

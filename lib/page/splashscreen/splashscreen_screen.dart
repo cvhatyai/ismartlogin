@@ -35,12 +35,14 @@ class _SplashscreenScreenState extends State<SplashscreenScreen> {
   _controllerLoginAuto() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     print("this : _controllerLoginAuto");
+    // Navigator.pop(context);
     if (prefs.containsKey('item')) {
       List<ItemsMemberList> _items = [];
       String item = prefs.getString('item');
       _items =
           List.from(json.decode(item).map((m) => ItemsMemberList.fromJson(m)));
       //----
+      print("_controllerLoginAuto : ${_items[0].ORG_ID}");
       Map _map = {
         "USERNAME": _items[0].USERNAME,
         "PASSWORD": _items[0].PASSWORD,
@@ -133,6 +135,7 @@ class _SplashscreenScreenState extends State<SplashscreenScreen> {
   @override
   void initState() {
     // onLoadGetProtectSwith();
+    // Navigator.pop(context);
     _controllerLoginAuto();
     LocationService.checkService();
     super.initState();
@@ -156,7 +159,7 @@ class _SplashscreenScreenState extends State<SplashscreenScreen> {
                             ? OrganizationScreen()
                             : MainPage()
                         : SignInScreen()
-                        // : SignInScreen2()
+                    // : SignInScreen2()
                     : protect_switch
                         ? ProtectApp()
                         : sent
@@ -164,7 +167,7 @@ class _SplashscreenScreenState extends State<SplashscreenScreen> {
                                 ? OrganizationScreen()
                                 : MainPage()
                             : SignInScreen(),
-                            // : SignInScreen2(),
+                // : SignInScreen2(),
                 title: new Text(
                   'iSmartLogin',
                   style: new TextStyle(

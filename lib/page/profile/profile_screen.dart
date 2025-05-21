@@ -35,7 +35,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   dynamic _pickImageError;
   var org_id = "";
 
-
   ///
   bool _edit = false;
   String uid = '';
@@ -113,6 +112,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   _getData() async {
     String fullname = _item[0].FULLNAME;
     String _nickname = _item[0].NICKNAME;
+    String org_sub_id = _item[0].ORG_SUB_ID;
+    String time_id = _item[0].TIME_ID;
     String _uid = await SharedCashe.getItemsWay(name: 'id');
     String timeId = await SharedCashe.getItemsWay(name: 'time_id');
     String _avatar = _item[0].AVATAR == null ? '' : _item[0].AVATAR;
@@ -498,27 +499,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                             value: map.ID,
                                                           );
                                                         }).toList(),
-                                                        // items: _resultDepartment
-                                                        //             .length ==
-                                                        //         0
-                                                        //     ? <String>['0'].map<
-                                                        //         DropdownMenuItem<
-                                                        //             String>>((String
-                                                        //         value) {
-                                                        //         return DropdownMenuItem(
-                                                        //           child: Text(
-                                                        //               '- เลือก -'),
-                                                        //           value: value,
-                                                        //         );
-                                                        //       }).toList()
-                                                        //     : _resultDepartment
-                                                        //         .map((map) {
-                                                        //         return DropdownMenuItem(
-                                                        //           child: Text(map
-                                                        //               .SUBJECT),
-                                                        //           value: map.ID,
-                                                        //         );
-                                                        //       }).toList(),
                                                       ),
                                                     )
                                                   : dropdownValueDepartment !=
@@ -557,15 +537,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                                     newValue;
                                                               });
                                                             },
-                                                            // items:
-                                                            //     _resultDepartment
-                                                            //         .map((map) {
-                                                            //   return DropdownMenuItem(
-                                                            //     child: Text(map
-                                                            //         .SUBJECT),
-                                                            //     value: map.ID,
-                                                            //   );
-                                                            // }).toList(),
                                                             items: _resultDepartment
                                                                         .length ==
                                                                     0
@@ -598,139 +569,198 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           ],
                                         ),
                                       Padding(padding: EdgeInsets.all(1)),
-                                      // if (dropdownValueTime != '')
-                                      Row(
-                                        children: [
-                                          Expanded(
-                                              flex: 1,
-                                              child: Container(
-                                                  child: Text(
-                                                'เวลาทำงาน',
-                                                style: TextStyle(
-                                                    fontFamily:
-                                                        FontStyles().FontFamily,
-                                                    fontSize: 22),
-                                              ))),
-                                          Expanded(
-                                            flex: 2,
-                                            child: Container(
-                                                child: _edit
-                                                    ? DropdownButton(
-                                                        value:
-                                                            dropdownValueTime,
-                                                        icon: Icon(
-                                                          Icons.arrow_drop_down,
-                                                          color: Colors.grey,
-                                                        ),
-                                                        iconSize: 24,
-                                                        elevation: 16,
-                                                        style: TextStyle(
-                                                            color: Colors.black,
-                                                            fontSize: 20,
-                                                            fontFamily:
-                                                                FontStyles()
-                                                                    .FontFamily),
-                                                        underline: Container(
-                                                          height: 2,
-                                                          color: Colors.blue,
-                                                        ),
-                                                        onChanged: (newValue) {
-                                                          setState(() {
-                                                            dropdownValueTime =
-                                                                newValue;
-                                                          });
-                                                          print('เวลา' +
-                                                              dropdownValueTime);
-                                                        },
-                                                        items: _itemTime
-                                                                    .length ==
-                                                                0
-                                                            ? <String>['0'].map<
-                                                                DropdownMenuItem<
-                                                                    String>>((String
-                                                                value) {
-                                                                return DropdownMenuItem(
-                                                                  child: Text(
-                                                                      '- เลือก -'),
-                                                                  value: value,
-                                                                );
-                                                              }).toList()
-                                                            : _itemTime
-                                                                .map((map) {
-                                                                return DropdownMenuItem(
-                                                                  child: Text(map
-                                                                      .SUBJECT),
-                                                                  value: map.ID,
-                                                                );
-                                                              }).toList(),
-                                                      )
-                                                    : dropdownValueTime != ''
-                                                        ? IgnorePointer(
-                                                            child:
-                                                                DropdownButton(
-                                                              value:
-                                                                  dropdownValueTime,
-                                                              icon: Icon(
-                                                                Icons
-                                                                    .arrow_drop_down,
-                                                                color:
-                                                                    Colors.grey,
-                                                              ),
-                                                              iconSize: 24,
-                                                              elevation: 16,
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .black,
-                                                                  fontSize: 20,
-                                                                  fontFamily:
-                                                                      FontStyles()
-                                                                          .FontFamily),
-                                                              underline:
-                                                                  Container(
-                                                                height: 1,
-                                                                color: Colors
-                                                                    .grey[400],
-                                                              ),
-                                                              onChanged:
-                                                                  (newValue) {
-                                                                setState(() {
-                                                                  dropdownValueTime =
-                                                                      newValue;
-                                                                });
-                                                              },
-                                                              items: _itemTime
-                                                                          .length ==
-                                                                      0
-                                                                  ? <String>[
-                                                                      '0'
-                                                                    ].map<
-                                                                      DropdownMenuItem<
-                                                                          String>>((String
-                                                                      value) {
-                                                                      return DropdownMenuItem(
-                                                                        child: Text(
-                                                                            '- เลือก -'),
-                                                                        value:
-                                                                            value,
-                                                                      );
-                                                                    }).toList()
-                                                                  : _itemTime
-                                                                      .map(
-                                                                          (map) {
-                                                                      return DropdownMenuItem(
-                                                                        child: Text(
-                                                                            map.SUBJECT),
-                                                                        value: map
-                                                                            .ID,
-                                                                      );
-                                                                    }).toList(),
+                                      if (_item != null)
+                                        if (_item[0].TIME_ID == "" ||
+                                            _item[0].TIME_STATUS == "0")
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                  flex: 1,
+                                                  child: Container(
+                                                      child: Text(
+                                                    'เวลาทำงาน',
+                                                    style: TextStyle(
+                                                        fontFamily: FontStyles()
+                                                            .FontFamily,
+                                                        fontSize: 22),
+                                                  ))),
+                                              Expanded(
+                                                flex: 2,
+                                                child: Container(
+                                                    child: _edit
+                                                        ? DropdownButton(
+                                                            value:
+                                                                dropdownValueTime,
+                                                            icon: Icon(
+                                                              Icons
+                                                                  .arrow_drop_down,
+                                                              color:
+                                                                  Colors.grey,
                                                             ),
+                                                            iconSize: 24,
+                                                            elevation: 16,
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .black,
+                                                                fontSize: 20,
+                                                                fontFamily:
+                                                                    FontStyles()
+                                                                        .FontFamily),
+                                                            underline:
+                                                                Container(
+                                                              height: 2,
+                                                              color:
+                                                                  Colors.blue,
+                                                            ),
+                                                            onChanged:
+                                                                (newValue) {
+                                                              setState(() {
+                                                                dropdownValueTime =
+                                                                    newValue;
+                                                              });
+                                                              print('เวลา' +
+                                                                  dropdownValueTime);
+                                                            },
+                                                            items: _itemTime
+                                                                        .length ==
+                                                                    0
+                                                                ? <String>[
+                                                                    '0'
+                                                                  ].map<
+                                                                    DropdownMenuItem<
+                                                                        String>>((String
+                                                                    value) {
+                                                                    return DropdownMenuItem(
+                                                                      child: Text(
+                                                                          '- เลือก -'),
+                                                                      value:
+                                                                          value,
+                                                                    );
+                                                                  }).toList()
+                                                                : _itemTime
+                                                                    .map((map) {
+                                                                    return DropdownMenuItem(
+                                                                      child: Text(
+                                                                          map.SUBJECT),
+                                                                      value: map
+                                                                          .ID,
+                                                                    );
+                                                                  }).toList(),
                                                           )
-                                                        : Container()),
-                                          )
-                                        ],
-                                      ),
+                                                        : dropdownValueTime !=
+                                                                ''
+                                                            ? IgnorePointer(
+                                                                child:
+                                                                    DropdownButton(
+                                                                  value:
+                                                                      dropdownValueTime,
+                                                                  icon: Icon(
+                                                                    Icons
+                                                                        .arrow_drop_down,
+                                                                    color: Colors
+                                                                        .grey,
+                                                                  ),
+                                                                  iconSize: 24,
+                                                                  elevation: 16,
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .black,
+                                                                      fontSize:
+                                                                          20,
+                                                                      fontFamily:
+                                                                          FontStyles()
+                                                                              .FontFamily),
+                                                                  underline:
+                                                                      Container(
+                                                                    height: 1,
+                                                                    color: Colors
+                                                                            .grey[
+                                                                        400],
+                                                                  ),
+                                                                  onChanged:
+                                                                      (newValue) {
+                                                                    setState(
+                                                                        () {
+                                                                      dropdownValueTime =
+                                                                          newValue;
+                                                                    });
+                                                                  },
+                                                                  items: _itemTime
+                                                                              .length ==
+                                                                          0
+                                                                      ? <String>[
+                                                                          '0'
+                                                                        ].map<
+                                                                          DropdownMenuItem<
+                                                                              String>>((String
+                                                                          value) {
+                                                                          return DropdownMenuItem(
+                                                                            child:
+                                                                                Text('- เลือก -'),
+                                                                            value:
+                                                                                value,
+                                                                          );
+                                                                        }).toList()
+                                                                      : _itemTime
+                                                                          .map(
+                                                                              (map) {
+                                                                          return DropdownMenuItem(
+                                                                            child:
+                                                                                Text(map.SUBJECT),
+                                                                            value:
+                                                                                map.ID,
+                                                                          );
+                                                                        }).toList(),
+                                                                ),
+                                                              )
+                                                            : Container()),
+                                              )
+                                            ],
+                                          ),
                                       Padding(padding: EdgeInsets.all(1)),
+                                      if (_item != null)
+                                        if (_item[0].TIME_ID != "" &&
+                                            _item[0].TIME_STATUS == "1")
+                                          Row(children: [
+                                            Expanded(
+                                                flex: 1,
+                                                child: Container(
+                                                    child: Text(
+                                                  'เวลาทำงาน',
+                                                  style: TextStyle(
+                                                      fontFamily: FontStyles()
+                                                          .FontFamily,
+                                                      fontSize: 22),
+                                                ))),
+                                            Expanded(
+                                                flex: 2,
+                                                child: Container(
+                                                  child: Text(
+                                                      _item[0]
+                                                          .TIME_ID_NAME
+                                                          .toString(),
+                                                      style: TextStyle(
+                                                        fontFamily: FontStyles()
+                                                            .FontFamily,
+                                                        fontSize: 22,
+                                                      )),
+                                                )),
+                                          ]),
+                                      if (_item != null)
+                                        if (_item[0].TIME_ID != "" &&
+                                            _item[0].TIME_STATUS == "1")
+                                          Row(children: [
+                                            Expanded(
+                                                child: Container(
+                                              child: Text(
+                                                  "หมายเหตุ หากต้องการเปลี่ยนเวลาทำงานกรุณาแจ้งแอดมิน",
+                                                  style: TextStyle(
+                                                      fontFamily: FontStyles()
+                                                          .FontFamily,
+                                                      fontSize: 20,
+                                                      color: Colors.red)),
+                                            )),
+                                          ]),
                                       // Row(
                                       //   children: [
                                       //     Container(
@@ -848,25 +878,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      if(org_id != "1564")
-                                      Icon(
-                                        Icons.vpn_key,
-                                        color: Colors.blue,
-                                      ),
+                                      if (org_id != "1564")
+                                        Icon(
+                                          Icons.vpn_key,
+                                          color: Colors.blue,
+                                        ),
                                       Padding(
                                         padding: EdgeInsets.all(3),
                                       ),
-
-                                      if(org_id != "1564")
-                                      Text(
-                                        'เปลี่ยนรหัสผ่าน',
-                                        style: TextStyle(
-                                          fontFamily: FontStyles().FontFamily,
-                                          fontSize: 24,
-                                          color: Colors.blue,
-                                          fontWeight: FontWeight.bold,
+                                      if (org_id != "1564")
+                                        Text(
+                                          'เปลี่ยนรหัสผ่าน',
+                                          style: TextStyle(
+                                            fontFamily: FontStyles().FontFamily,
+                                            fontSize: 24,
+                                            color: Colors.blue,
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
-                                      ),
                                     ],
                                   ),
                                 ),

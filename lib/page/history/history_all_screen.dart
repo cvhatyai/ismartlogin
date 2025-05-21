@@ -12,10 +12,18 @@ import 'package:ismart_login/page/front/model/sumaryToDay_ontime.dart';
 import 'package:ismart_login/page/front/model/sumaryToDay_outside.dart';
 import 'package:ismart_login/page/history/future/history_future.dart';
 import 'package:ismart_login/page/history/model/itemAllHistory.dart';
+import 'package:ismart_login/page/managements/future/department_manage_future.dart';
+import 'package:ismart_login/page/managements/model/itemDepartmentResultManage.dart';
 import 'package:ismart_login/style/font_style.dart';
 import 'package:ismart_login/system/shared_preferences.dart';
 
 class HistoryAllScreen extends StatefulWidget {
+  final String status_super;
+  final String admin_branch;
+  final String name_branch;
+  const HistoryAllScreen(
+      {Key key, this.status_super, this.admin_branch, this.name_branch})
+      : super(key: key);
   @override
   _HistoryAllScreenState createState() => _HistoryAllScreenState();
 }
@@ -32,16 +40,20 @@ class _HistoryAllScreenState extends State<HistoryAllScreen> {
     // TODO: implement initState
     super.initState();
     onLoadHistoryAll(0);
+    onLoadGetAllDepartment();
   }
 
+  String dropdownValueDepartment = '0';
   int start = 0;
   List<ItemsAllHistory> _result = [];
   Future<bool> onLoadHistoryAll(int _start) async {
     Map map = {
       "org_id": await SharedCashe.getItemsWay(name: 'org_id'),
       "start": _start,
+      "branch_id": (widget.admin_branch != '0' && widget.status_super != '1') ? widget.admin_branch : "0",
+      "department_id": dropdownValueDepartment,
     };
-    print(map);
+    print("onLoadHistoryAll : ${map}");
     await HistoryFuture().apiGetSummaryAllDay(map).then((onValue) {
       if (start == 0) {
         setState(() {
@@ -66,9 +78,27 @@ class _HistoryAllScreenState extends State<HistoryAllScreen> {
   ) async {
     Map _map = {
       "org_id": await SharedCashe.getItemsWay(name: 'org_id'),
-      "create_date": _date
+      "create_date": _date,
+      "department_id": dropdownValueDepartment != "0" ? dropdownValueDepartment : '0',
     };
     onLoadGetSummaryToDay(_map, _type);
+  }
+
+  List<ItemsDepartmentResultManage> _resultDepartment = [];
+  Future<bool> onLoadGetAllDepartment() async {
+    Map map = {
+      "org_id": await SharedCashe.getItemsWay(name: 'org_id'),
+    };
+    await DepartManageFuture().apiGetDepartmentManageList2(map).then((onValue) {
+      if (onValue[0].STATUS == true) {
+        setState(() {
+          _resultDepartment = onValue[0].RESULT;
+          dropdownValueDepartment = _resultDepartment[0].ID;
+        });
+      }
+    });
+    EasyLoading.dismiss();
+    return true;
   }
 
   List<ItemsSummaryToDay> _result_on = [];
@@ -77,6 +107,8 @@ class _HistoryAllScreenState extends State<HistoryAllScreen> {
   List<ItemsSummaryToDay_Absence> _result_absence = [];
   List<ItemsSummaryToDay_Outside> _result_outside = [];
   Future<bool> onLoadGetSummaryToDay(Map map, int _type) async {
+    print("onLoadGetSummaryToDay");
+    print(map);
     await SummaryFuture().apiGetSummaryToDay(map).then((onValue) {
       _result_on = onValue;
       print(_result.length);
@@ -139,15 +171,95 @@ class _HistoryAllScreenState extends State<HistoryAllScreen> {
   Widget build(BuildContext context) {
     return _result.length > 0
         ? _display()
-        : Center(
-            child: Text(
-              '-- ไม่มีข้อมูล --',
-              style: TextStyle(
-                fontFamily: FontStyles().FontFamily,
-                fontSize: 24,
-                color: Colors.grey[400],
+        : Column(
+            children: [
+              Container(
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30),
+                    color: Colors.grey[200]),
+                margin: EdgeInsets.only(top: 10, bottom: 2),
               ),
-            ),
+              if (widget.admin_branch != '0' && widget.status_super == '0')
+                Container(
+                  alignment: Alignment.center,
+                  padding: EdgeInsets.only(top: 5, bottom: 5),
+                  child: Text(
+                    "เฉพาะสาขา " + widget.name_branch.toString(),
+                    style: TextStyle(
+                        fontFamily: FontStyles().FontFamily,
+                        fontSize: 24,
+                        color: Colors.black),
+                  ),
+                ),
+              if (widget.status_super == '1')
+                Row(
+                  children: [
+                    Expanded(
+                        flex: 1,
+                        child: Container(
+                            child: Text(
+                          'สาขา',
+                          style: TextStyle(
+                              fontFamily: FontStyles().FontFamily,
+                              fontSize: 22),
+                        ))),
+                    Expanded(
+                      flex: 2,
+                      child: Container(
+                        child: DropdownButton<String>(
+                          value: dropdownValueDepartment,
+                          icon: Icon(
+                            Icons.arrow_drop_down,
+                            color: Colors.grey,
+                          ),
+                          iconSize: 24,
+                          elevation: 16,
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 20,
+                              fontFamily: FontStyles().FontFamily),
+                          underline: Container(
+                            height: 2,
+                            color: Colors.blue,
+                          ),
+                          onChanged: (String newValue) {
+                            setState(() {
+                              dropdownValueDepartment = newValue;
+                              onLoadHistoryAll(0);
+                            });
+                          },
+                          items: _resultDepartment.length == 0
+                              ? <String>[
+                                  '0'
+                                ].map<DropdownMenuItem<String>>((String value) {
+                                  return DropdownMenuItem(
+                                    child: Text('- เลือก -'),
+                                    value: value,
+                                  );
+                                }).toList()
+                              : _resultDepartment.map((map) {
+                                  return DropdownMenuItem(
+                                    child: Text(map.SUBJECT),
+                                    value: map.ID,
+                                  );
+                                }).toList(),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              Center(
+                child: Text(
+                  '-- ไม่มีข้อมูล --',
+                  style: TextStyle(
+                    fontFamily: FontStyles().FontFamily,
+                    fontSize: 24,
+                    color: Colors.grey[400],
+                  ),
+                ),
+              ),
+            ],
           );
   }
 
@@ -162,6 +274,73 @@ class _HistoryAllScreenState extends State<HistoryAllScreen> {
                 color: Colors.grey[200]),
             margin: EdgeInsets.only(top: 10, bottom: 2),
           ),
+          if (widget.admin_branch != '0' && widget.status_super == '0')
+            Container(
+              alignment: Alignment.center,
+              padding: EdgeInsets.only(top: 5, bottom: 5),
+              child: Text(
+                "เฉพาะสาขา " + widget.name_branch.toString(),
+                style: TextStyle(
+                    fontFamily: FontStyles().FontFamily,
+                    fontSize: 24,
+                    color: Colors.black),
+              ),
+            ),
+          if (widget.status_super == '1')
+            Row(
+              children: [
+                Expanded(
+                    flex: 1,
+                    child: Container(
+                        child: Text(
+                      'สาขา',
+                      style: TextStyle(
+                          fontFamily: FontStyles().FontFamily, fontSize: 22),
+                    ))),
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    child: DropdownButton<String>(
+                      value: dropdownValueDepartment,
+                      icon: Icon(
+                        Icons.arrow_drop_down,
+                        color: Colors.grey,
+                      ),
+                      iconSize: 24,
+                      elevation: 16,
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 20,
+                          fontFamily: FontStyles().FontFamily),
+                      underline: Container(
+                        height: 2,
+                        color: Colors.blue,
+                      ),
+                      onChanged: (String newValue) {
+                        setState(() {
+                          dropdownValueDepartment = newValue;
+                          onLoadHistoryAll(0);
+                        });
+                      },
+                      items: _resultDepartment.length == 0
+                          ? <String>['0']
+                              .map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem(
+                                child: Text('- เลือก -'),
+                                value: value,
+                              );
+                            }).toList()
+                          : _resultDepartment.map((map) {
+                              return DropdownMenuItem(
+                                child: Text(map.SUBJECT),
+                                value: map.ID,
+                              );
+                            }).toList(),
+                    ),
+                  ),
+                )
+              ],
+            ),
           Expanded(
             child: Container(
               child: Column(

@@ -43,6 +43,7 @@ class _HistoryMeScreenState extends State<HistoryMeScreen> {
       "org_id": await SharedCashe.getItemsWay(name: 'org_id'),
       "start": _start
     };
+    print('apiGetHistoryMeList');
     print(map);
     await HistoryFuture().apiGetHistoryMeList(map).then((onValue) {
       if (start == 0) {
@@ -541,13 +542,6 @@ class _HistoryMeScreenState extends State<HistoryMeScreen> {
                   fit: BoxFit.cover,
                   width: WidhtDevice().widht(context) / 2,
                 ),
-                // child: FadeInImage.assetNetwork(
-                //   placeholder: cupertinoActivityIndicatorSmall,
-                //   placeholderScale: 5,
-                //   width: WidhtDevice().widht(context) / 2,
-                //   image: Server.url + _result[index].END_IMAGE_SMALL,
-                //   fit: BoxFit.cover,
-                // ),
               ),
             ),
             Container(

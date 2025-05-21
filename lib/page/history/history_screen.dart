@@ -70,39 +70,75 @@ class _HistoryScreenState extends State<HistoryScreen> {
                                 children: [
                                   if (_itemMember != null)
                                     if (_itemMember.length > 0)
-                                      if (_itemMember[0].MEMBER_TYPE == 'admin')
-                                        Container(
-                                          decoration: BoxDecoration(
-                                              border: Border.all(
-                                                  color: Color(0xFF53B1FF)),
-                                              borderRadius:
-                                                  BorderRadius.circular(30),
-                                              color: Colors.white),
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          child: TabBar(
-                                              unselectedLabelColor:
-                                                  Color(0xFF707070),
-                                              unselectedLabelStyle: TextStyle(
-                                                  fontFamily:
-                                                      FontStyles().FontFamily,
-                                                  fontSize: 22),
-                                              labelStyle: TextStyle(
-                                                  fontFamily:
-                                                      FontStyles().FontFamily,
-                                                  fontSize: 22),
-                                              indicator: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(30),
-                                                  color: Color(0xFF53B1FF)),
-                                              tabs: [
-                                                Tab(text: "เฉพาะคุณ"),
-                                                Tab(text: "ทุกคน"),
-                                              ]),
-                                        ),
+                                      if (_itemMember[0].MEMBER_TYPE ==
+                                              'admin' ||
+                                          _itemMember[0].SUPER_STATUS == "1")
+                                        if (_itemMember[0].ADMIN_BRANCH_ID ==
+                                            "0")
+                                          Container(
+                                            decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    color: Color(0xFF53B1FF)),
+                                                borderRadius:
+                                                    BorderRadius.circular(30),
+                                                color: Colors.white),
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            child: TabBar(
+                                                unselectedLabelColor:
+                                                    Color(0xFF707070),
+                                                unselectedLabelStyle: TextStyle(
+                                                    fontFamily:
+                                                        FontStyles().FontFamily,
+                                                    fontSize: 22),
+                                                labelStyle: TextStyle(
+                                                    fontFamily:
+                                                        FontStyles().FontFamily,
+                                                    fontSize: 22),
+                                                indicator: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            30),
+                                                    color: Color(0xFF53B1FF)),
+                                                tabs: [
+                                                  Tab(text: "เฉพาะคุณ"),
+                                                  Tab(text: "ทุกคน"),
+                                                ]),
+                                          ),
                                   if (_itemMember.length > 0 &&
                                       _itemMember[0].HISTORY == "1" &&
                                       _itemMember[0].MEMBER_TYPE == 'member')
+                                    Container(
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color: Color(0xFF53B1FF)),
+                                          borderRadius:
+                                              BorderRadius.circular(30),
+                                          color: Colors.white),
+                                      width: MediaQuery.of(context).size.width,
+                                      child: TabBar(
+                                          unselectedLabelColor:
+                                              Color(0xFF707070),
+                                          unselectedLabelStyle: TextStyle(
+                                              fontFamily:
+                                                  FontStyles().FontFamily,
+                                              fontSize: 22),
+                                          labelStyle: TextStyle(
+                                              fontFamily:
+                                                  FontStyles().FontFamily,
+                                              fontSize: 22),
+                                          indicator: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(30),
+                                              color: Color(0xFF53B1FF)),
+                                          tabs: [
+                                            Tab(text: "เฉพาะคุณ"),
+                                            Tab(text: "ทุกคน"),
+                                          ]),
+                                    ),
+                                  if (_itemMember.length > 0 &&
+                                      _itemMember[0].ADMIN_BRANCH_ID != "0")
                                     Container(
                                       decoration: BoxDecoration(
                                           border: Border.all(
@@ -135,7 +171,14 @@ class _HistoryScreenState extends State<HistoryScreen> {
                                     child: Container(
                                       child: TabBarView(children: [
                                         HistoryMeScreen(),
-                                        HistoryAllScreen(),
+                                        HistoryAllScreen(
+                                          status_super:
+                                              _itemMember[0].SUPER_STATUS,
+                                          admin_branch:
+                                              _itemMember[0].ADMIN_BRANCH_ID,
+                                          name_branch:
+                                              _itemMember[0].NAME_BRANCH,
+                                        ),
                                       ]),
                                     ),
                                   )

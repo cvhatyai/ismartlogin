@@ -41,6 +41,7 @@ class _LeaveDetailScreenState extends State<LeaveDetailScreen> {
   String createDate = '';
   String cid = '';
   String leaveStatus = '';
+  String recommend = '';
   String uid = '';
   String phone = '';
   String leaveStatusText = '';
@@ -136,6 +137,27 @@ class _LeaveDetailScreenState extends State<LeaveDetailScreen> {
     setState(() {});
   }
 
+  updateStatusCancelLeave(String status) async {
+    Map map = {
+      "org_id": await SharedCashe.getItemsWay(name: 'org_id'),
+      "uid": await SharedCashe.getItemsWay(name: 'id'),
+      "id": widget.id,
+      "status_leave": status,
+    };
+    var body = json.encode(map);
+    final response = await http.Client().post(
+      Uri.parse(Server().postupdateCancelStatusLeave),
+      headers: {"Content-Type": "application/json"},
+      body: body,
+    );
+    data = json.decode(response.body);
+    if (data[0]['status'] == true) {
+      Navigator.of(context, rootNavigator: true).pop('dialog');
+      onLoadDetailLeaveManage();
+      widget.loadListLeave();
+    }
+    setState(() {});
+  }
 
   Future<void> _launchInBrowser(String url) async {
     if (await canLaunch(url)) {
@@ -171,6 +193,7 @@ class _LeaveDetailScreenState extends State<LeaveDetailScreen> {
       cate_name = data[0]['cate_name'].toString();
       cid = data[0]['cid'].toString();
       leaveStatus = data[0]['leaveStatus'].toString();
+      recommend = data[0]['recommend'].toString();
       fullname = data[0]['fullname'].toString();
       subject = data[0]['subject'].toString();
       position = data[0]['position'].toString();
@@ -264,6 +287,98 @@ class _LeaveDetailScreenState extends State<LeaveDetailScreen> {
                             Navigator.pop(context);
                             showLoaderDialog(context);
                             updateStatusLeave(status);
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Color(0xFF00B9FF),
+                              borderRadius: BorderRadius.only(
+                                // bottomLeft: Radius.circular(20.0),
+                                bottomRight: Radius.circular(20.0),
+                              ),
+                            ),
+                            height: 50,
+                            alignment: Alignment.center,
+                            child: Text(
+                              'ยืนยัน',
+                              style: TextStyle(
+                                  fontFamily: FontStyles().FontFamily,
+                                  color: Colors.white,
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  alert_cancel_confirm(BuildContext context, String text, String status) async {
+    return showDialog(
+      barrierDismissible: true,
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20.0))),
+          contentPadding: EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
+          content: Container(
+            width: WidhtDevice().widht(context),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  padding:
+                      EdgeInsets.only(top: 30, bottom: 30, left: 3, right: 3),
+                  alignment: Alignment.center,
+                  child: Text(
+                    text,
+                    style: TextStyle(
+                        fontFamily: FontStyles().FontFamily, fontSize: 24),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                Container(
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.grey[100],
+                              borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(20.0),
+                                bottomRight: Radius.circular(20.0),
+                              ),
+                            ),
+                            height: 50,
+                            alignment: Alignment.center,
+                            child: Text(
+                              'ยกเลิก',
+                              style: TextStyle(
+                                  fontFamily: FontStyles().FontFamily,
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.pop(context);
+                            showLoaderDialog(context);
+                            updateStatusCancelLeave(status);
                           },
                           child: Container(
                             decoration: BoxDecoration(
@@ -695,12 +810,6 @@ class _LeaveDetailScreenState extends State<LeaveDetailScreen> {
                                                                   .only(
                                                                       bottom:
                                                                           40),
-                                                              // height: dataFiles !=
-                                                              //             null &&
-                                                              //         dataFiles.length >
-                                                              //             0
-                                                              //     ? 40
-                                                              //     : 90,
                                                               child: (data !=
                                                                           null &&
                                                                       data.length >
@@ -769,6 +878,68 @@ class _LeaveDetailScreenState extends State<LeaveDetailScreen> {
                                                                               ),
                                                                             ),
                                                                           ),
+                                                                        if ((leaveStatus == "4") &&
+                                                                            (recommend ==
+                                                                                "1") &&
+                                                                            (createBy !=
+                                                                                uid))
+                                                                          Padding(
+                                                                            padding:
+                                                                                const EdgeInsets.only(left: 16.0, right: 16.0),
+                                                                            child:
+                                                                                Container(
+                                                                              child: Row(
+                                                                                children: [
+                                                                                  Expanded(
+                                                                                    child: GestureDetector(
+                                                                                      onTap: () {
+                                                                                        alert_cancel_confirm(context, "คุณต้องการ “ไม่อนุมัติ” ยกเลิกการลาหรือไม่", "2");
+                                                                                      },
+                                                                                      child: Container(
+                                                                                        decoration: BoxDecoration(
+                                                                                          color: Color(0xFFBBBBBB),
+                                                                                          borderRadius: BorderRadius.circular(26),
+                                                                                        ),
+                                                                                        child: Padding(
+                                                                                          padding: const EdgeInsets.all(8.0),
+                                                                                          child: Center(
+                                                                                            child: Text(
+                                                                                              'ไม่อนุมัติ',
+                                                                                              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
+                                                                                            ),
+                                                                                          ),
+                                                                                        ),
+                                                                                      ),
+                                                                                    ),
+                                                                                  ),
+                                                                                  SizedBox(width: 8),
+                                                                                  Expanded(
+                                                                                    child: GestureDetector(
+                                                                                      onTap: () {
+                                                                                        alert_cancel_confirm(context, "คุณต้องการ “อนุมัติ” ยกเลิกการลาหรือไม่", "1");
+                                                                                      },
+                                                                                      child: Container(
+                                                                                        decoration: BoxDecoration(
+                                                                                          color: Color(0xFF00B9FF),
+                                                                                          borderRadius: BorderRadius.circular(26),
+                                                                                        ),
+                                                                                        child: Padding(
+                                                                                          padding: const EdgeInsets.all(8.0),
+                                                                                          child: Center(
+                                                                                            child: Text(
+                                                                                              'อนุมัติ',
+                                                                                              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20),
+                                                                                            ),
+                                                                                          ),
+                                                                                        ),
+                                                                                      ),
+                                                                                    ),
+                                                                                  ),
+                                                                                ],
+                                                                              ),
+                                                                            ),
+                                                                          ),
+
                                                                         // อนุมัติ //ไม่อนุมัติิ
                                                                         if ((createBy != uid) &&
                                                                             (leaveStatus !=

@@ -27,10 +27,14 @@ class _LeaveNotiListScreenState extends State<LeaveNotiListScreen> {
     super.initState();
   }
 
+  String tab = "1";
+  String badge = "0"; 
+
   onLoadListNotiLeaveManage() async {
     Map map = {
       "org_id": await SharedCashe.getItemsWay(name: 'org_id'),
       "uid": await SharedCashe.getItemsWay(name: 'id'),
+      "tab": tab
     };
     var body = json.encode(map);
     print('onLoadListNotiLeaveManage : ${body}');
@@ -117,6 +121,73 @@ class _LeaveNotiListScreenState extends State<LeaveNotiListScreen> {
                       ),
                       elevation: 0,
                     ),
+                    Container(
+                      padding: EdgeInsets.all(8),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  tab = "1";
+                                  onLoadListNotiLeaveManage();
+                                });
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  border: Border(
+                                    bottom: BorderSide(
+                                      color: tab.toString() == "1"
+                                          ? Color(0xFF0A85BB)
+                                          : Colors.white, // สีของเส้น
+                                      width: 2.0, // ความหนาของเส้น
+                                    ),
+                                  ),
+                                ),
+                                child: Center(
+                                    child: Text(
+                                  "ทั้งหมด",
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      color: Color(0xFF616161),
+                                      fontWeight: FontWeight.bold),
+                                )),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  tab = "2";
+                                  onLoadListNotiLeaveManage();
+                                });
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  border: Border(
+                                    bottom: BorderSide(
+                                      color: tab.toString() == "2"
+                                          ? Color(0xFF0A85BB)
+                                          : Colors.white, // สีของเส้น
+                                      width: 2.0, // ความหนาของเส้น
+                                    ),
+                                  ),
+                                ),
+                                child: Center(
+                                    child: Text(
+                                  "ยังไม่อ่าน",
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      color: Color(0xFF616161),
+                                      fontWeight: FontWeight.bold),
+                                )),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                     Expanded(
                       child: data.length > 0 && len != "0"
                           ? Container(
@@ -169,17 +240,23 @@ class _LeaveNotiListScreenState extends State<LeaveNotiListScreen> {
                                                         "●",
                                                         style: TextStyle(
                                                           height: 1.5,
-                                                          color: rs[index][
-                                                                      'status_leave'] ==
-                                                                  "1" && rs[index]['status_noti'] == "0"
+                                                          color: rs[index]['status_leave'] ==
+                                                                      "1" &&
+                                                                  rs[index]['status_noti'] ==
+                                                                      "0"
                                                               ? Color(
                                                                   0xFFFF7700)
                                                               : rs[index]['status_leave'] ==
-                                                                      "2" && rs[index]['status_noti'] == "0"
+                                                                          "2" &&
+                                                                      rs[index][
+                                                                              'status_noti'] ==
+                                                                          "0"
                                                                   ? Color(
                                                                       0xFF01BB50)
                                                                   : rs[index]['status_leave'] ==
-                                                                          "3" && rs[index]['status_noti'] == "0"
+                                                                              "3" &&
+                                                                          rs[index]['status_noti'] ==
+                                                                              "0"
                                                                       ? Color(
                                                                           0xFFFF0000)
                                                                       : Color(

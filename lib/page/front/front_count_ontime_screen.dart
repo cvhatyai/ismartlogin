@@ -140,13 +140,6 @@ class _FrontCountOntimeScreenState extends State<FrontCountOntimeScreen> {
                                 fit: BoxFit.cover,
                                 width: WidhtDevice().widht(context) / 2,
                               ),
-                              // child: FadeInImage.assetNetwork(
-                              //     placeholder: cupertinoActivityIndicatorSmall,
-                              //     placeholderScale: 5,
-                              //     width: WidhtDevice().widht(context) / 2,
-                              //     fit: BoxFit.cover,
-                              //     image:
-                              //         Server.url + _items[index].START_IMAGE_SMALL),
                             ),
                             Container(
                               alignment: Alignment.center,
@@ -214,14 +207,6 @@ class _FrontCountOntimeScreenState extends State<FrontCountOntimeScreen> {
                                       fit: BoxFit.cover,
                                       width: WidhtDevice().widht(context) / 2,
                                     ),
-                                    // child: FadeInImage.assetNetwork(
-                                    //     placeholder:
-                                    //         cupertinoActivityIndicatorSmall,
-                                    //     placeholderScale: 5,
-                                    //     width: WidhtDevice().widht(context) / 2,
-                                    //     fit: BoxFit.cover,
-                                    //     image: Server.url +
-                                    //         _items[index].END_IMAGE_SMALL),
                                   ),
                                   Container(
                                     alignment: Alignment.center,
@@ -373,6 +358,77 @@ class _FrontCountOntimeScreenState extends State<FrontCountOntimeScreen> {
                                       onTap: () async {
                                         String url =
                                             'https://www.google.com/maps/search/?api=1&query=' +
+                                                _items[index].END_LATITUDE +
+                                                ',' +
+                                                _items[index].END_LATITUDE +
+                                                '';
+                                        if (await canLaunch(url)) {
+                                          await launch(url);
+                                        } else {
+                                          throw 'Could not launch $url';
+                                        }
+                                      },
+                                      child: Container(
+                                        padding:
+                                            EdgeInsets.only(top: 2, bottom: 2),
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                            color: Colors.grey[100]),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            FaIcon(
+                                              FontAwesomeIcons.mapMarkedAlt,
+                                              size: 18,
+                                              color: Colors.grey[600],
+                                            ),
+                                            Padding(padding: EdgeInsets.all(2)),
+                                            Text(
+                                              'สถานที่',
+                                              style: TextStyle(
+                                                color: Colors.grey[600],
+                                                fontFamily:
+                                                    FontStyles().FontFamily,
+                                                fontSize: 18,
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      )),
+                                )
+                              : SizedBox()
+                        ],
+                      )
+                    : Column(
+                        children: [
+                          Container(
+                            child: Container(
+                              child: Text(
+                                'วันที่ ' +
+                                    _items[index].CREATE_DATE_TH +
+                                    ' เวลา ' +
+                                    _items[index].END_TIME,
+                                style: TextStyle(
+                                  fontFamily: FontStyles().FontFamily,
+                                  fontSize: 24,
+                                  color: (_items[index].END_STATUS == '0'
+                                      ? Colors.black
+                                      : Colors.redAccent),
+                                ),
+                              ),
+                            ),
+                          ),
+                          _items[index].START_LOCATION_STATUS == '1'
+                              ? Container(
+                                  margin: EdgeInsets.only(
+                                      bottom: 10, left: 10, right: 10),
+                                  alignment: Alignment.center,
+                                  child: GestureDetector(
+                                      onTap: () async {
+                                        String url =
+                                            'https://www.google.com/maps/search/?api=1&query=' +
                                                 _items[index].START_LATITUDE +
                                                 ',' +
                                                 _items[index].START_LONGITUDE +
@@ -415,23 +471,6 @@ class _FrontCountOntimeScreenState extends State<FrontCountOntimeScreen> {
                                 )
                               : SizedBox()
                         ],
-                      )
-                    : Container(
-                        child: Container(
-                          child: Text(
-                            'วันที่ ' +
-                                _items[index].CREATE_DATE_TH +
-                                ' เวลา ' +
-                                _items[index].END_TIME,
-                            style: TextStyle(
-                              fontFamily: FontStyles().FontFamily,
-                              fontSize: 24,
-                              color: (_items[index].END_STATUS == '0'
-                                  ? Colors.black
-                                  : Colors.redAccent),
-                            ),
-                          ),
-                        ),
                       ),
                 Container(
                   child: Row(

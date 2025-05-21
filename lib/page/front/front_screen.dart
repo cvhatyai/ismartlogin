@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -129,8 +130,16 @@ class _FrontScreenState extends State<FrontScreen> {
     if (data[0]['status'] == true) {
       badge = data[0]['badge'].toString();
     }
+    updateBadge(badge);
     print("onLoadBadgeLeaveManage badge : $badge");
     setState(() {});
+  }
+
+  updateBadge(badge) async {
+    setState(() {
+      var badgeCount = int.parse(badge);
+      FlutterAppBadger.updateBadgeCount(badgeCount);
+    });
   }
 
   _getMyLocation() {
@@ -232,7 +241,8 @@ class _FrontScreenState extends State<FrontScreen> {
                 valString: _itemMember[0].ORG_SUB_ID.toString());
             FirebaseMessaging.instance.subscribeToTopic(
                 "org_" + _itemMember[0].ORG_SUB_ID.toString());
-            print("FirebaseMessaging ORG_SUB_ID ${_itemMember[0].ORG_SUB_ID}");
+            print(
+                "FirebaseMessaging ORG_SUB_ID v2 ${_itemMember[0].ORG_SUB_ID}");
           }
 
           FirebaseMessaging.instance.subscribeToTopic("users_" + uid);

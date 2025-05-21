@@ -24,6 +24,8 @@ class ItemsSummaryToDay_Late {
   final String END_STATUS;
   final String START_LATITUDE;
   final String START_LONGITUDE;
+  final String END_LATITUDE;
+  final String END_LONGITUDE;
 
   ItemsSummaryToDay_Late({
     this.ID,
@@ -51,6 +53,8 @@ class ItemsSummaryToDay_Late {
     this.END_STATUS,
     this.START_LATITUDE,
     this.START_LONGITUDE,
+    this.END_LATITUDE,
+    this.END_LONGITUDE,
   });
 
   factory ItemsSummaryToDay_Late.fromJson(Map<String, dynamic> json) {
@@ -80,6 +84,8 @@ class ItemsSummaryToDay_Late {
       END_STATUS: json['end_status'],
       START_LATITUDE: json['start_latitude'],
       START_LONGITUDE: json['start_longitude'],
+      END_LATITUDE: json['end_latitude'],
+      END_LONGITUDE: json['end_longitude'],
     );
   }
 }

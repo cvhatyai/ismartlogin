@@ -78,6 +78,9 @@ class SharedCashe {
     var uid = await SharedCashe.getItemsWay(name: 'id');
     var orgSubId = await SharedCashe.getItemsWay(name: 'org_sub_id');
 
+    print("clearShaeredForLogout uid : " + orgSubId);
+    print("clearShaeredForLogout orgSubId : " + orgSubId);
+
     //unsubscribe
     FirebaseMessaging.instance.unsubscribeFromTopic("org_" + orgSubId);
     FirebaseMessaging.instance.unsubscribeFromTopic("users_" + uid);

@@ -58,12 +58,10 @@ class _OrgDepartmentDetailManageState extends State<OrgDepartmentDetailManage> {
   _getLocation() {
     locationSubscription =
         _location.onLocationChanged.listen((LocationData currentLocation) {
-      // if (latMain != 0.0 && logMain != 0.0) {
       setState(() {
         latMain = currentLocation.latitude.toDouble();
         logMain = currentLocation.longitude.toDouble();
       });
-      // }
     });
   }
 
@@ -87,8 +85,10 @@ class _OrgDepartmentDetailManageState extends State<OrgDepartmentDetailManage> {
           ? widget.org_id
           : await SharedCashe.getItemsWay(name: 'org_id'),
       "status": "1",
-      "latitude": _inputLat.text,
-      "longitude": _inputLng.text,
+      // "latitude": _inputLat.text,
+      // "longitude": _inputLng.text,
+      "latitude": _lastMapPosition.latitude.toString(),
+      "longitude": _lastMapPosition.longitude.toString(),
       "radius": _inputDegree.text,
       "id": widget.id,
       "type": widget.type,
@@ -165,6 +165,8 @@ class _OrgDepartmentDetailManageState extends State<OrgDepartmentDetailManage> {
       _inputDegree.text = _resultItem[0].RADIUS;
       latMain = widget.lat;
       logMain = widget.lng;
+      _center = LatLng(widget.lat, widget.lng);
+      _lastMapPosition = LatLng(widget.lat, widget.lng);
     });
   }
 
@@ -173,23 +175,21 @@ class _OrgDepartmentDetailManageState extends State<OrgDepartmentDetailManage> {
   Future<void> showPlacePicker() async {
     LocationResult result = await Navigator.of(context).push(
       MaterialPageRoute(
-          builder: (context) =>
-              //PlacePicker("AIzaSyC_toS4JYdMubnqCRVg7mbJk4t6nvkRUlY")),
-              PlacePicker(
-                "AIzaSyB91yhHGMRWDgLYajpg8ACtG5Dl1YUFFEw",
-                displayLocation: LatLng(latMain, logMain),
-              )),
+          builder: (context) => PlacePicker(
+              "AIzaSyB91yhHGMRWDgLYajpg8ACtG5Dl1YUFFEw",
+              displayLocation: LatLng(latMain, logMain))),
     );
-    // Handle the result in your way
     if (result == null) {
       return;
     }
     final cameraPosition = CameraPosition(
       target: LatLng(result.latLng.latitude, result.latLng.longitude),
-      zoom: 18,
+      zoom: 15,
     );
-    final GoogleMapController controller = await _controller.future;
-    await controller.moveCamera(CameraUpdate.newCameraPosition(cameraPosition));
+    print('showPlacePicker : ${result.latLng.latitude}, ${result.latLng.longitude}');
+    // final GoogleMapController controller = await _controller.future;
+    await _mapController.moveCamera(CameraUpdate.newCameraPosition(cameraPosition));
+    _onCameraMove(cameraPosition);
     setMarker(lat: result.latLng.latitude, log: result.latLng.longitude);
   }
 
@@ -208,6 +208,8 @@ class _OrgDepartmentDetailManageState extends State<OrgDepartmentDetailManage> {
       logMain = log;
       _inputLat.text = latMain.toString();
       _inputLng.text = logMain.toString();
+      _center = LatLng(latMain, logMain);
+      _lastMapPosition = LatLng(latMain, logMain);
     });
   }
 
@@ -292,9 +294,23 @@ class _OrgDepartmentDetailManageState extends State<OrgDepartmentDetailManage> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
-    // locationSubscription.cancel();
+  }
+
+  ///-----
+  GoogleMapController _mapController;
+  LatLng _center; // ตำแหน่งเริ่มต้น (กรุงเทพฯ)
+  LatLng _lastMapPosition; // พิกัดล่าสุด
+
+  void _onCameraMove(CameraPosition position) {
+    setState(() {
+      _lastMapPosition = position.target;
+      print('showPlacePicker onCameraMove : ${_lastMapPosition.latitude}, ${_lastMapPosition.longitude}');
+    });
+  }
+
+  void _onMapCreated(GoogleMapController controller) {
+    _mapController = controller;
   }
 
   ///-----
@@ -314,7 +330,7 @@ class _OrgDepartmentDetailManageState extends State<OrgDepartmentDetailManage> {
               }
             },
             child: SingleChildScrollView(
-              // physics: const NeverScrollableScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
               child: Container(
                 width: MediaQuery.of(context).size.width,
                 child: Column(
@@ -357,246 +373,79 @@ class _OrgDepartmentDetailManageState extends State<OrgDepartmentDetailManage> {
                       backgroundColor: Colors.white.withOpacity(0),
                       elevation: 0,
                     ),
-                    SingleChildScrollView(
+                    Container(
+                      padding: EdgeInsets.only(left: 20, right: 20),
                       child: Container(
-                        padding: EdgeInsets.only(left: 20, right: 20),
-                        child: Container(
-                          padding:
-                              EdgeInsets.only(left: 10, right: 10, bottom: 20),
-                          width: WidhtDevice().widht(context),
-                          decoration: StylePage().boxWhite,
-                          child: Form(
-                            key: _formKey,
-                            child: Column(
-                              children: [
-                                TextFormField(
-                                  controller: _inputSubject,
-                                  // focusNode: _focusSubject,
-                                  keyboardType: TextInputType.text,
-                                  style: TextStyle(
+                        padding:
+                            EdgeInsets.only(left: 10, right: 10, bottom: 20),
+                        width: WidhtDevice().widht(context),
+                        decoration: StylePage().boxWhite,
+                        child: Form(
+                          key: _formKey,
+                          child: Column(
+                            children: [
+                              TextFormField(
+                                controller: _inputSubject,
+                                keyboardType: TextInputType.text,
+                                style: TextStyle(
+                                    fontFamily: FontStyles().FontFamily,
+                                    fontSize: 24),
+                                decoration: InputDecoration(
+                                  hintText: 'ชื่อสาขา',
+                                  hintStyle: TextStyle(
                                       fontFamily: FontStyles().FontFamily,
                                       fontSize: 24),
-                                  decoration: InputDecoration(
-                                    hintText: 'ชื่อสาขา',
-                                    hintStyle: TextStyle(
-                                        fontFamily: FontStyles().FontFamily,
-                                        fontSize: 24),
-                                    /*prefixIcon: Padding(
-                                      padding: EdgeInsets.all(
-                                          0), // add padding to adjust icon
-                                      child: Icon(
-                                        Icons.work,
-                                        size: 26,
-                                      ),
-                                    ),*/
+                                ),
+                              ),
+                              Row(
+                                children: [
+                                  Container(
+                                    child: Text(
+                                      'รัศมีในการล็อกอิน',
+                                      style: TextStyle(
+                                          fontFamily: FontStyles().FontFamily,
+                                          fontSize: 20),
+                                    ),
                                   ),
-                                ),
-                                Row(
-                                  children: [
-                                    Container(
-                                      child: Text(
-                                        'รัศมีในการล็อกอิน',
-                                        style: TextStyle(
+                                  Container(
+                                    width: 120,
+                                    child: TextFormField(
+                                      controller: _inputDegree,
+                                      focusNode: _focusDegree,
+                                      keyboardType: TextInputType.number,
+                                      style: TextStyle(
+                                          fontFamily: FontStyles().FontFamily,
+                                          fontSize: 24),
+                                      decoration: InputDecoration(
+                                        hintText: 'ควรมากกว่า 50',
+                                        hintStyle: TextStyle(
                                             fontFamily: FontStyles().FontFamily,
                                             fontSize: 20),
-                                      ),
-                                    ),
-                                    Container(
-                                      width: 120,
-                                      child: TextFormField(
-                                        controller: _inputDegree,
-                                        focusNode: _focusDegree,
-                                        keyboardType: TextInputType.number,
-                                        style: TextStyle(
-                                            fontFamily: FontStyles().FontFamily,
-                                            fontSize: 24),
-                                        decoration: InputDecoration(
-                                          hintText: 'ควรมากกว่า 50',
-                                          hintStyle: TextStyle(
-                                              fontFamily:
-                                                  FontStyles().FontFamily,
-                                              fontSize: 20),
-                                          prefixIcon: Padding(
-                                            padding: EdgeInsets.all(0),
-                                            child: Icon(
-                                              Icons.room,
-                                              size: 24,
-                                            ),
+                                        prefixIcon: Padding(
+                                          padding: EdgeInsets.all(0),
+                                          child: Icon(
+                                            Icons.room,
+                                            size: 24,
                                           ),
                                         ),
                                       ),
                                     ),
-                                    Container(
-                                      child: Text(
-                                        'เมตร',
-                                        style: TextStyle(
-                                            fontFamily: FontStyles().FontFamily,
-                                            fontSize: 20),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                if (widget.type == 'update')
-                                  Row(children: [
-                                    Container(
-                                      child: Text(
-                                        'เรียง :',
-                                        style: TextStyle(
+                                  ),
+                                  Container(
+                                    child: Text(
+                                      'เมตร',
+                                      style: TextStyle(
                                           fontFamily: FontStyles().FontFamily,
-                                          fontSize: 24,
-                                          height: 1,
-                                          color: Colors.black,
-                                        ),
-                                      ),
+                                          fontSize: 20),
                                     ),
-                                    Container(
-                                      width: 50,
-                                      height: 35,
-                                      child: TextFormField(
-                                        maxLines: 1,
-                                        textAlign: TextAlign.center,
-                                        controller:
-                                            TextEditingController.fromValue(
-                                          TextEditingValue(
-                                            text: _seq.text != ''
-                                                ? _seq.text
-                                                : '${widget.seq}',
-                                            selection:
-                                                TextSelection.fromPosition(
-                                              TextPosition(
-                                                  affinity:
-                                                      TextAffinity.downstream,
-                                                  offset:
-                                                      '${widget.seq}'.length),
-                                            ),
-                                          ),
-                                        ),
-                                        keyboardType: TextInputType.number,
-                                        style: TextStyle(
-                                            fontFamily: FontStyles().FontFamily,
-                                            fontSize: 24),
-                                        onChanged: (text) {
-                                          if (text.toString() != "") {
-                                            _seq.text = text;
-                                            _insertSeq(text.toString(),
-                                                widget.id.toString());
-                                          }
-                                        },
-                                      ),
-                                    ),
-                                  ]),
-
-                                Padding(
-                                  padding: EdgeInsets.all(5),
-                                ),
-
-                                Row(
-                                  children: [
-                                    Container(
-                                      child: Text(
-                                        'กำหนดเวลาทำงาน : ',
-                                        style: TextStyle(
-                                          fontFamily: FontStyles().FontFamily,
-                                          fontSize: 24,
-                                          height: 1,
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      width: 120,
-                                      child: DropdownButton(
-                                        value: dropdownValueTime,
-                                        icon: Icon(
-                                          Icons.arrow_drop_down,
-                                          color: Colors.grey,
-                                        ),
-                                        iconSize: 24,
-                                        elevation: 16,
-                                        style: TextStyle(
-                                          fontFamily: FontStyles().FontFamily,
-                                          fontSize: 24,
-                                          height: 1,
-                                          color: Colors.black,
-                                        ),
-                                        isExpanded: true,
-                                        underline: Container(
-                                          height: 2,
-                                          color: Colors.blue,
-                                        ),
-                                        onChanged: (newValue) {
-                                          setState(() {
-                                            dropdownValueTime = newValue;
-                                          });
-                                          print('id time ' + dropdownValueTime);
-                                        },
-                                        items: _itemTime.length == 0
-                                            ? <String>['0']
-                                                .map<DropdownMenuItem<String>>(
-                                                    (String value) {
-                                                return DropdownMenuItem(
-                                                  child: Text('- เลือก -'),
-                                                  value: value,
-                                                );
-                                              }).toList()
-                                            : _itemTime.map((map) {
-                                                return DropdownMenuItem(
-                                                  child: Text(map.SUBJECT,
-                                                      overflow: TextOverflow
-                                                          .ellipsis),
-                                                  value: map.ID,
-                                                );
-                                              }).toList(),
-                                      ),
-                                    ),
-                                    GestureDetector(
-                                      onTap: () {
-                                        if (_formKey.currentState.validate()) {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  OrgTimeDetailManage(
-                                                id: '0',
-                                                org_id: widget.org_id,
-                                                type: 'insert',
-                                                updateLoadTime:
-                                                    onLoadGetAllTime,
-                                              ),
-                                            ),
-                                          );
-                                        }
-                                      },
-                                      child: Container(
-                                        margin: EdgeInsets.only(left: 5),
-                                        padding: EdgeInsets.only(
-                                            left: 10, right: 10),
-                                        decoration: BoxDecoration(
-                                          color: Color(0xFF079CFD),
-                                          borderRadius:
-                                              BorderRadius.circular(30),
-                                        ),
-                                        child: Text(
-                                          'เพิ่ม',
-                                          style: TextStyle(
-                                              fontFamily:
-                                                  FontStyles().FontFamily,
-                                              color: Colors.white,
-                                              fontSize: 24),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-
-                                Padding(
-                                  padding: EdgeInsets.all(5),
-                                ),
-
+                                  ),
+                                ],
+                              ),
+                              if (widget.type == 'update')
                                 Row(children: [
                                   Container(
                                     child: Text(
-                                      'การแจ้งเตือนก่อนเข้างาน 5 นาที : ',
+                                      'เรียง :',
                                       style: TextStyle(
                                         fontFamily: FontStyles().FontFamily,
                                         fontSize: 24,
@@ -605,326 +454,480 @@ class _OrgDepartmentDetailManageState extends State<OrgDepartmentDetailManage> {
                                       ),
                                     ),
                                   ),
-                                  FlutterSwitch(
-                                    value: _switchNoti ? true : false,
-                                    width: 60.0,
-                                    height: 30.0,
-                                    valueFontSize: 13.0,
-                                    toggleSize: 30.0,
-                                    borderRadius: 20.0,
-                                    padding: 2.0,
-                                    showOnOff: true,
-                                    activeText: '',
-                                    activeColor: Colors.green,
-                                    inactiveText: '',
-                                    inactiveColor: Colors.grey,
-                                    onToggle: (state) {
-                                      setState(() {
-                                        _switchNoti = state;
-                                        if (_switchNoti) {
-                                          var status = "1";
-                                          _updateNotiStatus(status.toString(),
-                                              widget.id.toString());
-                                        } else {
-                                          var status = "0";
-                                          _updateNotiStatus(status.toString(),
+                                  Container(
+                                    width: 50,
+                                    height: 35,
+                                    child: TextFormField(
+                                      maxLines: 1,
+                                      textAlign: TextAlign.center,
+                                      controller:
+                                          TextEditingController.fromValue(
+                                        TextEditingValue(
+                                          text: _seq.text != ''
+                                              ? _seq.text
+                                              : '${widget.seq}',
+                                          selection: TextSelection.fromPosition(
+                                            TextPosition(
+                                                affinity:
+                                                    TextAffinity.downstream,
+                                                offset: '${widget.seq}'.length),
+                                          ),
+                                        ),
+                                      ),
+                                      keyboardType: TextInputType.number,
+                                      style: TextStyle(
+                                          fontFamily: FontStyles().FontFamily,
+                                          fontSize: 24),
+                                      onChanged: (text) {
+                                        if (text.toString() != "") {
+                                          _seq.text = text;
+                                          _insertSeq(text.toString(),
                                               widget.id.toString());
                                         }
-                                      });
-                                    },
+                                      },
+                                    ),
                                   ),
                                 ]),
-
-                                Padding(
-                                  padding: EdgeInsets.all(5),
-                                ),
-                                Container(
-                                  alignment: Alignment.centerLeft,
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Expanded(
-                                        child: Padding(
-                                          padding:
-                                              const EdgeInsets.only(top: 8.0),
-                                          child: Text(
-                                            'แตะเพื่อเลือกที่ตั้งสาขา',
-                                            style: TextStyle(
-                                                fontFamily:
-                                                    FontStyles().FontFamily,
-                                                color: Colors.blue,
-                                                fontSize: 24,
-                                                height: 1),
-                                          ),
-                                        ),
+                              Padding(
+                                padding: EdgeInsets.all(5),
+                              ),
+                              Row(
+                                children: [
+                                  Container(
+                                    child: Text(
+                                      'กำหนดเวลาทำงาน : ',
+                                      style: TextStyle(
+                                        fontFamily: FontStyles().FontFamily,
+                                        fontSize: 24,
+                                        height: 1,
+                                        color: Colors.black,
                                       ),
-                                      Container(
-                                        width: 120,
-                                        child: ElevatedButton(
-                                          style: ButtonStyle(
-                                            backgroundColor:
-                                                MaterialStateProperty.all<
-                                                    Color>(Color(0xFFFF841B)),
-                                          ),
-                                          onPressed: () {
-                                            showPlacePicker();
-                                          },
-                                          child: Container(
-                                            alignment: Alignment.center,
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Icon(Icons.location_pin),
-                                                Container(
-                                                  child: Text(
-                                                    "คันหา",
-                                                    style: TextStyle(
-                                                        fontFamily: FontStyles()
-                                                            .FontFamily,
-                                                        color: Colors.white,
-                                                        fontSize: 24,
-                                                        height: 1),
-                                                  ),
-                                                  margin: EdgeInsets.symmetric(
-                                                      horizontal: 8),
-                                                ),
-                                              ],
+                                    ),
+                                  ),
+                                  Container(
+                                    width: 120,
+                                    child: DropdownButton(
+                                      value: dropdownValueTime,
+                                      icon: Icon(
+                                        Icons.arrow_drop_down,
+                                        color: Colors.grey,
+                                      ),
+                                      iconSize: 24,
+                                      elevation: 16,
+                                      style: TextStyle(
+                                        fontFamily: FontStyles().FontFamily,
+                                        fontSize: 24,
+                                        height: 1,
+                                        color: Colors.black,
+                                      ),
+                                      isExpanded: true,
+                                      underline: Container(
+                                        height: 2,
+                                        color: Colors.blue,
+                                      ),
+                                      onChanged: (newValue) {
+                                        setState(() {
+                                          dropdownValueTime = newValue;
+                                        });
+                                        print('id time ' + dropdownValueTime);
+                                      },
+                                      items: _itemTime.length == 0
+                                          ? <String>['0']
+                                              .map<DropdownMenuItem<String>>(
+                                                  (String value) {
+                                              return DropdownMenuItem(
+                                                child: Text('- เลือก -'),
+                                                value: value,
+                                              );
+                                            }).toList()
+                                          : _itemTime.map((map) {
+                                              return DropdownMenuItem(
+                                                child: Text(map.SUBJECT,
+                                                    overflow:
+                                                        TextOverflow.ellipsis),
+                                                value: map.ID,
+                                              );
+                                            }).toList(),
+                                    ),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      if (_formKey.currentState.validate()) {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                OrgTimeDetailManage(
+                                              id: '0',
+                                              org_id: widget.org_id,
+                                              type: 'insert',
+                                              updateLoadTime: onLoadGetAllTime,
                                             ),
-                                            width: MediaQuery.of(context)
-                                                .size
-                                                .width,
                                           ),
-                                        ),
+                                        );
+                                      }
+                                    },
+                                    child: Container(
+                                      margin: EdgeInsets.only(left: 5),
+                                      padding:
+                                          EdgeInsets.only(left: 10, right: 10),
+                                      decoration: BoxDecoration(
+                                        color: Color(0xFF079CFD),
+                                        borderRadius: BorderRadius.circular(30),
                                       ),
-                                    ],
+                                      child: Text(
+                                        'เพิ่ม',
+                                        style: TextStyle(
+                                            fontFamily: FontStyles().FontFamily,
+                                            color: Colors.white,
+                                            fontSize: 24),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all(5),
+                              ),
+                              Row(children: [
+                                Container(
+                                  child: Text(
+                                    'การแจ้งเตือนก่อนเข้างาน 5 นาที : ',
+                                    style: TextStyle(
+                                      fontFamily: FontStyles().FontFamily,
+                                      fontSize: 24,
+                                      height: 1,
+                                      color: Colors.black,
+                                    ),
                                   ),
                                 ),
-                                Container(
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.45,
-                                  child: GoogleMap(
-                                      markers: addMarker(),
-                                      initialCameraPosition: mapMark(),
-                                      zoomGesturesEnabled: true,
-                                      onMapCreated:
-                                          (GoogleMapController controller) {
-                                        _controller.complete(controller);
-                                      },
-                                      // all the other arguments
-                                      onTap: (latLng) {
-                                        setMarker(
-                                            lat: latLng.latitude,
-                                            log: latLng.longitude);
-                                        print(
-                                            '${latLng.latitude}, ${latLng.longitude}');
-                                      }),
+                                FlutterSwitch(
+                                  value: _switchNoti ? true : false,
+                                  width: 60.0,
+                                  height: 30.0,
+                                  valueFontSize: 13.0,
+                                  toggleSize: 30.0,
+                                  borderRadius: 20.0,
+                                  padding: 2.0,
+                                  showOnOff: true,
+                                  activeText: '',
+                                  activeColor: Colors.green,
+                                  inactiveText: '',
+                                  inactiveColor: Colors.grey,
+                                  onToggle: (state) {
+                                    setState(() {
+                                      _switchNoti = state;
+                                      if (_switchNoti) {
+                                        var status = "1";
+                                        _updateNotiStatus(status.toString(),
+                                            widget.id.toString());
+                                      } else {
+                                        var status = "0";
+                                        _updateNotiStatus(status.toString(),
+                                            widget.id.toString());
+                                      }
+                                    });
+                                  },
                                 ),
-                                // Container(
-                                //   alignment: Alignment.center,
-                                //   child: Text(
-                                //     '* แตะในตำแน่งที่ต้องการ',
-                                //     style: TextStyle(
-                                //         fontFamily: FontStyles().FontFamily,
-                                //         color: Colors.grey,
-                                //         fontSize: 18,
-                                //         height: 1),
-                                //   ),
-                                // ),
-                                // Padding(
-                                //   padding: EdgeInsets.all(5),
-                                // ),
-                                Visibility(
-                                  visible: _editLatlng,
-                                  child: Container(
-                                    alignment: Alignment.centerLeft,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Container(
+                              ]),
+                              Padding(
+                                padding: EdgeInsets.all(5),
+                              ),
+                              Container(
+                                alignment: Alignment.centerLeft,
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Expanded(
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(top: 8.0),
+                                        child: Text(
+                                          'เลื่อนแผนที่เพื่อเลือกที่ตั้งสาขา',
+                                          style: TextStyle(
+                                              fontFamily:
+                                                  FontStyles().FontFamily,
+                                              color: Colors.blue,
+                                              fontSize: 24,
+                                              height: 1),
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      width: 120,
+                                      child: ElevatedButton(
+                                        style: ButtonStyle(
+                                          backgroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  Color(0xFFFF841B)),
+                                        ),
+                                        onPressed: () {
+                                          showPlacePicker();
+                                        },
+                                        child: Container(
+                                          alignment: Alignment.center,
                                           child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
                                             children: [
-                                              Icon(
-                                                Icons.gps_fixed,
-                                                size: 20,
-                                                color: Colors.blue,
-                                              ),
-                                              Text(
-                                                ' ละติจูด,ลองติจูด',
-                                                style: TextStyle(
-                                                    fontFamily:
-                                                        FontStyles().FontFamily,
-                                                    color: Colors.blue,
-                                                    fontSize: 18),
+                                              Icon(Icons.location_pin),
+                                              Container(
+                                                child: Text(
+                                                  "คันหา",
+                                                  style: TextStyle(
+                                                      fontFamily: FontStyles()
+                                                          .FontFamily,
+                                                      color: Colors.white,
+                                                      fontSize: 24,
+                                                      height: 1),
+                                                ),
+                                                margin: EdgeInsets.symmetric(
+                                                    horizontal: 8),
                                               ),
                                             ],
                                           ),
+                                          width:
+                                              MediaQuery.of(context).size.width,
                                         ),
-                                        _editLatlng
-                                            ? GestureDetector(
-                                                onTap: () {
-                                                  setState(() {
-                                                    _editLatlng = false;
-                                                  });
-                                                },
-                                                child: Container(
-                                                  padding: EdgeInsets.only(
-                                                      left: 2, right: 3),
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                    color: Colors.blue,
-                                                  ),
-                                                  child: Row(
-                                                    children: [
-                                                      Icon(
-                                                        Icons.done,
-                                                        color: Colors.white,
-                                                        size: 16,
-                                                      ),
-                                                      Text(
-                                                        'ตกลง',
-                                                        style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontFamily:
-                                                                FontStyles()
-                                                                    .FontFamily,
-                                                            fontSize: 18),
-                                                      )
-                                                    ],
-                                                  ),
-                                                ),
-                                              )
-                                            : GestureDetector(
-                                                onTap: () {
-                                                  setState(() {
-                                                    _editLatlng = true;
-                                                  });
-                                                },
-                                                child: Container(
-                                                  padding: EdgeInsets.only(
-                                                      left: 2, right: 2),
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                    color: Colors.grey,
-                                                  ),
-                                                  child: Row(
-                                                    children: [
-                                                      Icon(
-                                                        Icons.edit,
-                                                        color: Colors.white,
-                                                        size: 16,
-                                                      ),
-                                                      Text(
-                                                        'กำหนดเอง',
-                                                        style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontFamily:
-                                                                FontStyles()
-                                                                    .FontFamily,
-                                                            fontSize: 18),
-                                                      )
-                                                    ],
-                                                  ),
-                                                ),
-                                              )
-                                      ],
+                                      ),
                                     ),
-                                  ),
+                                  ],
                                 ),
-                                Visibility(
-                                  visible: _editLatlng,
-                                  child: Container(
-                                    color: _editLatlng
-                                        ? Colors.white
-                                        : Colors.grey[100],
-                                    padding: EdgeInsets.only(left: 10),
-                                    child: Column(
-                                      children: [
-                                        TextFormField(
-                                          enabled: _editLatlng,
-                                          controller: _inputLat,
-                                          // focusNode: _focusUsername,
-                                          keyboardType: TextInputType.text,
-                                          style: TextStyle(
-                                              fontFamily:
-                                                  FontStyles().FontFamily,
-                                              fontSize: 24),
-                                          decoration: InputDecoration(
-                                            hintText: 'ละติจูด',
-                                            hintStyle: TextStyle(
-                                                fontFamily:
-                                                    FontStyles().FontFamily,
-                                                fontSize: 24),
-                                          ),
-                                        ),
-                                        TextFormField(
-                                          enabled: _editLatlng,
-                                          controller: _inputLng,
-                                          // focusNode: _focusUsername,
-                                          keyboardType: TextInputType.text,
-                                          style: TextStyle(
-                                              fontFamily:
-                                                  FontStyles().FontFamily,
-                                              fontSize: 24),
-                                          decoration: InputDecoration(
-                                            hintText: 'ลองติจูด',
-                                            hintStyle: TextStyle(
-                                                fontFamily:
-                                                    FontStyles().FontFamily,
-                                                fontSize: 24),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                // Padding(
-                                //   padding: EdgeInsets.all(5),
-                                // ),
-                                Padding(
-                                  padding: EdgeInsets.all(5),
-                                ),
-                                Visibility(
-                                  visible: _editLatlng ? false : true,
+                              ),
+                              // Container(
+                              //   height:
+                              //       MediaQuery.of(context).size.height * 0.45,
+                              //   child: GoogleMap(
+                              //       markers: addMarker(),
+                              //       initialCameraPosition: mapMark(),
+                              //       zoomGesturesEnabled: true,
+                              //       onMapCreated:
+                              //           (GoogleMapController controller) {
+                              //         _controller.complete(controller);
+                              //       },
+                              //       // all the other arguments
+                              //       onTap: (latLng) {
+                              //         setMarker(
+                              //             lat: latLng.latitude,
+                              //             log: latLng.longitude);
+                              //         print(
+                              //             '${latLng.latitude}, ${latLng.longitude}');
+                              //       }),
+                              // ),
+                              Visibility(
+                                visible: _editLatlng,
+                                child: Container(
+                                  alignment: Alignment.centerLeft,
                                   child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
-                                      GestureDetector(
-                                        onTap: () {
-                                          if (_formKey.currentState
-                                              .validate()) {
-                                            _setDetailDepartmentToJson();
-                                          }
-                                        },
-                                        child: Container(
-                                          padding: EdgeInsets.only(
-                                              left: 25, right: 25),
-                                          decoration: BoxDecoration(
-                                            color: Color(0xFF079CFD),
-                                            borderRadius:
-                                                BorderRadius.circular(30),
-                                          ),
-                                          child: Text(
-                                            'บันทึก',
-                                            style: TextStyle(
-                                                fontFamily:
-                                                    FontStyles().FontFamily,
-                                                color: Colors.white,
-                                                fontSize: 26),
-                                          ),
+                                      Container(
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              Icons.gps_fixed,
+                                              size: 20,
+                                              color: Colors.blue,
+                                            ),
+                                            Text(
+                                              ' ละติจูด,ลองติจูด',
+                                              style: TextStyle(
+                                                  fontFamily:
+                                                      FontStyles().FontFamily,
+                                                  color: Colors.blue,
+                                                  fontSize: 18),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      _editLatlng
+                                          ? GestureDetector(
+                                              onTap: () {
+                                                setState(() {
+                                                  _editLatlng = false;
+                                                });
+                                              },
+                                              child: Container(
+                                                padding: EdgeInsets.only(
+                                                    left: 2, right: 3),
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  color: Colors.blue,
+                                                ),
+                                                child: Row(
+                                                  children: [
+                                                    Icon(
+                                                      Icons.done,
+                                                      color: Colors.white,
+                                                      size: 16,
+                                                    ),
+                                                    Text(
+                                                      'ตกลง',
+                                                      style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontFamily:
+                                                              FontStyles()
+                                                                  .FontFamily,
+                                                          fontSize: 18),
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                            )
+                                          : GestureDetector(
+                                              onTap: () {
+                                                setState(() {
+                                                  _editLatlng = true;
+                                                });
+                                              },
+                                              child: Container(
+                                                padding: EdgeInsets.only(
+                                                    left: 2, right: 2),
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  color: Colors.grey,
+                                                ),
+                                                child: Row(
+                                                  children: [
+                                                    Icon(
+                                                      Icons.edit,
+                                                      color: Colors.white,
+                                                      size: 16,
+                                                    ),
+                                                    Text(
+                                                      'กำหนดเอง',
+                                                      style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontFamily:
+                                                              FontStyles()
+                                                                  .FontFamily,
+                                                          fontSize: 18),
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                            )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Visibility(
+                                visible: _editLatlng,
+                                child: Container(
+                                  color: _editLatlng
+                                      ? Colors.white
+                                      : Colors.grey[100],
+                                  padding: EdgeInsets.only(left: 10),
+                                  child: Column(
+                                    children: [
+                                      TextFormField(
+                                        enabled: _editLatlng,
+                                        controller: _inputLat,
+                                        keyboardType: TextInputType.text,
+                                        style: TextStyle(
+                                            fontFamily: FontStyles().FontFamily,
+                                            fontSize: 24),
+                                        decoration: InputDecoration(
+                                          hintText: 'ละติจูด',
+                                          hintStyle: TextStyle(
+                                              fontFamily:
+                                                  FontStyles().FontFamily,
+                                              fontSize: 24),
+                                        ),
+                                      ),
+                                      TextFormField(
+                                        enabled: _editLatlng,
+                                        controller: _inputLng,
+                                        // focusNode: _focusUsername,
+                                        keyboardType: TextInputType.text,
+                                        style: TextStyle(
+                                            fontFamily: FontStyles().FontFamily,
+                                            fontSize: 24),
+                                        decoration: InputDecoration(
+                                          hintText: 'ลองติจูด',
+                                          hintStyle: TextStyle(
+                                              fontFamily:
+                                                  FontStyles().FontFamily,
+                                              fontSize: 24),
                                         ),
                                       ),
                                     ],
                                   ),
                                 ),
-                              ],
-                            ),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.all(5),
+                              ),
+                              Stack(
+                                children: [
+                                  Container(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.35,
+                                    child: GoogleMap(
+                                      onMapCreated: _onMapCreated,
+                                      initialCameraPosition: CameraPosition(
+                                        target: _center,
+                                        zoom: 15.0,
+                                      ),
+                                      onCameraMove:
+                                          _onCameraMove, // ดึงพิกัดใหม่เมื่อเลื่อนแผนที่
+                                    ),
+                                  ),
+                                  Container(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.35,
+                                    child: Center(
+                                      child: Icon(Icons.location_pin,
+                                          size: 50, color: Colors.red),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    bottom: 20,
+                                    left: 20,
+                                    child: Text(
+                                      'Lat: ${_lastMapPosition.latitude}, Lng: ${_lastMapPosition.longitude}',
+                                      style: TextStyle(
+                                          fontSize: 14, color: Colors.black),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Visibility(
+                                visible: _editLatlng ? false : true,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () {
+                                        if (_formKey.currentState.validate()) {
+                                          _setDetailDepartmentToJson();
+                                        }
+                                      },
+                                      child: Container(
+                                        padding: EdgeInsets.only(
+                                            left: 25, right: 25),
+                                        decoration: BoxDecoration(
+                                          color: Color(0xFF079CFD),
+                                          borderRadius:
+                                              BorderRadius.circular(30),
+                                        ),
+                                        child: Text(
+                                          'บันทึก',
+                                          style: TextStyle(
+                                              fontFamily:
+                                                  FontStyles().FontFamily,
+                                              color: Colors.white,
+                                              fontSize: 26),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),

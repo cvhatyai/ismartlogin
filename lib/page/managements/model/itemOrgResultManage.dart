@@ -10,6 +10,8 @@ class ItemsOrgResultManage {
   final String NOTI;
   final String OT;
   final String LOGUT_STATUS;
+  final String TIME_STATUS;
+  final String LEAVE_CANCEL_STATUS;
 
   ItemsOrgResultManage({
     this.ID,
@@ -23,6 +25,8 @@ class ItemsOrgResultManage {
     this.NOTI,
     this.OT,
     this.LOGUT_STATUS,
+    this.TIME_STATUS,
+    this.LEAVE_CANCEL_STATUS
   });
 
   factory ItemsOrgResultManage.fromJson(Map<String, dynamic> json) {
@@ -38,6 +42,8 @@ class ItemsOrgResultManage {
       NOTI: json['noti'],
       OT: json['ot'],
       LOGUT_STATUS: json['logout'],
+      TIME_STATUS: json['time_status'],
+      LEAVE_CANCEL_STATUS: json['leave_cancel_status']
     );
   }
 }

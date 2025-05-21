@@ -100,10 +100,21 @@ class _InsiteDialogState extends State<InsiteDialog> {
     }
     var now = new DateTime.now();
     // var insite = DateFormat("HH:mm").format(DateTime.parse(time + ':00'));
-    DateTime timeInsite = DateFormat("HH:mm").parse(time);
-    String insiteNow = DateFormat("HH:mm").format(now);
-    DateTime timeNow = DateFormat("HH:mm").parse(insiteNow);
-    if (timeNow.isBefore(timeInsite)) {
+    print("checkTimr time : " + time);
+    DateTime timeInsite = DateFormat("HH:mm:ss").parse(time);
+    DateTime combinedTime = DateTime(
+        1970,
+        01,
+        01,
+        timeInsite.hour,
+        timeInsite.minute,
+        now.second,
+      );
+    String insiteNow = DateFormat("HH:mm:ss").format(now);
+    DateTime timeNow = DateFormat("HH:mm:ss").parse(insiteNow);
+    // print("checkTimr combinedTime : " + combinedTime.toString());
+    // print("checkTimr timeNow : " + timeNow.toString());
+    if (timeNow.isBefore(combinedTime) || timeNow == combinedTime) {
       return true;
     } else {
       return false;

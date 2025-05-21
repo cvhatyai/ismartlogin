@@ -90,12 +90,6 @@ class _MainPageState extends State<MainPage> {
               if(org_id == "1564"){
                 var usr = await SharedCashe.getItemsWay(name: 'username');
                 var pwd = await SharedCashe.getItemsWay(name: 'password');
-
-                /*var bytes = utf8.encode(widget.username); // data being hashed
-                var digest = sha1.convert(bytes);
-                request.fields['key'] = digest.toString();
-                var key = "aaaa";*/
-
                 var url = "https://yalacity.go.th/hr/app_api_v1/authenticationIsmarLogin/"+usr+"/"+pwd;
                 print('wit Go to Leave org_id : '+url);
                 _launchInBrowser(url);
